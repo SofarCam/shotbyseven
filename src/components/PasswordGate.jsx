@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-const HASH_KEY = import.meta.env.VITE_MANAGE_PASSWORD_HASH || ''
+const HASH_KEY = import.meta.env.VITE_MANAGE_PASSWORD_HASH || 'e08df7eaaae462dc20f97efe977dc34500129dd6d9b626c9433fdcf1a5292815'
 
 async function hashPassword(password) {
   const encoder = new TextEncoder()
