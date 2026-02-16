@@ -75,9 +75,12 @@ function HomePage() {
 function ManagePage() {
   const navigate = useNavigate()
   return (
-    <PasswordGate>
-      <ImageManager onBack={() => navigate('/')} />
-    </PasswordGate>
+    <>
+      <CustomCursor />
+      <PasswordGate>
+        <ImageManager onBack={() => navigate('/')} />
+      </PasswordGate>
+    </>
   )
 }
 
