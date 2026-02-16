@@ -41,7 +41,7 @@ export default function Hero() {
           transition={{ delay: 3.4, duration: 0.8 }}
           className="font-heading text-[11px] tracking-[0.4em] uppercase text-gold/70 mb-6"
         >
-          Photography & Visual Storytelling
+          Charlotte Based Photographer
         </motion.p>
 
         <motion.h1

@@ -7,15 +7,22 @@ export default function Footer() {
         </a>
 
         <div className="flex items-center gap-8">
-          {['Instagram', 'TikTok', 'Pinterest', 'LinkedIn'].map((social) => (
-            <a
-              key={social}
-              href="#"
-              className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
-            >
-              {social}
-            </a>
-          ))}
+          <a
+            href="https://instagram.com/shotbyseven777"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
+          >
+            Instagram
+          </a>
+          <a
+            href="https://shotbyseven777.pic-time.com/client"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
+          >
+            Client Gallery
+          </a>
         </div>
 
         <p className="text-cream/20 text-xs">

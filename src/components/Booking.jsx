@@ -9,11 +9,12 @@ import { sendBookingEmail } from '../utils/emailService'
 const CALENDLY_URL = '' // e.g. 'https://calendly.com/shotbyseven'
 
 const packages = [
-  { id: 'portrait', label: 'Portrait Session', duration: 'Hourly $50', price: 'From $150', description: 'Headshots, personal branding, lifestyle' },
+  { id: 'portrait', label: 'Portrait Session', duration: 'Hourly', price: 'From $150', description: 'Headshots, personal branding, lifestyle' },
   { id: 'graduation', label: 'Graduation', duration: 'Cap & gown + creative', price: 'From $250', description: 'Celebrate your milestone in style' },
-  { id: 'studio', label: 'Studio Concepts', duration: 'Creative direction', price: 'From $200', description: 'Editorial, fashion, artistic sessions at NoDa Art House' },
-  { id: 'events', label: 'Events', duration: 'Varies', price: 'Varies', description: 'Weddings, proposals, birthdays, corporate, parties & special occasions' },
-  { id: 'travel', label: 'Travel Work', duration: 'Custom', price: 'Inquiry', description: 'Destination shoots — tell me where and I\'ll reach out' },
+  { id: 'studio', label: 'Studio Concepts', duration: 'Creative direction', price: 'From $200', description: 'Editorial, fashion, maternity, artistic sessions' },
+  { id: 'events', label: 'Events', duration: 'Varies', price: 'Varies', description: 'Weddings, proposals, birthdays, corporate & special occasions' },
+  { id: 'monthly', label: 'Monthly Package', duration: 'Multiple shoots/mo', price: 'Flat Rate', description: 'Consistent content for creators & brands' },
+  { id: 'travel', label: 'Travel Work', duration: 'Custom', price: 'Inquiry', description: 'Destination shoots — tell me where' },
 ]
 
 const contactMethods = ['Email', 'Call', 'Text', 'Instagram DM']
@@ -26,7 +27,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
   const [selectedPackage, setSelectedPackage] = useState(null)
   const [formData, setFormData] = useState({
     name: '', email: '', phone: '', preferredContact: 'Email',
-    eventType: '', date: '', message: ''
+    eventType: '', date: '', message: '', needsStudio: false
   })
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
@@ -63,7 +64,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
     setSubmitted(false)
     setSelectedPackage(null)
     setSendError('')
-    setFormData({ name: '', email: '', phone: '', preferredContact: 'Email', eventType: '', date: '', message: '' })
+    setFormData({ name: '', email: '', phone: '', preferredContact: 'Email', eventType: '', date: '', message: '', needsStudio: false })
     if (onServiceChange) onServiceChange(null)
   }
 
@@ -129,7 +130,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-16"
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-16"
             >
               {packages.map((pkg) => (
                 <motion.button
@@ -166,7 +167,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
                   <div className="bg-gold/5 p-4 flex items-center justify-between">
                     <div>
                       <p className="font-display text-lg font-bold text-cream">{selectedPackage.label}</p>
-                      <p className="text-cream/30 text-xs">{selectedPackage.duration} at NoDa Art House</p>
+                      <p className="text-cream/30 text-xs">{selectedPackage.duration}</p>
                     </div>
                     <span className="font-display text-xl font-bold text-gold">{selectedPackage.price}</span>
                   </div>
@@ -217,6 +218,38 @@ export default function Booking({ preSelectedService, onServiceChange }) {
                         </button>
                       ))}
                     </div>
+                  </div>
+
+                  {/* Studio needed toggle */}
+                  <div>
+                    <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+                      Will you need studio space?
+                    </label>
+                    <div className="flex gap-3 mt-2">
+                      {[{ label: 'Yes, Studio Needed', value: true }, { label: 'No, On Location', value: false }].map((opt) => (
+                        <button
+                          key={String(opt.value)}
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, needsStudio: opt.value }))}
+                          className={`font-heading text-[10px] tracking-[0.1em] uppercase px-4 py-2 border transition-all duration-200 ${
+                            formData.needsStudio === opt.value
+                              ? 'border-gold bg-gold/10 text-gold'
+                              : 'border-cream/10 text-cream/30 hover:border-gold/30 hover:text-cream/50'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    {formData.needsStudio && (
+                      <motion.p
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="text-gold/50 text-xs mt-3 font-heading tracking-wider"
+                      >
+                        Studio sessions are hosted at NoDa Art House — Charlotte, NC. Studio rental is $60/hr and is billed separately from session pricing.
+                      </motion.p>
+                    )}
                   </div>
 
                   {/* Event type subcategory — only for Events package */}
@@ -277,7 +310,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
                   )}
 
                   <p className="text-cream/15 text-xs">
-                    Sessions are held at NoDa Art House, Charlotte NC. Availability will be confirmed within 24 hours.
+                    Availability will be confirmed within 24 hours. Studio sessions at NoDa Art House incur a separate $60/hr rental fee.
                   </p>
                   <motion.button
                     type="submit"
@@ -302,7 +335,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
                 <div className="font-display text-6xl text-gold mb-6">&#10003;</div>
                 <h3 className="font-display text-2xl font-bold text-cream mb-3">Request Sent</h3>
                 <p className="text-cream/40 text-sm mb-8">
-                  I&apos;ll confirm your {selectedPackage?.label} at NoDa Art House within 24 hours.
+                  I&apos;ll confirm your {selectedPackage?.label}{formData.needsStudio ? ' (studio session)' : ''} within 24 hours.
                   Check your email at {formData.email} for details.
                 </p>
                 <button

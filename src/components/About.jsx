@@ -102,13 +102,14 @@ export default function About() {
             className="space-y-4 text-cream/40 text-base leading-relaxed mb-12"
           >
             <p>
-              With over 8 years behind the lens, I specialize in portrait, fashion,
-              and commercial photography that captures the raw, unfiltered beauty of
-              every subject.
+              Charlotte-based photographer specializing in portrait, fashion, and
+              creative studio work. I bring bold concepts to life — whether it's a
+              graduation celebration, a maternity session, or a full editorial shoot.
             </p>
             <p>
-              From aerial perspectives to intimate portraits, every shoot is crafted
-              with intention, artistry, and a deep connection to the moment.
+              Every session is crafted with intention, energy, and a deep connection
+              to the moment. My goal is to make you feel confident in front of the
+              camera and give you images you'll be proud of forever.
             </p>
           </motion.div>
 

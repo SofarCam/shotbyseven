@@ -68,8 +68,9 @@ export default function Contact() {
                 <HiLocationMarker className="text-gold" />
               </div>
               <div>
-                <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Studio</p>
+                <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Studio Location</p>
                 <p className="text-cream font-medium">NoDa Art House — Charlotte, NC</p>
+                <p className="text-cream/20 text-xs">Studio rental $60/hr · Not included in session pricing</p>
               </div>
             </div>
             <a href="https://instagram.com/shotbyseven777" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">

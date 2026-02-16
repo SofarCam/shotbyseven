@@ -1,13 +1,13 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { HiCamera, HiStar, HiFilm, HiGlobe } from 'react-icons/hi'
+import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh } from 'react-icons/hi'
 
 const services = [
   {
     id: 'portrait',
     icon: HiCamera,
     title: 'Portrait Sessions',
-    description: 'Headshots, personal branding, and lifestyle portraits that capture your authentic self. Hourly rate available.',
+    description: 'Headshots, personal branding, and lifestyle portraits that capture your authentic self.',
     price: 'Starting at $150',
   },
   {
@@ -21,7 +21,7 @@ const services = [
     id: 'studio',
     icon: HiFilm,
     title: 'Studio Concepts',
-    description: 'Creative studio sessions at NoDa Art House — editorial, fashion, and artistic concepts brought to life.',
+    description: 'Creative studio sessions — editorial, fashion, maternity, and artistic concepts brought to life.',
     price: 'Starting at $200',
   },
   {
@@ -30,6 +30,13 @@ const services = [
     title: 'Events',
     description: 'Weddings, proposals, birthdays, corporate events, parties & special occasions captured with artistry.',
     price: 'Prices Vary',
+  },
+  {
+    id: 'monthly',
+    icon: HiRefresh,
+    title: 'Monthly Package',
+    description: 'Multiple shoots per month at a flat rate. Perfect for content creators, brands, and artists who need consistent visuals.',
+    price: 'Flat Rate',
   },
 ]
 
@@ -60,7 +67,7 @@ export default function Services({ onServiceSelect }) {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {services.map((service, i) => {
             const Icon = service.icon
             return (
@@ -88,6 +95,22 @@ export default function Services({ onServiceSelect }) {
             )
           })}
         </div>
+
+        {/* Studio fee notice */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.8, duration: 0.8 }}
+          className="mt-10 text-center border border-cream/5 rounded p-4 bg-warm-black/50"
+        >
+          <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">
+            <span className="text-gold">Studio Note</span> — Sessions requiring studio space are hosted at{' '}
+            <a href="https://www.nodaarthouse.org" target="_blank" rel="noopener noreferrer" className="text-gold/60 hover:text-gold underline transition-colors">
+              NoDa Art House
+            </a>{' '}
+            in Charlotte, NC. Studio rental is $60/hr and is not included in session pricing.
+          </p>
+        </motion.div>
       </div>
     </section>
   )
