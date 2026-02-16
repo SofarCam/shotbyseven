@@ -3,7 +3,7 @@ import { useRef, useState, useCallback } from 'react'
 import { HiX, HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { getGalleryImages } from '../imageConfig'
 
-const categories = ['All', 'Portrait', 'Fashion', 'Commercial', 'Aerial']
+const categories = ['All', 'Portrait', 'Fashion', 'Studio', 'Graduation', 'Sports']
 
 function TiltCard({ children, className, onClick }) {
   const ref = useRef(null)

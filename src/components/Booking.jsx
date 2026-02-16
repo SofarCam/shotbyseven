@@ -54,7 +54,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
       await sendBookingEmail(formData, selectedPackage)
       setSubmitted(true)
     } catch (err) {
-      setSendError('Failed to send. Please email shotbyseven@gmail.com directly.')
+      setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
     } finally {
       setSending(false)
     }

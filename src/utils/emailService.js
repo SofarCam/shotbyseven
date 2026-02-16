@@ -18,7 +18,7 @@ export async function sendBookingEmail(formData, packageInfo) {
   }
 
   const templateParams = {
-    to_email: 'shotbyseven@gmail.com',
+    to_email: 'shotbyseven777@gmail.com',
     from_name: formData.name,
     from_email: formData.email,
     phone: formData.phone || 'Not provided',
@@ -40,7 +40,7 @@ export async function sendContactEmail(formData) {
   }
 
   const templateParams = {
-    to_email: 'shotbyseven@gmail.com',
+    to_email: 'shotbyseven777@gmail.com',
     from_name: formData.name,
     from_email: formData.email,
     phone: formData.phone || 'Not provided',

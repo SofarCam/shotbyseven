@@ -15,7 +15,7 @@ const INFO = {
   studio: 'NoDa Art House',
   studioAddress: '3109 Cullman Ave, Charlotte, NC 28206',
   studioUrl: 'https://nodaarthouse.org',
-  email: 'shotbyseven@gmail.com',
+  email: 'shotbyseven777@gmail.com',
   instagram: '@shotbyseven777',
   instagramUrl: 'https://instagram.com/shotbyseven777',
   calendlyUrl: '',

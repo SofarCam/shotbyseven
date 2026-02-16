@@ -27,7 +27,7 @@ export default function Contact() {
       await sendContactEmail(formData)
       setSubmitted(true)
     } catch (err) {
-      setSendError('Failed to send. Please email shotbyseven@gmail.com directly.')
+      setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
     } finally {
       setSending(false)
     }
@@ -60,7 +60,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Email</p>
-                <p className="text-cream font-medium">shotbyseven@gmail.com</p>
+                <p className="text-cream font-medium">shotbyseven777@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
