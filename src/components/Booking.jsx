@@ -1,12 +1,10 @@
 import { motion, useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { HiLocationMarker, HiExternalLink } from 'react-icons/hi'
+import { sendBookingEmail } from '../utils/emailService'
 
 // ============================================
 // SETUP: Replace this with your Calendly URL
-// 1. Go to calendly.com and create a free account
-// 2. Set up your event types (Portrait, Fashion, etc.)
-// 3. Paste your Calendly URL below
 // ============================================
 const CALENDLY_URL = '' // e.g. 'https://calendly.com/shotbyseven'
 
@@ -14,24 +12,59 @@ const packages = [
   { id: 'portrait', label: 'Portrait Session', duration: 'Hourly $50', price: 'From $150', description: 'Headshots, personal branding, lifestyle' },
   { id: 'graduation', label: 'Graduation', duration: 'Cap & gown + creative', price: 'From $250', description: 'Celebrate your milestone in style' },
   { id: 'studio', label: 'Studio Concepts', duration: 'Creative direction', price: 'From $200', description: 'Editorial, fashion, artistic sessions at NoDa Art House' },
-  { id: 'events', label: 'Events', duration: 'Varies', price: 'Varies', description: 'Birthdays, corporate, parties, special occasions' },
+  { id: 'events', label: 'Events', duration: 'Varies', price: 'Varies', description: 'Weddings, proposals, birthdays, corporate, parties & special occasions' },
   { id: 'travel', label: 'Travel Work', duration: 'Custom', price: 'Inquiry', description: 'Destination shoots — tell me where and I\'ll reach out' },
 ]
 
-export default function Booking() {
+const contactMethods = ['Email', 'Call', 'Text', 'Instagram DM']
+
+const eventTypes = ['General Event', 'Wedding', 'Proposal', 'Birthday', 'Corporate']
+
+export default function Booking({ preSelectedService, onServiceChange }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [selectedPackage, setSelectedPackage] = useState(null)
-  const [formData, setFormData] = useState({ name: '', email: '', date: '', message: '' })
+  const [formData, setFormData] = useState({
+    name: '', email: '', phone: '', preferredContact: 'Email',
+    eventType: '', date: '', message: ''
+  })
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState('')
+
+  // Handle pre-selection from Services section
+  useEffect(() => {
+    if (preSelectedService) {
+      const pkg = packages.find(p => p.id === preSelectedService)
+      if (pkg) setSelectedPackage(pkg)
+    }
+  }, [preSelectedService])
 
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setSending(true)
+    setSendError('')
+
+    try {
+      await sendBookingEmail(formData, selectedPackage)
+      setSubmitted(true)
+    } catch (err) {
+      setSendError('Failed to send. Please email shotbyseven@gmail.com directly.')
+    } finally {
+      setSending(false)
+    }
+  }
+
+  const handleReset = () => {
+    setSubmitted(false)
+    setSelectedPackage(null)
+    setSendError('')
+    setFormData({ name: '', email: '', phone: '', preferredContact: 'Email', eventType: '', date: '', message: '' })
+    if (onServiceChange) onServiceChange(null)
   }
 
   return (
@@ -102,7 +135,10 @@ export default function Booking() {
                 <motion.button
                   key={pkg.id}
                   whileHover={{ y: -4 }}
-                  onClick={() => setSelectedPackage(pkg)}
+                  onClick={() => {
+                    setSelectedPackage(pkg)
+                    if (onServiceChange) onServiceChange(pkg.id)
+                  }}
                   className={`text-left p-6 border transition-all duration-300 ${
                     selectedPackage?.id === pkg.id
                       ? 'border-gold bg-gold/5'
@@ -154,6 +190,65 @@ export default function Booking() {
                     />
                   </div>
                   <div>
+                    <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Phone Number</label>
+                    <input
+                      type="tel" name="phone" value={formData.phone} onChange={handleChange} required
+                      className="w-full bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors placeholder-cream/15"
+                      placeholder="(555) 123-4567"
+                    />
+                  </div>
+                  <div>
+                    <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+                      How would you like to be reached?
+                    </label>
+                    <div className="flex flex-wrap gap-3 mt-2">
+                      {contactMethods.map((method) => (
+                        <button
+                          key={method}
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, preferredContact: method }))}
+                          className={`font-heading text-[10px] tracking-[0.1em] uppercase px-4 py-2 border transition-all duration-200 ${
+                            formData.preferredContact === method
+                              ? 'border-gold bg-gold/10 text-gold'
+                              : 'border-cream/10 text-cream/30 hover:border-gold/30 hover:text-cream/50'
+                          }`}
+                        >
+                          {method}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Event type subcategory — only for Events package */}
+                  {selectedPackage?.id === 'events' && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+                        What type of event?
+                      </label>
+                      <div className="flex flex-wrap gap-3 mt-2">
+                        {eventTypes.map((type) => (
+                          <button
+                            key={type}
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, eventType: type }))}
+                            className={`font-heading text-[10px] tracking-[0.1em] uppercase px-4 py-2 border transition-all duration-200 ${
+                              formData.eventType === type
+                                ? 'border-gold bg-gold/10 text-gold'
+                                : 'border-cream/10 text-cream/30 hover:border-gold/30 hover:text-cream/50'
+                            }`}
+                          >
+                            {type}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  <div>
                     <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Preferred Date</label>
                     <input
                       type="date" name="date" value={formData.date} onChange={handleChange} required
@@ -170,16 +265,28 @@ export default function Booking() {
                       placeholder={selectedPackage?.id === 'travel' ? 'Where is the travel shoot? What kind of session are you looking for?' : 'Tell me about your vision...'}
                     />
                   </div>
+
+                  {sendError && (
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="text-red-400/80 text-xs font-heading tracking-wider"
+                    >
+                      {sendError}
+                    </motion.p>
+                  )}
+
                   <p className="text-cream/15 text-xs">
                     Sessions are held at NoDa Art House, Charlotte NC. Availability will be confirmed within 24 hours.
                   </p>
                   <motion.button
                     type="submit"
+                    disabled={sending}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 bg-gold text-ink font-heading text-sm tracking-widest uppercase hover:bg-gold-light transition-colors duration-300"
+                    className="w-full py-4 bg-gold text-ink font-heading text-sm tracking-widest uppercase hover:bg-gold-light transition-colors duration-300 disabled:opacity-50"
                   >
-                    Request Booking
+                    {sending ? 'Sending...' : 'Request Booking'}
                   </motion.button>
                 </form>
               </motion.div>
@@ -199,7 +306,7 @@ export default function Booking() {
                   Check your email at {formData.email} for details.
                 </p>
                 <button
-                  onClick={() => { setSubmitted(false); setSelectedPackage(null); setFormData({ name: '', email: '', date: '', message: '' }) }}
+                  onClick={handleReset}
                   className="font-heading text-xs tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors"
                 >
                   Book Another Session

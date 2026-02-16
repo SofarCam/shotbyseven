@@ -18,13 +18,23 @@ import InstagramFeed from './components/InstagramFeed'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ImageManager from './components/ImageManager'
+import PasswordGate from './components/PasswordGate'
 import ChatBot from './components/ChatBot'
 
 function HomePage() {
   const [introComplete, setIntroComplete] = useState(false)
+  const [selectedService, setSelectedService] = useState(null)
 
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true)
+  }, [])
+
+  const handleServiceSelect = useCallback((serviceId) => {
+    setSelectedService(serviceId)
+    setTimeout(() => {
+      const el = document.getElementById('booking')
+      if (el) el.scrollIntoView({ behavior: 'smooth' })
+    }, 100)
   }, [])
 
   return (
@@ -46,9 +56,9 @@ function HomePage() {
             <SectionDivider />
             <Gallery />
             <Marquee />
-            <Services />
+            <Services onServiceSelect={handleServiceSelect} />
             <SectionDivider />
-            <Booking />
+            <Booking preSelectedService={selectedService} onServiceChange={setSelectedService} />
             <Testimonials />
             <SectionDivider />
             <InstagramFeed />
@@ -64,7 +74,11 @@ function HomePage() {
 
 function ManagePage() {
   const navigate = useNavigate()
-  return <ImageManager onBack={() => navigate('/')} />
+  return (
+    <PasswordGate>
+      <ImageManager onBack={() => navigate('/')} />
+    </PasswordGate>
+  )
 }
 
 function App() {

@@ -23,7 +23,7 @@ const INFO = {
     portrait: { name: 'Portrait Session', price: 'Starting at $150', duration: 'Hourly $50', description: 'Headshots, personal branding, couples, family, lifestyle' },
     graduation: { name: 'Graduation', price: 'Starting at $250', duration: 'Session', description: 'Cap & gown portraits, creative graduation shoots' },
     studio: { name: 'Studio Concepts', price: 'Starting at $200', duration: 'Session', description: 'Editorial, fashion, artistic concepts at NoDa Art House' },
-    events: { name: 'Events', price: 'Prices vary', duration: 'Varies', description: 'Birthdays, corporate, parties, special occasions' },
+    events: { name: 'Events', price: 'Prices vary', duration: 'Varies', description: 'Weddings, proposals, birthdays, corporate events, parties & special occasions' },
     travel: { name: 'Travel Work', price: 'Custom inquiry', duration: 'Custom', description: 'Destination shoots — reach out with your location and vision' },
   },
 }
@@ -59,6 +59,28 @@ function getBotResponse(input) {
     }
   }
 
+  // Wedding-specific
+  if (msg.match(/wedding|bride|groom|ceremony|reception|marry/)) {
+    return {
+      text: `**Wedding Photography** is part of my Events service! 💒\n\nI'd love to capture your special day. Weddings are priced based on coverage hours, location, and deliverables.\n\nHead to the booking section, select **Events**, then choose **Wedding** — and share your date, venue, and vision!`,
+      quickReplies: [
+        { label: 'Book Wedding', value: 'scroll-booking' },
+        { label: 'See My Work', value: 'scroll-gallery' },
+      ],
+    }
+  }
+
+  // Proposal-specific
+  if (msg.match(/proposal|propose|engaged|engagement/)) {
+    return {
+      text: `**Proposal Photography** — Let me capture the moment! 💍\n\nI offer discreet proposal coverage to document your big question. Head to the booking section, select **Events**, then choose **Proposal**.\n\nCustom pricing based on your needs — share your plan, location, and date!`,
+      quickReplies: [
+        { label: 'Book Proposal', value: 'scroll-booking' },
+        { label: 'Other Services', value: 'services' },
+      ],
+    }
+  }
+
   // Specific service queries
   if (msg.match(/portrait|headshot|family|couple|branding/)) {
     const s = INFO.services.portrait
@@ -84,8 +106,8 @@ function getBotResponse(input) {
   if (msg.match(/event|party|birthday|corporate|occasion/)) {
     const s = INFO.services.events
     return {
-      text: `**${s.name}** — ${s.price}\n📋 ${s.description}\n\nReach out with your event details and I'll get you a quote!`,
-      quickReplies: [{ label: 'Book Event', value: 'booking' }, { label: 'Other Services', value: 'services' }],
+      text: `**${s.name}** — ${s.price}\n📋 ${s.description}\n\nI specialize in capturing weddings, proposals, and all types of special events. Reach out with your event details and I'll get you a quote!`,
+      quickReplies: [{ label: 'Book Event', value: 'scroll-booking' }, { label: 'Other Services', value: 'services' }],
     }
   }
   if (msg.match(/travel|destination|out of town|fly|trip/)) {

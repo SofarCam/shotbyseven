@@ -4,34 +4,44 @@ import { HiCamera, HiStar, HiFilm, HiGlobe } from 'react-icons/hi'
 
 const services = [
   {
+    id: 'portrait',
     icon: HiCamera,
     title: 'Portrait Sessions',
     description: 'Headshots, personal branding, and lifestyle portraits that capture your authentic self. Hourly rate available.',
     price: 'Starting at $150',
   },
   {
+    id: 'graduation',
     icon: HiStar,
     title: 'Graduation',
     description: 'Celebrate your milestone with stunning cap & gown portraits and creative graduation shoots.',
     price: 'Starting at $250',
   },
   {
+    id: 'studio',
     icon: HiFilm,
     title: 'Studio Concepts',
     description: 'Creative studio sessions at NoDa Art House — editorial, fashion, and artistic concepts brought to life.',
     price: 'Starting at $200',
   },
   {
+    id: 'events',
     icon: HiGlobe,
     title: 'Events',
-    description: 'Birthdays, corporate events, parties, and special occasions captured with intention and artistry.',
+    description: 'Weddings, proposals, birthdays, corporate events, parties & special occasions captured with artistry.',
     price: 'Prices Vary',
   },
 ]
 
-export default function Services() {
+export default function Services({ onServiceSelect }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  const handleCardClick = (serviceId) => {
+    if (onServiceSelect) {
+      onServiceSelect(serviceId)
+    }
+  }
 
   return (
     <section id="services" className="py-32 bg-warm-black">
@@ -60,14 +70,20 @@ export default function Services() {
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.15 * i, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -6 }}
-                className="group border border-cream/5 p-8 hover:border-gold/30 transition-all duration-500 golden-gradient"
+                onClick={() => handleCardClick(service.id)}
+                className="group border border-cream/5 p-8 hover:border-gold/30 transition-all duration-500 golden-gradient cursor-pointer"
               >
                 <Icon className="text-gold text-2xl mb-6 group-hover:scale-110 transition-transform duration-300" />
                 <h3 className="font-display text-lg font-bold text-cream mb-3">{service.title}</h3>
                 <p className="text-cream/30 text-sm leading-relaxed mb-6">{service.description}</p>
-                <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">
-                  {service.price}
-                </span>
+                <div className="flex items-center justify-between">
+                  <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">
+                    {service.price}
+                  </span>
+                  <span className="font-heading text-[9px] tracking-[0.15em] uppercase text-cream/20 group-hover:text-gold/50 transition-colors">
+                    Book Now →
+                  </span>
+                </div>
               </motion.div>
             )
           })}
