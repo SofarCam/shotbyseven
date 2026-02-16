@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
@@ -16,8 +17,10 @@ import Testimonials from './components/Testimonials'
 import InstagramFeed from './components/InstagramFeed'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
+import ImageManager from './components/ImageManager'
+import ChatBot from './components/ChatBot'
 
-function App() {
+function HomePage() {
   const [introComplete, setIntroComplete] = useState(false)
 
   const handleIntroComplete = useCallback(() => {
@@ -52,9 +55,24 @@ function App() {
             <Contact />
           </main>
           <Footer />
+          <ChatBot />
         </>
       )}
     </>
+  )
+}
+
+function ManagePage() {
+  const navigate = useNavigate()
+  return <ImageManager onBack={() => navigate('/')} />
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/manage" element={<ManagePage />} />
+    </Routes>
   )
 }
 

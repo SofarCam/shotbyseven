@@ -11,10 +11,11 @@ import { HiLocationMarker, HiExternalLink } from 'react-icons/hi'
 const CALENDLY_URL = '' // e.g. 'https://calendly.com/shotbyseven'
 
 const packages = [
-  { id: 'portrait', label: 'Portrait Session', duration: '1 hour', price: '$350', description: 'Headshots, personal branding, lifestyle' },
-  { id: 'fashion', label: 'Fashion & Editorial', duration: '2-3 hours', price: '$800', description: 'Lookbooks, editorial spreads, creative' },
-  { id: 'commercial', label: 'Commercial', duration: 'Half day', price: '$1,200', description: 'Product, brand campaigns, corporate' },
-  { id: 'aerial', label: 'Aerial', duration: '1-2 hours', price: '$500', description: 'Drone perspectives, real estate, events' },
+  { id: 'portrait', label: 'Portrait Session', duration: 'Hourly $50', price: 'From $150', description: 'Headshots, personal branding, lifestyle' },
+  { id: 'graduation', label: 'Graduation', duration: 'Cap & gown + creative', price: 'From $250', description: 'Celebrate your milestone in style' },
+  { id: 'studio', label: 'Studio Concepts', duration: 'Creative direction', price: 'From $200', description: 'Editorial, fashion, artistic sessions at NoDa Art House' },
+  { id: 'events', label: 'Events', duration: 'Varies', price: 'Varies', description: 'Birthdays, corporate, parties, special occasions' },
+  { id: 'travel', label: 'Travel Work', duration: 'Custom', price: 'Inquiry', description: 'Destination shoots — tell me where and I\'ll reach out' },
 ]
 
 export default function Booking() {
@@ -95,7 +96,7 @@ export default function Booking() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.3, duration: 0.8 }}
-              className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16"
+              className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-16"
             >
               {packages.map((pkg) => (
                 <motion.button
@@ -160,11 +161,13 @@ export default function Booking() {
                     />
                   </div>
                   <div>
-                    <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Details</label>
+                    <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+                      {selectedPackage?.id === 'travel' ? 'Travel Inquiry — Where are you looking to shoot?' : 'Details'}
+                    </label>
                     <textarea
-                      name="message" value={formData.message} onChange={handleChange} rows={3}
+                      name="message" value={formData.message} onChange={handleChange} rows={3} required={selectedPackage?.id === 'travel'}
                       className="w-full bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors resize-none placeholder-cream/15"
-                      placeholder="Tell me about your vision..."
+                      placeholder={selectedPackage?.id === 'travel' ? 'Where is the travel shoot? What kind of session are you looking for?' : 'Tell me about your vision...'}
                     />
                   </div>
                   <p className="text-cream/15 text-xs">

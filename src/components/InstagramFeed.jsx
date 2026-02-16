@@ -1,16 +1,9 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-
-const igPhotos = [
-  'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80',
-  'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80',
-  'https://images.unsplash.com/photo-1604514628550-37477afdf4e3?w=400&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80',
-  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&q=80',
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80',
-]
+import { getInstagramImages } from '../imageConfig'
 
 export default function InstagramFeed() {
+  const igPhotos = getInstagramImages()
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-50px' })
 

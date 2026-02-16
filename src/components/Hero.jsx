@@ -1,7 +1,9 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
+import { getHeroImage } from '../imageConfig'
 
 export default function Hero() {
+  const heroImage = getHeroImage()
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -23,7 +25,7 @@ export default function Hero() {
         <div
           className="w-full h-full bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=1920&q=80')`,
+            backgroundImage: `url('${heroImage}')`,
             filter: 'saturate(0.8) contrast(1.1)',
           }}
         />

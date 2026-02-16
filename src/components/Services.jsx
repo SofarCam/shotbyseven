@@ -6,26 +6,26 @@ const services = [
   {
     icon: HiCamera,
     title: 'Portrait Sessions',
-    description: 'Headshots, personal branding, and lifestyle portraits that capture your authentic self.',
-    price: 'From $350',
+    description: 'Headshots, personal branding, and lifestyle portraits that capture your authentic self. Hourly rate available.',
+    price: 'Starting at $150',
   },
   {
     icon: HiStar,
-    title: 'Fashion & Editorial',
-    description: 'High-fashion shoots, lookbooks, and editorial spreads for brands and publications.',
-    price: 'From $800',
+    title: 'Graduation',
+    description: 'Celebrate your milestone with stunning cap & gown portraits and creative graduation shoots.',
+    price: 'Starting at $250',
   },
   {
     icon: HiFilm,
-    title: 'Commercial',
-    description: 'Product photography, brand campaigns, and corporate visual content that converts.',
-    price: 'From $1,200',
+    title: 'Studio Concepts',
+    description: 'Creative studio sessions at NoDa Art House — editorial, fashion, and artistic concepts brought to life.',
+    price: 'Starting at $200',
   },
   {
     icon: HiGlobe,
-    title: 'Aerial Photography',
-    description: 'Stunning drone perspectives for real estate, events, and creative projects.',
-    price: 'From $500',
+    title: 'Events',
+    description: 'Birthdays, corporate events, parties, and special occasions captured with intention and artistry.',
+    price: 'Prices Vary',
   },
 ]
 

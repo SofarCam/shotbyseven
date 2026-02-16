@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
+import { getAboutImage } from '../imageConfig'
 
 const stats = [
   { number: 500, suffix: '+', label: 'Sessions' },
@@ -51,7 +52,7 @@ export default function About() {
             <motion.img
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.6 }}
-              src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=800&q=80"
+              src={getAboutImage()}
               alt="Photographer at work"
               className="w-full h-full object-cover"
             />

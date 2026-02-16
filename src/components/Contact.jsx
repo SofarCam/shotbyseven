@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import { HiMail, HiPhone, HiLocationMarker } from 'react-icons/hi'
+import { HiMail, HiLocationMarker } from 'react-icons/hi'
+import { FaInstagram } from 'react-icons/fa'
 
 export default function Contact() {
   const ref = useRef(null)
@@ -42,16 +43,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Email</p>
-                <p className="text-cream font-medium">hello@shotbyseven.com</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 border border-cream/10 flex items-center justify-center">
-                <HiPhone className="text-gold" />
-              </div>
-              <div>
-                <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Phone</p>
-                <p className="text-cream font-medium">(555) 123-4567</p>
+                <p className="text-cream font-medium">shotbyseven@gmail.com</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -59,10 +51,19 @@ export default function Contact() {
                 <HiLocationMarker className="text-gold" />
               </div>
               <div>
-                <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Location</p>
-                <p className="text-cream font-medium">Available Worldwide</p>
+                <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Studio</p>
+                <p className="text-cream font-medium">NoDa Art House — Charlotte, NC</p>
               </div>
             </div>
+            <a href="https://instagram.com/shotbyseven777" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+              <div className="w-12 h-12 border border-cream/10 group-hover:border-gold/30 flex items-center justify-center transition-colors">
+                <FaInstagram className="text-gold" />
+              </div>
+              <div>
+                <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Instagram</p>
+                <p className="text-cream font-medium group-hover:text-gold transition-colors">@shotbyseven777</p>
+              </div>
+            </a>
           </div>
         </motion.div>
 

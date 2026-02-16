@@ -1,16 +1,9 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
-
-const featured = [
-  { src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&q=80', label: 'Portrait I' },
-  { src: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80', label: 'Fashion I' },
-  { src: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80', label: 'Editorial' },
-  { src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=600&q=80', label: 'Portrait II' },
-  { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80', label: 'Fashion II' },
-  { src: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&q=80', label: 'Aerial' },
-]
+import { getFeaturedImages } from '../imageConfig'
 
 export default function FeaturedStrip() {
+  const featured = getFeaturedImages()
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,

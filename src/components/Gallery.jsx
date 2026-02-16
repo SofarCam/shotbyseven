@@ -1,35 +1,9 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useCallback } from 'react'
 import { HiX, HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import { getGalleryImages } from '../imageConfig'
 
 const categories = ['All', 'Portrait', 'Fashion', 'Commercial', 'Aerial']
-
-// ============================================
-// YOUR PHOTOS: Replace these URLs with your actual images
-// - src: direct URL to your photo (Pic-Time, Google Drive, etc.)
-// - category: 'Portrait' | 'Fashion' | 'Commercial' | 'Aerial'
-// - aspect: 'tall' (3:4) | 'wide' (16:9) | 'square' (1:1)
-// - title: optional label shown on hover
-//
-// To add your photos from Pic-Time:
-// 1. Right-click an image on shotbyseven777.pic-time.com
-// 2. Copy image address
-// 3. Paste as the 'src' value below
-// ============================================
-const images = [
-  { src: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&q=80', category: 'Portrait', aspect: 'tall', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80', category: 'Fashion', aspect: 'wide', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80', category: 'Fashion', aspect: 'tall', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1604514628550-37477afdf4e3?w=800&q=80', category: 'Portrait', aspect: 'square', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80', category: 'Aerial', aspect: 'wide', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&q=80', category: 'Portrait', aspect: 'tall', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80', category: 'Commercial', aspect: 'square', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', category: 'Portrait', aspect: 'tall', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1473186505569-9c61870c11f9?w=800&q=80', category: 'Aerial', aspect: 'wide', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80', category: 'Fashion', aspect: 'tall', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=800&q=80', category: 'Commercial', aspect: 'wide', title: 'Replace with your photo' },
-  { src: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80', category: 'Portrait', aspect: 'square', title: 'Replace with your photo' },
-]
 
 function TiltCard({ children, className, onClick }) {
   const ref = useRef(null)
@@ -63,6 +37,7 @@ function TiltCard({ children, className, onClick }) {
 }
 
 export default function Gallery() {
+  const images = getGalleryImages()
   const [activeCategory, setActiveCategory] = useState('All')
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const ref = useRef(null)
