@@ -7,6 +7,18 @@
 // Go to /manage in your browser to use the visual upload tool.
 // ============================================
 
+// Config version — bump this to clear stale localStorage caches
+const CONFIG_VERSION = '2'
+
+// Auto-clear old caches when version changes
+try {
+  if (localStorage.getItem('shotbyseven_version') !== CONFIG_VERSION) {
+    const keys = Object.keys(localStorage).filter(k => k.startsWith('shotbyseven_'))
+    keys.forEach(k => localStorage.removeItem(k))
+    localStorage.setItem('shotbyseven_version', CONFIG_VERSION)
+  }
+} catch (e) { /* ignore */ }
+
 // Try to load saved images from localStorage, fall back to defaults
 function loadImages(key, defaults) {
   try {

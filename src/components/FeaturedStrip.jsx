@@ -20,7 +20,7 @@ export default function FeaturedStrip() {
     if (isHovered) return
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % featured.length)
-    }, 4000)
+    }, 2500)
     return () => clearInterval(timer)
   }, [featured.length, isHovered])
 
@@ -40,7 +40,7 @@ export default function FeaturedStrip() {
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           className="absolute inset-0"
         >
           <motion.div style={{ y: bgY }} className="absolute inset-0 -top-[10%] -bottom-[10%]">
