@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { getInstagramImages } from '../imageConfig'
+import { GemMarker } from './HiddenGems'
 
 export default function InstagramFeed() {
   const igPhotos = getInstagramImages()
@@ -23,7 +24,7 @@ export default function InstagramFeed() {
         >
           @shotbyseven777
         </a>
-        <p className="font-display text-2xl text-cream/40 mt-2 italic">Follow the journey</p>
+        <p className="font-display text-2xl text-cream/40 mt-2 italic">Follow the journey <GemMarker gemIndex={6} className="inline-block" /></p>
       </motion.div>
 
       <div className="grid grid-cols-3 md:grid-cols-6 gap-1">

@@ -59,7 +59,7 @@ export function GemMarker({ gemIndex, className = '' }) {
         className={`relative z-30 group ${className}`}
         whileHover={{ scale: 1.3 }}
         whileTap={{ scale: 0.9 }}
-        title={found ? 'Gem collected!' : 'Something hidden here...'}
+        title={found ? 'Exhibit piece collected!' : 'Something hidden here...'}
       >
         <motion.span
           animate={found ? {} : {
@@ -120,15 +120,18 @@ export function GemMarker({ gemIndex, className = '' }) {
                   <div className="absolute inset-0 bg-gradient-to-t from-ink via-transparent to-transparent" />
                 </div>
                 <div className="p-6 text-center">
+                  <p className="font-heading text-[9px] tracking-[0.4em] uppercase text-gold/40">
+                    The Hidden Exhibit
+                  </p>
                   <span className="text-gold text-lg">✦</span>
                   <h3 className="font-display text-2xl font-bold text-cream mt-2">
-                    Hidden Gem Found!
+                    &ldquo;{gem.label}&rdquo;
                   </h3>
                   <p className="font-heading text-xs tracking-[0.2em] uppercase text-gold/60 mt-1">
-                    &ldquo;{gem.label}&rdquo;
+                    Piece {getFoundGems().indexOf(gemIndex) + 1} Unlocked
                   </p>
                   <p className="text-cream/30 text-sm mt-3">
-                    {getFoundGems().length} of {gems.length} gems discovered
+                    {getFoundGems().length} of {gems.length} pieces discovered
                   </p>
                   {getFoundGems().length === gems.length && (
                     <motion.p
@@ -209,7 +212,7 @@ export function GemTracker() {
         >
           <span className="text-gold text-sm">✦</span>
           <span className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/50 group-hover:text-cream/70 transition-colors">
-            {foundCount}/{gems.length} Gems
+            Hidden Exhibit — {foundCount}/{gems.length}
           </span>
           <div className="flex gap-0.5 ml-1">
             {gems.map((_, i) => (
@@ -233,8 +236,11 @@ export function GemTracker() {
               className="mt-2 bg-ink/95 border border-gold/10 backdrop-blur-sm overflow-hidden"
             >
               <div className="p-4">
+                <p className="font-display text-sm font-bold text-cream/70 mb-1">
+                  The Hidden Exhibit
+                </p>
                 <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-gold/50 mb-3">
-                  Hidden throughout this site
+                  Seven&apos;s private collection — hidden throughout this site
                 </p>
                 {gems.map((gem, i) => {
                   const isFound = getFoundGems().includes(i)
@@ -301,7 +307,7 @@ export function GemTracker() {
                 All Gems <span className="text-gold italic">Found</span>
               </h3>
               <p className="text-cream/40 text-sm mb-6">
-                You discovered all 5 hidden gems scattered across the site.
+                You&apos;ve unlocked every piece of The Hidden Exhibit — Seven&apos;s private collection.
                 Join the inner circle for exclusive behind-the-scenes content,
                 early access to bookings, and first looks at new work.
               </p>

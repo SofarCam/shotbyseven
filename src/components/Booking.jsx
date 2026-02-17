@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import { HiLocationMarker, HiExternalLink } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
+import { GemMarker } from './HiddenGems'
 
 // ============================================
 // SETUP: Replace this with your Calendly URL
@@ -81,7 +82,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
             Ready to Create?
           </span>
           <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-cream">
-            Book a <span className="italic text-gold">Session</span>
+            Book a <span className="italic text-gold">Session</span> <GemMarker gemIndex={5} className="inline-block relative -top-3" />
           </h2>
         </motion.div>
 

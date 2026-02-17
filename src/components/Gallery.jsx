@@ -1,10 +1,10 @@
 import { motion, useInView, AnimatePresence } from 'framer-motion'
-import { useRef, useState, useCallback } from 'react'
+import { useRef, useState, useCallback, useMemo, useEffect } from 'react'
 import { HiX, HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { getGalleryImages } from '../imageConfig'
 import { GemMarker } from './HiddenGems'
 
-const categories = ['All', 'Portrait', 'Fashion', 'Studio', 'Graduation', 'Sports', 'B&W', 'Engagement']
+const categories = ['All', 'Studio', 'Fashion', 'Outdoor', 'Swimwear', 'Maternity/Baby', 'Graduation', 'Sports', 'B&W', 'Proposal/Wedding']
 
 function TiltCard({ children, className, onClick }) {
   const ref = useRef(null)
@@ -40,7 +40,7 @@ function TiltCard({ children, className, onClick }) {
 export default function Gallery() {
   const images = getGalleryImages()
   const [activeCategory, setActiveCategory] = useState('All')
-  const [lightboxIndex, setLightboxIndex] = useState(null)
+  const [lightboxShoot, setLightboxShoot] = useState(null)
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-50px' })
 
@@ -48,9 +48,42 @@ export default function Gallery() {
     ? images
     : images.filter((img) => img.category === activeCategory)
 
-  const closeLightbox = () => setLightboxIndex(null)
-  const next = () => setLightboxIndex((prev) => (prev + 1) % filtered.length)
-  const prev = () => setLightboxIndex((prev) => (prev - 1 + filtered.length) % filtered.length)
+  // Group images by shoot — show only first image per shoot as the "cover"
+  const displayImages = useMemo(() => {
+    const seen = new Set()
+    const result = []
+    for (const img of filtered) {
+      const key = img.shoot ? `${img.category}_${img.shoot}` : img.src
+      if (!seen.has(key)) {
+        seen.add(key)
+        const shootImages = img.shoot
+          ? filtered.filter(i => i.shoot === img.shoot && i.category === img.category)
+          : [img]
+        result.push({ ...img, shootImages, shootCount: shootImages.length })
+      }
+    }
+    return result
+  }, [filtered])
+
+  const openLightbox = useCallback((displayImg) => {
+    setLightboxShoot({ images: displayImg.shootImages, index: 0 })
+  }, [])
+
+  const closeLightbox = () => setLightboxShoot(null)
+  const next = () => setLightboxShoot(prev => prev ? { ...prev, index: (prev.index + 1) % prev.images.length } : null)
+  const prevImg = () => setLightboxShoot(prev => prev ? { ...prev, index: (prev.index - 1 + prev.images.length) % prev.images.length } : null)
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!lightboxShoot) return
+    const handleKey = (e) => {
+      if (e.key === 'ArrowRight') next()
+      else if (e.key === 'ArrowLeft') prevImg()
+      else if (e.key === 'Escape') closeLightbox()
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [lightboxShoot])
 
   return (
     <section id="gallery" className="py-32 px-6 lg:px-12 max-w-7xl mx-auto">
@@ -93,7 +126,7 @@ export default function Gallery() {
 
         <motion.div layout className="masonry-grid">
           <AnimatePresence mode="popLayout">
-            {filtered.map((img, i) => (
+            {displayImages.map((img, i) => (
               <motion.div
                 key={img.src}
                 layout
@@ -103,7 +136,7 @@ export default function Gallery() {
                 transition={{ duration: 0.5, delay: i * 0.05 }}
               >
                 <TiltCard
-                  onClick={() => setLightboxIndex(i)}
+                  onClick={() => openLightbox(img)}
                   className="group overflow-hidden cursor-none"
                 >
                   <div className="relative overflow-hidden" data-cursor="viewfinder">
@@ -123,10 +156,23 @@ export default function Gallery() {
                           {img.category}
                         </span>
                         <span className="font-heading text-[8px] tracking-[0.2em] uppercase text-cream/30 mt-1 block">
-                          Click to expand
+                          {img.shootCount > 1 ? `${img.shootCount} photos — View shoot` : 'Click to expand'}
                         </span>
                       </div>
                     </div>
+                    {/* Multi-photo shoot badge */}
+                    {img.shootCount > 1 && (
+                      <div className="absolute top-3 right-3 bg-ink/70 backdrop-blur-sm border border-gold/20 px-2.5 py-1 flex items-center gap-1.5">
+                        <div className="flex -space-x-1">
+                          {[...Array(Math.min(img.shootCount, 3))].map((_, j) => (
+                            <div key={j} className="w-1.5 h-1.5 rounded-full bg-gold/60 border border-ink/50" />
+                          ))}
+                        </div>
+                        <span className="font-heading text-[9px] tracking-wider text-gold/70">
+                          {img.shootCount}
+                        </span>
+                      </div>
+                    )}
                     {/* Shine effect on hover */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-tr from-transparent via-gold/5 to-transparent" />
                   </div>
@@ -137,9 +183,9 @@ export default function Gallery() {
         </motion.div>
       </div>
 
-      {/* Lightbox */}
+      {/* Lightbox with shoot slideshow */}
       <AnimatePresence>
-        {lightboxIndex !== null && (
+        {lightboxShoot && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -150,39 +196,62 @@ export default function Gallery() {
           >
             <button
               onClick={closeLightbox}
-              className="absolute top-6 right-6 text-cream/40 hover:text-gold transition-colors"
+              className="absolute top-6 right-6 text-cream/40 hover:text-gold transition-colors z-10"
             >
               <HiX size={28} />
             </button>
 
-            <button
-              onClick={(e) => { e.stopPropagation(); prev() }}
-              className="absolute left-6 text-cream/30 hover:text-gold transition-colors"
-            >
-              <HiChevronLeft size={36} />
-            </button>
+            {lightboxShoot.images.length > 1 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); prevImg() }}
+                className="absolute left-6 text-cream/30 hover:text-gold transition-colors z-10"
+              >
+                <HiChevronLeft size={36} />
+              </button>
+            )}
 
             <motion.img
-              key={lightboxIndex}
+              key={lightboxShoot.images[lightboxShoot.index]?.src}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              src={filtered[lightboxIndex]?.src}
+              src={lightboxShoot.images[lightboxShoot.index]?.src}
               alt="Gallery preview"
               className="max-h-[85vh] max-w-[85vw] object-contain"
               onClick={(e) => e.stopPropagation()}
             />
 
-            <button
-              onClick={(e) => { e.stopPropagation(); next() }}
-              className="absolute right-6 text-cream/30 hover:text-gold transition-colors"
-            >
-              <HiChevronRight size={36} />
-            </button>
+            {lightboxShoot.images.length > 1 && (
+              <button
+                onClick={(e) => { e.stopPropagation(); next() }}
+                className="absolute right-6 text-cream/30 hover:text-gold transition-colors z-10"
+              >
+                <HiChevronRight size={36} />
+              </button>
+            )}
 
-            <div className="absolute bottom-6 font-heading text-[10px] tracking-[0.3em] text-cream/30">
-              {lightboxIndex + 1} / {filtered.length}
+            <div className="absolute bottom-6 flex flex-col items-center gap-3">
+              {/* Shoot dot indicators */}
+              {lightboxShoot.images.length > 1 && (
+                <div className="flex items-center gap-2">
+                  {lightboxShoot.images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={(e) => { e.stopPropagation(); setLightboxShoot(prev => ({ ...prev, index: i })) }}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        i === lightboxShoot.index ? 'bg-gold scale-125' : 'bg-cream/20 hover:bg-cream/40'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+              <div className="font-heading text-[10px] tracking-[0.3em] text-cream/30">
+                {lightboxShoot.index + 1} / {lightboxShoot.images.length}
+                {lightboxShoot.images.length > 1 && (
+                  <span className="text-gold/40 ml-3">✦ Full Shoot</span>
+                )}
+              </div>
             </div>
           </motion.div>
         )}

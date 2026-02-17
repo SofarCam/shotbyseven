@@ -7,7 +7,7 @@ import {
   getFeaturedImages, getInstagramImages, saveImages
 } from '../imageConfig'
 
-const categories = ['Portrait', 'Fashion', 'Studio', 'Graduation', 'Sports', 'B&W', 'Engagement']
+const categories = ['Studio', 'Fashion', 'Outdoor', 'Swimwear', 'Maternity/Baby', 'Graduation', 'Sports', 'B&W', 'Proposal/Wedding']
 const aspects = ['tall', 'wide', 'square']
 
 function fileToDataURL(file) {
