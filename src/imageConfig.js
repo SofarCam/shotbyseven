@@ -8,7 +8,7 @@
 // ============================================
 
 // Config version — bump this to clear stale localStorage caches
-const CONFIG_VERSION = '2'
+const CONFIG_VERSION = '3'
 
 // Auto-clear old caches when version changes
 try {
@@ -36,7 +36,7 @@ export function saveImages(key, images) {
 export const defaultHeroImage = '/photos/3.jpg'
 
 // ABOUT SECTION PHOTO
-export const defaultAboutImage = '/photos/DM0A7997.JPG'
+export const defaultAboutImage = '/photos/IMG_8110.JPG'
 
 // GALLERY IMAGES — full portfolio showcase
 export const defaultGalleryImages = [
