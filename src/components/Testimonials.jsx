@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import { GemMarker } from './HiddenGems'
 
 const testimonials = [
   {
@@ -56,7 +57,7 @@ export default function Testimonials() {
           transition={{ delay: 0.1, duration: 0.8 }}
           className="font-display text-5xl md:text-6xl font-bold text-cream mb-16"
         >
-          Client <span className="italic text-gold">Stories</span>
+          Client <span className="italic text-gold">Stories</span> <GemMarker gemIndex={3} className="inline-block relative -top-3" />
         </motion.h2>
 
         <div className="relative">

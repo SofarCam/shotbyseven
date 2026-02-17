@@ -20,6 +20,7 @@ import Footer from './components/Footer'
 import ImageManager from './components/ImageManager'
 import PasswordGate from './components/PasswordGate'
 import ChatBot from './components/ChatBot'
+import { GemTracker } from './components/HiddenGems'
 
 function HomePage() {
   const [introComplete, setIntroComplete] = useState(false)
@@ -66,6 +67,7 @@ function HomePage() {
           </main>
           <Footer />
           <ChatBot />
+          <GemTracker />
         </>
       )}
     </>

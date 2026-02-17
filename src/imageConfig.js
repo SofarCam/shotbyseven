@@ -3,7 +3,7 @@
 // ============================================
 // All site images are managed here.
 // Photos live in /public/photos/
-// Categories: Portrait, Fashion, Studio, Graduation, Sports
+// Categories: Portrait, Fashion, Studio, Graduation, Sports, B&W, Engagement
 // Go to /manage in your browser to use the visual upload tool.
 // ============================================
 
@@ -24,7 +24,7 @@ export function saveImages(key, images) {
 export const defaultHeroImage = '/photos/3.jpg'
 
 // ABOUT SECTION PHOTO
-export const defaultAboutImage = '/photos/DM0A1127_websize.JPG'
+export const defaultAboutImage = '/photos/DM0A7997.JPG'
 
 // GALLERY IMAGES — full portfolio showcase
 export const defaultGalleryImages = [
@@ -42,6 +42,8 @@ export const defaultGalleryImages = [
   { src: '/photos/4_websize.JPG', category: 'Portrait', aspect: 'tall', title: '' },
   { src: '/photos/IMG_8570_websize.JPG', category: 'Portrait', aspect: 'tall', title: '' },
   { src: '/photos/IMG_8586_websize.JPG', category: 'Portrait', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A7226.JPG', category: 'Portrait', aspect: 'wide', title: '' },
+  { src: '/photos/IMG_3449.JPG.JPG', category: 'Portrait', aspect: 'wide', title: '' },
 
   // Fashion
   { src: '/photos/DM0A0891_websize.JPG', category: 'Fashion', aspect: 'tall', title: '' },
@@ -53,6 +55,8 @@ export const defaultGalleryImages = [
   { src: '/photos/edit_7_websize.JPG', category: 'Fashion', aspect: 'tall', title: '' },
   { src: '/photos/37_websize.JPG', category: 'Fashion', aspect: 'tall', title: '' },
   { src: '/photos/IMG_5020_websize.JPG', category: 'Fashion', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A1214_websize.JPG', category: 'Fashion', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A1239_websize.JPG', category: 'Fashion', aspect: 'tall', title: '' },
 
   // Studio (creative concepts, birthday, maternity, editorial)
   { src: '/photos/edit_1_websize.JPG', category: 'Studio', aspect: 'wide', title: '' },
@@ -72,6 +76,7 @@ export const defaultGalleryImages = [
   { src: '/photos/edit_2_websize.JPG', category: 'Studio', aspect: 'tall', title: '' },
   { src: '/photos/edit_4_websize.JPG', category: 'Studio', aspect: 'tall', title: '' },
   { src: '/photos/edit_8_websize.JPG', category: 'Studio', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3878.JPG', category: 'Studio', aspect: 'tall', title: '' },
 
   // Graduation
   { src: '/photos/DM0A6636_websize.JPG', category: 'Graduation', aspect: 'tall', title: '' },
@@ -93,6 +98,31 @@ export const defaultGalleryImages = [
   { src: '/photos/IMG_4475_websize.JPG', category: 'Sports', aspect: 'tall', title: '' },
   { src: '/photos/IMG_4557_websize.JPG', category: 'Sports', aspect: 'tall', title: '' },
   { src: '/photos/DM0A5634_websize.JPG', category: 'Sports', aspect: 'tall', title: '' },
+
+  // B&W (Black & White)
+  { src: '/photos/DM0A1108.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A2960.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3194.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3332.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3446.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3526.JPG.JPG', category: 'B&W', aspect: 'wide', title: '' },
+  { src: '/photos/FDF17CBA-7D1A-4DA8-BC36-5B64EAA02F7B.JPG', category: 'B&W', aspect: 'tall', title: '' },
+
+  // Engagement
+  { src: '/photos/DM0A2936.JPG', category: 'Engagement', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3082.JPG', category: 'Engagement', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3108.JPG', category: 'Engagement', aspect: 'wide', title: '' },
+]
+
+// HIDDEN GEMS — secret photos scattered around the site
+// These are Cam's personal favorite shots (cars, landscapes, animals)
+// that viewers can discover as easter eggs throughout the site
+export const hiddenGems = [
+  { src: '/photos/DM0A5935.JPG.JPG', label: 'Blue Machine', hint: 'Something fast hides in the shadows...' },
+  { src: '/photos/DM0A6550.JPG.JPG', label: 'Red Heat', hint: 'Italian curves in crimson...' },
+  { src: '/photos/DM0A8311.JPG', label: 'Golden Hour', hint: 'Where the sky meets fire...' },
+  { src: '/photos/DM0A8339.JPG', label: 'Shoreline', hint: 'Salt air and sunset glow...' },
+  { src: '/photos/IMG_6773.JPG', label: 'The Observer', hint: 'Not every subject has two legs...' },
 ]
 
 // FEATURED STRIP IMAGES — slideshow showcase
@@ -102,6 +132,8 @@ export const defaultFeaturedImages = [
   { src: '/photos/edit_1_websize.JPG', label: 'Studio' },
   { src: '/photos/DM0A6636_websize.JPG', label: 'Graduation' },
   { src: '/photos/DM0A6691_websize.JPG', label: 'Sports' },
+  { src: '/photos/DM0A2936.JPG', label: 'Engagement' },
+  { src: '/photos/DM0A1108.JPG', label: 'Black & White' },
   { src: '/photos/3.jpg', label: 'Editorial' },
   { src: '/photos/Kyasia_lighting-107_websize.JPG', label: 'Creative' },
   { src: '/photos/edit_20_websize.JPG', label: 'Concepts' },
@@ -138,4 +170,8 @@ export function getFeaturedImages() {
 
 export function getInstagramImages() {
   return loadImages('instagram', defaultInstagramImages)
+}
+
+export function getHiddenGems() {
+  return hiddenGems
 }

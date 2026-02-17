@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import { getAboutImage } from '../imageConfig'
+import { GemMarker } from './HiddenGems'
 
 const stats = [
   { number: 500, suffix: '+', label: 'Sessions' },
@@ -72,6 +73,10 @@ export default function About() {
           />
           {/* Film strip edge */}
           <div className="absolute -left-3 top-8 bottom-8 w-[2px] bg-gradient-to-b from-transparent via-gold/20 to-transparent" />
+          {/* Hidden gem #0 - tucked in bottom corner of photo */}
+          <div className="absolute bottom-2 left-2">
+            <GemMarker gemIndex={0} />
+          </div>
         </motion.div>
 
         <div>

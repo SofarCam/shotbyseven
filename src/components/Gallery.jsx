@@ -2,8 +2,9 @@ import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { useRef, useState, useCallback } from 'react'
 import { HiX, HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 import { getGalleryImages } from '../imageConfig'
+import { GemMarker } from './HiddenGems'
 
-const categories = ['All', 'Portrait', 'Fashion', 'Studio', 'Graduation', 'Sports']
+const categories = ['All', 'Portrait', 'Fashion', 'Studio', 'Graduation', 'Sports', 'B&W', 'Engagement']
 
 function TiltCard({ children, className, onClick }) {
   const ref = useRef(null)
@@ -63,8 +64,9 @@ export default function Gallery() {
           <span className="font-heading text-xs tracking-[0.3em] uppercase text-gold mb-4 block">
             Portfolio
           </span>
-          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-cream">
+          <h2 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold text-cream inline-flex items-baseline gap-2">
             Selected <span className="italic text-gold glow-text">Work</span>
+            <GemMarker gemIndex={1} className="relative -top-4" />
           </h2>
         </motion.div>
 

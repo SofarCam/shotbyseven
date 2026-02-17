@@ -1,3 +1,5 @@
+import { GemMarker } from './HiddenGems'
+
 export default function Footer() {
   return (
     <footer className="border-t border-cream/5 py-12 px-6 lg:px-12">
@@ -25,9 +27,12 @@ export default function Footer() {
           </a>
         </div>
 
-        <p className="text-cream/20 text-xs">
-          &copy; {new Date().getFullYear()} Shot by Seven
-        </p>
+        <div className="flex items-center gap-2">
+          <p className="text-cream/20 text-xs">
+            &copy; {new Date().getFullYear()} Shot by Seven
+          </p>
+          <GemMarker gemIndex={4} />
+        </div>
       </div>
     </footer>
   )

@@ -1,6 +1,7 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh } from 'react-icons/hi'
+import { GemMarker } from './HiddenGems'
 
 const services = [
   {
@@ -110,6 +111,9 @@ export default function Services({ onServiceSelect }) {
             </a>{' '}
             in Charlotte, NC. Studio rental is $60/hr and is not included in session pricing.
           </p>
+          <div className="mt-2 flex justify-center">
+            <GemMarker gemIndex={2} />
+          </div>
         </motion.div>
       </div>
     </section>
