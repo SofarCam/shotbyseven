@@ -4,7 +4,7 @@ import { getAboutImage } from '../imageConfig'
 import { GemMarker } from './HiddenGems'
 
 const stats = [
-  { number: 500, suffix: '+', label: 'Sessions' },
+  { number: 100, suffix: '+', label: 'Sessions' },
   { number: 8, suffix: '+', label: 'Years' },
   { number: 200, suffix: '+', label: 'Clients' },
 ]
@@ -107,13 +107,14 @@ export default function About() {
             className="space-y-4 text-cream/40 text-base leading-relaxed mb-12"
           >
             <p>
-              Charlotte-based photographer specializing in portrait, fashion, and
-              creative studio work. I bring bold concepts to life — whether it's a
-              graduation celebration, a maternity session, or a full editorial shoot.
+              Cameron, also known as Seven, is a Charlotte-based photographer
+              specializing in portrait, fashion, and creative studio work. He brings
+              bold concepts to life — whether it's a graduation celebration, a
+              maternity session, or a full editorial shoot.
             </p>
             <p>
               Every session is crafted with intention, energy, and a deep connection
-              to the moment. My goal is to make you feel confident in front of the
+              to the moment. His goal is to make you feel confident in front of the
               camera and give you images you'll be proud of forever.
             </p>
           </motion.div>
