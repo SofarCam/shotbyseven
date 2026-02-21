@@ -14,7 +14,7 @@ import Gallery from './components/Gallery'
 import Services from './components/Services'
 import Booking from './components/Booking'
 import Testimonials from './components/Testimonials'
-import InstagramFeed from './components/InstagramFeed'
+// InstagramFeed removed — using static gallery instead
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ImageManager from './components/ImageManager'
@@ -62,7 +62,6 @@ function HomePage() {
             <Booking preSelectedService={selectedService} onServiceChange={setSelectedService} />
             <Testimonials />
             <SectionDivider />
-            <InstagramFeed />
             <Contact />
           </main>
           <Footer />
