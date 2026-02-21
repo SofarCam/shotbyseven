@@ -121,11 +121,11 @@ export const defaultGalleryImages = [
 
   // B&W (Black & White)
   { src: '/photos/DM0A1108.JPG', category: 'B&W', aspect: 'tall', title: '' },
-  { src: '/photos/DM0A2960.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
-  { src: '/photos/DM0A3194.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
-  { src: '/photos/DM0A3332.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
-  { src: '/photos/DM0A3446.JPG.JPG', category: 'B&W', aspect: 'tall', title: '' },
-  { src: '/photos/DM0A3526.JPG.JPG', category: 'B&W', aspect: 'wide', title: '' },
+  { src: '/photos/DM0A2960.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3194.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3332.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3446.JPG', category: 'B&W', aspect: 'tall', title: '' },
+  { src: '/photos/DM0A3526.JPG', category: 'B&W', aspect: 'wide', title: '' },
   { src: '/photos/FDF17CBA-7D1A-4DA8-BC36-5B64EAA02F7B.JPG', category: 'B&W', aspect: 'tall', title: '' },
   { src: '/photos/DM0A12352_0_websize.JPG', category: 'B&W', aspect: 'tall', title: '' },
   { src: '/photos/DM0A1236-2_0_websize.JPG', category: 'B&W', aspect: 'tall', title: '' },
@@ -142,19 +142,21 @@ export const defaultGalleryImages = [
 
   // Proposal/Wedding — Bokeh couple
   { src: '/photos/DM0A8072_websize.JPG', category: 'Proposal/Wedding', aspect: 'tall', title: '', shoot: 'bokeh' },
+  // Uploaded — New Upload 2026-02-20
+  { src: '/photos/uploaded_image_1771637084.jpg', category: 'Studio', aspect: 'tall', title: '', shoot: 'uploaded' },
 ]
 
 // HIDDEN GEMS — secret photos scattered around the site
 // These are Cam's personal favorite shots (cars, landscapes, animals, creative)
 // that viewers can discover as easter eggs throughout the site
 export const hiddenGems = [
-  { src: '/photos/DM0A5935.JPG.JPG', label: 'Blue Machine', hint: 'Something fast hides in the shadows...' },
-  { src: '/photos/DM0A6550.JPG.JPG', label: 'Red Heat', hint: 'Italian curves in crimson...' },
+  { src: '/photos/DM0A5935.JPG', label: 'Blue Machine', hint: 'Something fast hides in the shadows...' },
+  { src: '/photos/DM0A6550.JPG', label: 'Red Heat', hint: 'Italian curves in crimson...' },
   { src: '/photos/DM0A8311.JPG', label: 'Golden Hour', hint: 'Where the sky meets fire...' },
   { src: '/photos/DM0A8339.JPG', label: 'Shoreline', hint: 'Salt air and sunset glow...' },
   { src: '/photos/IMG_6773.JPG', label: 'The Observer', hint: 'Not every subject has two legs...' },
   { src: '/photos/19_websize.JPG', label: 'Rose Floor', hint: 'Beauty laid bare among petals...' },
-  { src: '/photos/IMG_3449.JPG.JPG', label: 'Eight Ball', hint: 'Corner pocket vibes...' },
+  { src: '/photos/IMG_3449.JPG', label: 'Eight Ball', hint: 'Corner pocket vibes...' },
 ]
 
 // FEATURED STRIP IMAGES — slideshow showcase
