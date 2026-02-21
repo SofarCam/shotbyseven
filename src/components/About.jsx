@@ -55,7 +55,7 @@ export default function About() {
               transition={{ duration: 0.6 }}
               src={getAboutImage()}
               alt="Photographer at work"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
             />
           </div>
           {/* Decorative frame elements */}
