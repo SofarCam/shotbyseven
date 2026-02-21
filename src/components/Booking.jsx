@@ -1,11 +1,8 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
 import { HiLocationMarker, HiExternalLink } from 'react-icons/hi'
-import { sendBookingEmail } from '../utils/emailService'
 import { GemMarker } from './HiddenGems'
-
-// Calendly removed — Smart Intake Form + SofarSeven AI coming soon
-// See SHARED-TASKS.md for spec
+import SmartIntakeForm from './SmartIntakeForm'
 
 const packages = [
   { id: 'portrait', label: 'Portrait Session', duration: 'Hourly', price: 'From $150', description: 'Headshots, personal branding, lifestyle' },
@@ -21,7 +18,6 @@ export default function Booking({ preSelectedService, onServiceChange }) {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const [selectedPackage, setSelectedPackage] = useState(null)
 
-  // Handle pre-selection from Services section
   useEffect(() => {
     if (preSelectedService) {
       const pkg = packages.find(p => p.id === preSelectedService)
@@ -67,7 +63,7 @@ export default function Booking({ preSelectedService, onServiceChange }) {
           </a>
         </motion.div>
 
-        {/* Package selection — pick your session type first */}
+        {/* Package selection */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -98,28 +94,20 @@ export default function Booking({ preSelectedService, onServiceChange }) {
           ))}
         </motion.div>
 
-        {/* Calendly embed — appears after a package is selected */}
+        {/* Smart Intake Form — appears after package selection */}
         {selectedPackage && (
           <motion.div
             key={selectedPackage.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="max-w-3xl mx-auto"
           >
             {selectedPackage.id === 'studio' && (
-              <p className="text-center font-heading text-[10px] tracking-[0.25em] uppercase text-gold/60 mb-6">
+              <p className="text-center font-heading text-[10px] tracking-[0.25em] uppercase text-gold/60 mb-8">
                 Studio sessions hosted at NoDa Art House — Charlotte, NC
               </p>
             )}
-            <iframe
-              src={`${CALENDLY_URL}?hide_gdpr_banner=1&background_color=0d0b09&text_color=fdf8f0&primary_color=d4a04a`}
-              width="100%"
-              height="700"
-              frameBorder="0"
-              title={`Book a ${selectedPackage.label}`}
-              className="rounded-none"
-            />
+            <SmartIntakeForm selectedPackage={selectedPackage} />
           </motion.div>
         )}
       </div>
