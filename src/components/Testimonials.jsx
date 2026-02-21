@@ -5,29 +5,29 @@ import { GemMarker } from './HiddenGems'
 
 const testimonials = [
   {
-    text: "My graduation photos came out absolutely stunning. Seven made me feel so comfortable and the creative shots were beyond what I imagined. Everyone keeps asking who my photographer was!",
-    name: 'Alyssa M.',
-    role: 'Graduation Session',
+    text: "Seven captured my graduation better than I ever dreamed. He already had a whole vision before we even started — the cap and gown shots were clean but the creative ones are what I keep coming back to. My whole family wants prints.",
+    name: 'Destiny R.',
+    role: 'Graduation Session — Charlotte, NC',
   },
   {
-    text: "I was nervous about my maternity shoot but Seven made the whole experience so easy and fun. The photos are beautiful — I cried when I saw them. Worth every penny.",
-    name: 'Brianna T.',
-    role: 'Maternity Session',
+    text: "I was so nervous for my maternity shoot. Seven made me feel like myself the entire time — no awkward poses, just natural and beautiful. When I got the gallery back I literally broke down crying. These photos are everything.",
+    name: 'Jasmine T.',
+    role: 'Maternity Session — NoDa Art House',
   },
   {
-    text: "We book Seven every month for content. The consistency, the creativity, the turnaround — everything is top tier. Our brand has never looked better.",
-    name: 'Marcus J.',
-    role: 'Monthly Package Client',
+    text: "I hired Seven for a brand shoot and I swear he understood my vision better than I did. The images were cinematic, on brand, and delivered fast. We went from 0 to a whole aesthetic in one session.",
+    name: 'Marcus L.',
+    role: 'Brand Content — Monthly Package',
   },
   {
-    text: "Seven shot my birthday party and caught every moment perfectly. The candids, the group shots, the energy — he really captures the vibe. Already booked for next year.",
-    name: 'Diamond R.',
-    role: 'Event Photography',
+    text: "Seven shot my proposal at the dome and I'm still speechless. He was invisible the whole time — I didn't even know where he was — but somehow caught every single reaction perfectly. She said yes and we have it all on camera.",
+    name: 'DeShawn & Kayla',
+    role: 'Proposal Photography — Charlotte',
   },
   {
-    text: "The studio session at NoDa Art House was an incredible experience. Seven came with a full creative vision and the final images looked like they belong in a magazine.",
-    name: 'Keyla W.',
-    role: 'Studio Concept Session',
+    text: "Booked Seven for a studio concept shoot and showed up with just a mood board. He ran with it completely. The final images looked like an editorial spread. People thought I hired a whole production team.",
+    name: 'Imani W.',
+    role: 'Studio Concept Session — NoDa Art House',
   },
 ]
 
