@@ -4,10 +4,8 @@ import { HiLocationMarker, HiExternalLink } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
 import { GemMarker } from './HiddenGems'
 
-// ============================================
-// SETUP: Replace this with your Calendly URL
-// ============================================
-const CALENDLY_URL = 'https://calendly.com/shotbyseven777/photoshoot'
+// Calendly removed — Smart Intake Form + SofarSeven AI coming soon
+// See SHARED-TASKS.md for spec
 
 const packages = [
   { id: 'portrait', label: 'Portrait Session', duration: 'Hourly', price: 'From $150', description: 'Headshots, personal branding, lifestyle' },
