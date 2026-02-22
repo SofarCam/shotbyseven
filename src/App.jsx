@@ -13,6 +13,8 @@ import About from './components/About'
 import Gallery from './components/Gallery'
 import Services from './components/Services'
 import Booking from './components/Booking'
+import SmartBooking from './components/SmartBooking'
+import StudioBooking from './components/StudioBooking'
 import Testimonials from './components/Testimonials'
 // InstagramFeed removed — using static gallery instead
 import Contact from './components/Contact'
@@ -59,7 +61,7 @@ function HomePage() {
             <Marquee />
             <Services onServiceSelect={handleServiceSelect} />
             <SectionDivider />
-            <Booking preSelectedService={selectedService} onServiceChange={setSelectedService} />
+            <SmartBooking />
             <Testimonials />
             <SectionDivider />
             <Contact />
