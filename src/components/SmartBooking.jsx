@@ -4,6 +4,20 @@ import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
 
+const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
+
+const logToCRM = async (data) => {
+  if (!CRM_URL) return
+  try {
+    await fetch(CRM_URL, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  } catch (e) {
+    console.warn('CRM log failed (non-blocking):', e)
+  }
+}
+
 const sessionTypes = [
   { id: 'portrait', label: 'Portrait/Headshots', basePrice: 150, minDuration: 1 },
   { id: 'couples', label: 'Couples/Engagement', basePrice: 200, minDuration: 1.5 },
@@ -103,6 +117,21 @@ export default function SmartBooking() {
 
     try {
       await sendBookingEmail(enrichedFormData, packageInfo)
+      // Log to Google Sheets CRM (fire-and-forget, non-blocking)
+      logToCRM({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || '',
+        session_type: packageInfo.label,
+        duration: formData.duration + ' hrs',
+        headcount: formData.headcount,
+        location: charlotteLocations.find(l => l.id === formData.location)?.label || '',
+        dates: datesString,
+        sessions_count: formData.sessionsCount || '0',
+        loyalty_status: hasLoyaltyDiscount ? '50% OFF Applied' : 'None',
+        vision: formData.vision || '',
+        budget: formData.budget || '',
+      })
       setSubmitted(true)
     } catch (err) {
       console.error('Booking email failed:', err)
