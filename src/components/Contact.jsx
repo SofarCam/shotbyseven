@@ -4,6 +4,16 @@ import { HiMail, HiLocationMarker } from 'react-icons/hi'
 import { FaInstagram } from 'react-icons/fa'
 import { sendContactEmail } from '../utils/emailService'
 
+const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
+const logToLeadsCRM = async (data) => {
+  if (!CRM_URL) return
+  try {
+    await fetch(CRM_URL, { method: 'POST', body: JSON.stringify(data) })
+  } catch (e) {
+    console.warn('Lead CRM log failed (non-blocking):', e)
+  }
+}
+
 const contactMethods = ['Email', 'Call', 'Text', 'Instagram DM']
 
 export default function Contact() {
@@ -25,6 +35,15 @@ export default function Contact() {
 
     try {
       await sendContactEmail(formData)
+      logToLeadsCRM({
+        type: 'LEAD',
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || '',
+        instagram: formData.instagramHandle ? `@${formData.instagramHandle}` : '',
+        preferred_contact: formData.preferredContact,
+        message: formData.message,
+      })
       setSubmitted(true)
     } catch (err) {
       setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')

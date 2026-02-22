@@ -48,7 +48,6 @@ export default function SmartBooking() {
     theirDates: ['', '', ''],
     theirTimes: ['afternoon', 'afternoon', 'afternoon'],
     location: '',
-    sessionsCount: '',
     isCreator: false,
     creatorHandle: '',
     creatorPlatform: 'instagram',
@@ -61,6 +60,23 @@ export default function SmartBooking() {
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
+  const [previousBookings, setPreviousBookings] = useState(null) // null = not looked up yet
+  const [lookupLoading, setLookupLoading] = useState(false)
+
+  const checkLoyalty = async (email) => {
+    if (!CRM_URL || !email || !email.includes('@')) return
+    setLookupLoading(true)
+    try {
+      const res = await fetch(`${CRM_URL}?action=lookup&email=${encodeURIComponent(email)}`)
+      const data = await res.json()
+      setPreviousBookings(data.count || 0)
+    } catch (e) {
+      console.warn('Loyalty lookup failed (non-blocking):', e)
+      setPreviousBookings(0)
+    } finally {
+      setLookupLoading(false)
+    }
+  }
 
   const getBasePrice = () => {
     const type = sessionTypes.find(t => t.id === formData.sessionType)
@@ -75,7 +91,8 @@ export default function SmartBooking() {
     return price
   }
 
-  const hasLoyaltyDiscount = parseInt(formData.sessionsCount) >= 3
+  const effectiveCount = previousBookings !== null ? previousBookings : parseInt(formData.sessionsCount) || 0
+  const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
 
@@ -87,8 +104,8 @@ export default function SmartBooking() {
     const selectedType = sessionTypes.find(t => t.id === formData.sessionType)
     const selectedLocation = charlotteLocations.find(l => l.id === formData.location)
     const loyaltyStatus = hasLoyaltyDiscount
-      ? '50% OFF Applied (' + formData.sessionsCount + ' previous sessions) — $' + basePrice + ' → $' + finalPrice
-      : 'None (' + (formData.sessionsCount || '0') + ' sessions so far)'
+      ? '50% OFF Applied (' + effectiveCount + ' previous sessions) — $' + basePrice + ' → $' + finalPrice
+      : 'None (' + effectiveCount + ' sessions so far)'
     const datesString = [
       formData.theirDates[0] ? '1. ' + formData.theirDates[0] + ' (' + formData.theirTimes[0] + ')' : '',
       formData.theirDates[1] ? '2. ' + formData.theirDates[1] + ' (' + formData.theirTimes[1] + ')' : '',
@@ -127,7 +144,7 @@ export default function SmartBooking() {
         headcount: formData.headcount,
         location: charlotteLocations.find(l => l.id === formData.location)?.label || '',
         dates: datesString,
-        sessions_count: formData.sessionsCount || '0',
+        sessions_count: String(effectiveCount),
         loyalty_status: hasLoyaltyDiscount ? '50% OFF Applied' : 'None',
         vision: formData.vision || '',
         budget: formData.budget || '',
@@ -371,32 +388,27 @@ export default function SmartBooking() {
                 </div>
               </div>
 
-              <div>
-                <label className="block font-heading text-xs tracking-[0.2em] uppercase text-gold mb-2">
-                  <HiGift className="inline mr-2" />Previous sessions with Cam?
-                </label>
-                <p className="text-cream/30 text-xs mb-3">Book 3 sessions — get your 4th at 50% off</p>
-                <input
-                  type="number"
-                  min="0"
-                  value={formData.sessionsCount}
-                  onChange={(e) => setFormData(Object.assign({}, formData, { sessionsCount: e.target.value }))}
-                  placeholder="0"
-                  className="w-32 bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
-                />
-                {hasLoyaltyDiscount && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-3 flex items-center gap-2 text-gold"
-                  >
-                    <HiGift className="w-4 h-4" />
-                    <span className="font-heading text-xs tracking-wider">
-                      50% loyalty discount unlocked — ${basePrice} drops to ${finalPrice}!
+              {(previousBookings !== null || lookupLoading) && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-3 py-3 px-4 border border-cream/10 bg-cream/5"
+                >
+                  {lookupLoading ? (
+                    <span className="text-cream/40 text-sm font-heading tracking-wide">Checking your history...</span>
+                  ) : previousBookings === 0 ? (
+                    <span className="text-cream/50 text-sm flex items-center gap-2">
+                      <HiGift className="w-4 h-4 text-gold" /> First time booking — welcome!
                     </span>
-                  </motion.div>
-                )}
-              </div>
+                  ) : (
+                    <span className="text-gold text-sm flex items-center gap-2 font-heading tracking-wide">
+                      <HiGift className="w-4 h-4" />
+                      Welcome back! {previousBookings} session{previousBookings !== 1 ? 's' : ''} with Cam
+                      {hasLoyaltyDiscount && ' — 50% loyalty discount unlocked! 🎉'}
+                    </span>
+                  )}
+                </motion.div>
+              )}
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
@@ -422,6 +434,7 @@ export default function SmartBooking() {
                 <label className="block text-cream/60 text-sm mb-2"><HiMail className="inline mr-1" />Email *</label>
                 <input type="email" value={formData.email}
                   onChange={(e) => setFormData(Object.assign({}, formData, { email: e.target.value }))}
+                  onBlur={(e) => checkLoyalty(e.target.value)}
                   required
                   className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
                   placeholder="you@email.com"
