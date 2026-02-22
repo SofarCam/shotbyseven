@@ -11,7 +11,6 @@ const sessionTypes = [
   { id: 'event', label: 'Event Coverage', basePrice: 400, minDuration: 3 },
   { id: 'fashion', label: 'Fashion/Editorial', basePrice: 350, minDuration: 2 },
   { id: 'sports', label: 'Sports/Action', basePrice: 200, minDuration: 1.5 },
-  { id: 'music', label: 'Music Video', basePrice: 500, minDuration: 4 },
 ]
 
 const charlotteLocations = [
