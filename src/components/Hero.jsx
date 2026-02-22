@@ -77,7 +77,7 @@ export default function Hero() {
             View Work
           </a>
           <a
-            href="#booking"
+            href="#smart-booking"
             className="font-heading text-xs tracking-[0.2em] uppercase px-8 py-4 border border-cream/20 text-cream hover:border-gold/50 hover:text-gold transition-all duration-300"
           >
             Book a Session

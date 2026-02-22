@@ -9,7 +9,7 @@
 // ============================================
 
 // Config version — bump this to clear stale localStorage caches
-const CONFIG_VERSION = '6'
+const CONFIG_VERSION = '7'
 
 // Auto-clear old caches when version changes
 try {
@@ -76,7 +76,7 @@ export const defaultGalleryImages = [
   { src: '/photos/webp/edit_1_websize.webp', category: 'Studio', aspect: 'wide', title: 'Birthday Glam', shoot: 'birthday' },
   { src: '/photos/webp/edit_15_websize.webp', category: 'Studio', aspect: 'tall', title: 'Fur Season', shoot: 'furcoat' },
   { src: '/photos/webp/DM0A3878.webp', category: 'Studio', aspect: 'wide', title: 'After Hours', shoot: 'library' },
-  { src: '/photos/webp/DM0A3837_websize.webp', category: 'Studio', aspect: 'tall', title: 'In Bloom', shoot: 'purpleflowers' },
+  { src: '/photos/webp/DM0A3837_websize.webp', category: 'Studio', aspect: 'tall', title: 'Lavender Dreams', shoot: 'purple' },
 
   // Fashion — Mari blazer/lace shoot
   { src: '/photos/webp/edit_9_websize.webp', category: 'Fashion', aspect: 'tall', title: 'Power Moves', shoot: 'mari' },
