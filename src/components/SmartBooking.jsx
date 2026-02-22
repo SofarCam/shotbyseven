@@ -2,6 +2,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
+import { sendBookingEmail } from '../utils/emailService'
 
 const sessionTypes = [
   { id: 'portrait', label: 'Portrait/Headshots', basePrice: 150, minDuration: 1 },
@@ -44,6 +45,8 @@ export default function SmartBooking() {
     budget: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [sendError, setSendError] = useState('')
 
   const getBasePrice = () => {
     const type = sessionTypes.find(t => t.id === formData.sessionType)
@@ -62,51 +65,51 @@ export default function SmartBooking() {
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setSending(true)
+    setSendError('')
+
     const selectedType = sessionTypes.find(t => t.id === formData.sessionType)
     const selectedLocation = charlotteLocations.find(l => l.id === formData.location)
-    const subject = 'Photo Session Booking: ' + (selectedType ? selectedType.label : 'Session')
-    const loyaltyLine = hasLoyaltyDiscount
-      ? '50% LOYALTY DISCOUNT APPLIED — ' + formData.sessionsCount + ' sessions completed\nOriginal: $' + basePrice + ' -> Discounted: $' + finalPrice
-      : 'Sessions with Cam so far: ' + (formData.sessionsCount || '0') + ' (book 3 for 50% off your 4th)'
-    const priceLine = hasLoyaltyDiscount
-      ? 'DISCOUNTED TOTAL: $' + finalPrice
-      : 'ESTIMATED TOTAL: $' + finalPrice
-    const body = [
-      'Hey Seven,',
-      '',
-      'I want to book a photo session!',
-      '',
-      'SESSION DETAILS:',
-      '- Type: ' + (selectedType ? selectedType.label : 'Not selected'),
-      '- Duration: ' + formData.duration + ' hours',
-      '- Headcount: ' + formData.headcount + (formData.headcount === '1' ? ' person' : ' people'),
-      '- Location: ' + (selectedLocation ? selectedLocation.label : 'Not selected'),
-      '',
-      'WHEN I AM FREE:',
-      '1. ' + (formData.theirDates[0] || 'TBD') + ' (' + formData.theirTimes[0] + ')',
-      '2. ' + (formData.theirDates[1] || 'TBD') + ' (' + formData.theirTimes[1] + ')',
-      '3. ' + (formData.theirDates[2] || 'TBD') + ' (' + formData.theirTimes[2] + ')',
-      '',
-      'LOYALTY STATUS:',
-      loyaltyLine,
-      '',
-      priceLine,
-      '',
-      'MY VISION: ' + (formData.vision || 'Open to creative direction'),
-      'BUDGET: ' + (formData.budget || 'Not specified'),
-      '',
-      'MY INFO:',
-      '- Name: ' + formData.name,
-      '- Email: ' + formData.email,
-      '- Phone: ' + (formData.phone || 'Not provided'),
-      '',
-      '--',
-      'Sent via SmartBooking on shotbyseven.com',
-    ].join('\n')
-    window.location.href = 'mailto:shotbyseven777@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body)
+    const loyaltyStatus = hasLoyaltyDiscount
+      ? '50% OFF Applied (' + formData.sessionsCount + ' previous sessions) — $' + basePrice + ' → $' + finalPrice
+      : 'None (' + (formData.sessionsCount || '0') + ' sessions so far)'
+    const datesString = [
+      formData.theirDates[0] ? '1. ' + formData.theirDates[0] + ' (' + formData.theirTimes[0] + ')' : '',
+      formData.theirDates[1] ? '2. ' + formData.theirDates[1] + ' (' + formData.theirTimes[1] + ')' : '',
+      formData.theirDates[2] ? '3. ' + formData.theirDates[2] + ' (' + formData.theirTimes[2] + ')' : '',
+    ].filter(Boolean).join('\n')
+
+    const packageInfo = {
+      label: (selectedType ? selectedType.label : 'Not selected') + ' — ' + formData.duration + 'hrs @ ' + (selectedLocation ? selectedLocation.label : ''),
+      price: '$' + finalPrice + (hasLoyaltyDiscount ? ' (50% loyalty discount applied)' : ''),
+    }
+
+    const enrichedFormData = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone || 'Not provided',
+      preferredContact: 'Email',
+      date: datesString,
+      eventType: formData.headcount + (formData.headcount === '1' ? ' person' : ' people'),
+      message: [
+        'AVAILABILITY:\n' + datesString,
+        'LOYALTY: ' + loyaltyStatus,
+        'VISION: ' + (formData.vision || 'Open to creative direction'),
+        'BUDGET: ' + (formData.budget || 'Not specified'),
+      ].join('\n\n'),
+    }
+
+    try {
+      await sendBookingEmail(enrichedFormData, packageInfo)
+      setSubmitted(true)
+    } catch (err) {
+      console.error('Booking email failed:', err)
+      setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
+    } finally {
+      setSending(false)
+    }
   }
 
   if (submitted) {
@@ -116,7 +119,7 @@ export default function SmartBooking() {
           <HiCheckCircle className="w-20 h-20 text-gold mx-auto mb-8" />
           <h2 className="font-display text-4xl font-bold text-cream mb-4">Request Sent!</h2>
           <p className="text-cream/60 max-w-md mx-auto mb-6">
-            Check your email to send the booking request. I&apos;ll respond within 24 hours.
+            Your booking request has been sent! I&apos;ll respond within 24 hours.
           </p>
           {hasLoyaltyDiscount && (
             <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-4 flex items-center gap-3">
@@ -125,7 +128,7 @@ export default function SmartBooking() {
             </div>
           )}
           <div className="bg-gold/5 border border-gold/20 p-6 max-w-md mx-auto">
-            <p className="text-cream/40 text-sm mb-2">If email did not open:</p>
+            <p className="text-cream/40 text-sm mb-2">Questions? Reach out directly:</p>
             <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold-light transition-colors">
               shotbyseven777@gmail.com
             </a>
@@ -415,14 +418,22 @@ export default function SmartBooking() {
                 />
               </div>
 
+              {sendError && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400/80 text-xs font-heading tracking-wider text-center">
+                  {sendError}
+                </motion.p>
+              )}
+
               <div className="flex gap-4">
                 <button type="button" onClick={() => setStep(2)}
-                  className="flex-1 font-heading text-xs tracking-[0.2em] uppercase text-cream border border-cream/20 px-8 py-4 hover:border-gold transition-colors">
+                  disabled={sending}
+                  className="flex-1 font-heading text-xs tracking-[0.2em] uppercase text-cream border border-cream/20 px-8 py-4 hover:border-gold transition-colors disabled:opacity-50">
                   Back
                 </button>
                 <button type="submit"
-                  className="flex-1 font-heading text-xs tracking-[0.2em] uppercase text-ink bg-gold px-8 py-4 hover:bg-gold-light transition-colors">
-                  Submit Request
+                  disabled={sending}
+                  className="flex-1 font-heading text-xs tracking-[0.2em] uppercase text-ink bg-gold px-8 py-4 hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  {sending ? 'Sending...' : 'Submit Request'}
                 </button>
               </div>
             </motion.div>
