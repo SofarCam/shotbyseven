@@ -45,6 +45,7 @@ export async function sendContactEmail(formData) {
     from_email: formData.email,
     phone: formData.phone || 'Not provided',
     preferred_contact: formData.preferredContact || 'Email',
+    instagram_handle: formData.instagramHandle ? `@${formData.instagramHandle}` : 'N/A',
     message: formData.message,
   }
 

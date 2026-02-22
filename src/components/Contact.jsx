@@ -9,7 +9,7 @@ const contactMethods = ['Email', 'Call', 'Text', 'Instagram DM']
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', preferredContact: 'Email', message: '' })
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', preferredContact: 'Email', instagramHandle: '', message: '' })
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
@@ -102,7 +102,7 @@ export default function Contact() {
                 I&apos;ll get back to you soon. Thanks for reaching out!
               </p>
               <button
-                onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', phone: '', preferredContact: 'Email', message: '' }) }}
+                onClick={() => { setSubmitted(false); setFormData({ name: '', email: '', phone: '', preferredContact: 'Email', instagramHandle: '', message: '' }) }}
                 className="font-heading text-xs tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors"
               >
                 Send Another Message
@@ -155,6 +155,28 @@ export default function Contact() {
                   ))}
                 </div>
               </div>
+              {formData.preferredContact === 'Instagram DM' && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Instagram Handle</label>
+                  <div className="flex items-center">
+                    <span className="text-cream/30 mr-2">@</span>
+                    <input
+                      type="text"
+                      name="instagramHandle"
+                      value={formData.instagramHandle}
+                      onChange={handleChange}
+                      required={formData.preferredContact === 'Instagram DM'}
+                      className="flex-1 bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors duration-300 placeholder-cream/15"
+                      placeholder="yourhandle"
+                    />
+                  </div>
+                </motion.div>
+              )}
               <div>
                 <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Message</label>
                 <textarea
