@@ -5,6 +5,7 @@ import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle,
 import { sendBookingEmail } from '../utils/emailService'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
+const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
 
 const logToCRM = async (data) => {
   if (!CRM_URL) return
@@ -168,20 +169,46 @@ export default function SmartBooking() {
             Your booking request has been sent! I&apos;ll respond within 24 hours.
           </p>
           {hasLoyaltyDiscount && (
-            <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-4 flex items-center gap-3">
+            <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-6 flex items-center gap-3">
               <HiGift className="text-gold w-5 h-5 flex-shrink-0" />
               <p className="text-gold font-heading text-sm tracking-wide">50% loyalty discount has been noted!</p>
             </div>
           )}
-          <div className="bg-gold/5 border border-gold/30 p-5 max-w-md mx-auto mb-4">
-            <p className="text-gold font-heading text-[10px] tracking-[0.25em] uppercase mb-2">Next Step</p>
-            <p className="text-cream/60 text-sm font-body leading-relaxed">
+
+          {/* Step 1: Contract */}
+          <div className="border border-cream/10 bg-cream/3 p-5 max-w-md mx-auto mb-4 text-left">
+            <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-1">Step 1</p>
+            <p className="text-cream font-heading text-xs tracking-wide mb-2">Sign Your Contract</p>
+            <p className="text-cream/50 text-sm font-body leading-relaxed">
               Check your email — I&apos;ll send a contract link to review and sign before your session. No shoot happens without a signed agreement.
             </p>
           </div>
-          <div className="bg-cream/3 border border-cream/10 p-6 max-w-md mx-auto">
+
+          {/* Step 2: Deposit */}
+          <div className="border border-gold/30 bg-gold/5 p-5 max-w-md mx-auto mb-6 text-left">
+            <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/50 mb-1">Step 2</p>
+            <p className="text-gold font-heading text-xs tracking-wide mb-2">Secure Your Date</p>
+            <p className="text-cream/50 text-sm font-body leading-relaxed mb-4">
+              Pay the $100 non-refundable deposit to lock in your session. Your date is not confirmed until the deposit is received.
+              {hasLoyaltyDiscount && ' Your loyalty discount applies to the remaining balance on shoot day.'}
+            </p>
+            {STRIPE_DEPOSIT_URL ? (
+              <a
+                href={STRIPE_DEPOSIT_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-3 bg-gold text-ink font-heading text-xs tracking-[0.2em] uppercase text-center hover:bg-gold/90 transition-colors duration-200"
+              >
+                Pay $100 Deposit →
+              </a>
+            ) : (
+              <p className="text-cream/30 text-xs font-body italic">Deposit link coming soon — Cam will send it via email.</p>
+            )}
+          </div>
+
+          <div className="border border-cream/10 p-5 max-w-md mx-auto">
             <p className="text-cream/40 text-sm mb-2">Questions? Reach out directly:</p>
-            <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold-light transition-colors">
+            <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold/80 transition-colors">
               shotbyseven777@gmail.com
             </a>
           </div>
