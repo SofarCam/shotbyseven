@@ -96,6 +96,7 @@ export default function SmartBooking() {
   const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
+  const depositAmount = Math.max(100, Math.round(finalPrice * 0.2))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -189,8 +190,8 @@ export default function SmartBooking() {
             <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/50 mb-1">Step 2</p>
             <p className="text-gold font-heading text-xs tracking-wide mb-2">Secure Your Date</p>
             <p className="text-cream/50 text-sm font-body leading-relaxed mb-4">
-              Pay the $100 non-refundable deposit to lock in your session. Your date is not confirmed until the deposit is received.
-              {hasLoyaltyDiscount && ' Your loyalty discount applies to the remaining balance on shoot day.'}
+              A non-refundable deposit of <span className="text-cream/80">${depositAmount}</span> is required to lock in your date. Your date is not confirmed until the deposit is received. The remaining balance is due on shoot day.
+              {hasLoyaltyDiscount && ' Your 50% loyalty discount applies to the remaining balance.'}
             </p>
             {STRIPE_DEPOSIT_URL ? (
               <a
@@ -199,7 +200,7 @@ export default function SmartBooking() {
                 rel="noopener noreferrer"
                 className="block w-full py-3 bg-gold text-ink font-heading text-xs tracking-[0.2em] uppercase text-center hover:bg-gold/90 transition-colors duration-200"
               >
-                Pay $100 Deposit →
+                Pay ${depositAmount} Deposit →
               </a>
             ) : (
               <p className="text-cream/30 text-xs font-body italic">Deposit link coming soon — Cam will send it via email.</p>
