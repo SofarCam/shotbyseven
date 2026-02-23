@@ -6,40 +6,40 @@ import { sendContractEmail, logContractToCRM } from '../utils/emailService'
 
 const CONTRACT_SECTIONS = [
   {
-    title: 'The Session',
-    body: `This agreement is between Cameron Currence (Shot by Seven) and you, the client. The session details — date, time, location, duration, and session type — are whatever we confirmed over email or through the booking form. If anything has changed since you submitted, reach out before we shoot.`,
+    title: 'Parties & Scope of Services',
+    body: `This Photography Services Agreement ("Agreement") is entered into between Cameron Currence, operating as Shot by Seven ("Photographer"), and the undersigned client ("Client"). Photographer agrees to provide professional photography services for the session confirmed via shotbyseven.com, including the date, time, location, duration, and session type as specified in the booking confirmation. Any changes to session details must be communicated and agreed upon in writing prior to the session date.`,
   },
   {
-    title: 'Deposit & Payment',
-    body: `A $100 non-refundable deposit is required to lock in your date. Nothing is confirmed until the deposit is paid. The remaining balance is due in full on the day of the shoot — cash, Venmo, or Zelle. If the deposit isn't received within 48 hours of booking confirmation, I reserve the right to release your date.`,
+    title: 'Deposit & Payment Terms',
+    body: `A non-refundable deposit of $100.00 USD is required to reserve and confirm the session date. No date is held without receipt of the deposit. The remaining session balance is due in full on or before the day of the session, payable via cash, Venmo, or Zelle. Failure to remit the deposit within 48 hours of booking confirmation may result in forfeiture of the reserved date without further notice.`,
   },
   {
-    title: 'Cancellations & Rescheduling',
-    body: `Life happens. You can reschedule with at least 48 hours notice — no questions, no extra charge. Cancel within 24 hours of the shoot and the deposit is forfeited. If I have to cancel due to a real emergency, I'll either reschedule or refund you completely. Weather calls are made together — we can push to studio or find a new date.`,
+    title: 'Cancellation & Rescheduling Policy',
+    body: `Client may reschedule the session at no additional charge with a minimum of 48 hours advance notice. Cancellations made within 24 hours of the scheduled session will result in forfeiture of the deposit. In the event the Photographer must cancel due to illness, emergency, or circumstances beyond reasonable control, Client will be offered the choice of a full rescheduled session at no additional cost or a complete refund of all payments made. Weather-related postponements will be handled collaboratively, with options including a studio alternative or a rescheduled outdoor session.`,
   },
   {
-    title: 'Your Photos',
-    body: `You'll get a sneak peek of 5–10 edited photos within 48–72 hours. Your full gallery drops via PicTime within 7 business days. From there you can download, share, favorite, and order prints directly. Rush delivery is available — just ask upfront. The gallery stays up for 90 days; download what you want before then.`,
+    title: 'Image Delivery',
+    body: `Client will receive a preview gallery of 5–10 professionally edited images within 48–72 hours of the session. The complete edited gallery will be delivered via PicTime within 7 business days. The online gallery will remain accessible for a period of 90 days, during which Client may download, share, favorite, and order prints. Rush delivery may be requested prior to the session and is subject to an additional fee. Photographer is not responsible for images not downloaded before gallery expiration.`,
   },
   {
-    title: 'Copyright & Usage',
-    body: `I own the copyright to every photo I take — that's standard in photography. What you get is a personal use license: post them, print them, use them however you want for non-commercial purposes. I may use select images for my portfolio, website, and social media. If you'd prefer I don't use a specific photo publicly, just let me know before or right after the session and I'll respect that.`,
+    title: 'Copyright & Licensing',
+    body: `Photographer retains full copyright ownership of all photographs produced under this Agreement. Client is granted a non-exclusive, non-transferable personal use license to reproduce, display, and share the delivered images for personal, non-commercial purposes. Client may not sell, license, or use images for commercial purposes without prior written consent from the Photographer. Photographer reserves the right to use any images for portfolio display, website, print publications, and social media marketing unless Client submits a written opt-out request prior to the session.`,
   },
   {
-    title: 'Model Release',
-    body: `By signing this agreement, you're giving me permission to feature your photos in my portfolio and promotional materials (Instagram, website, etc.). This helps me grow the business and show future clients what a real session looks like. If you want to opt out entirely, write it in the notes when booking or email me before the shoot.`,
+    title: 'Model & Portfolio Release',
+    body: `By executing this Agreement, Client grants Photographer permission to display, publish, and distribute session photographs for professional portfolio and promotional purposes, including but not limited to: the Photographer's website, social media accounts, print marketing materials, and third-party photography publications. Client may opt out of this release in full or in part by providing written notice to the Photographer at shotbyseven777@gmail.com no later than 24 hours before the scheduled session.`,
   },
   {
-    title: 'Stuff Outside My Control',
-    body: `I show up ready every time. But I'm not liable for equipment failure mid-shoot, venues that don't cooperate, weather that turns, or anything else genuinely out of my hands. If I genuinely cannot deliver (illness, real emergency), you'll get a full reschedule or refund — no runaround. I'm not that photographer.`,
+    title: 'Limitation of Liability',
+    body: `Photographer shall not be held liable for failure to deliver services due to circumstances beyond reasonable control, including but not limited to: equipment failure or malfunction, severe weather conditions, venue access restrictions, illness, injury, or acts of third parties. In any such event, Photographer's total liability shall be limited to a full refund of amounts paid by Client or a rescheduled session of equal value, at Photographer's discretion. Photographer is not liable for indirect, incidental, or consequential damages of any kind.`,
   },
   {
-    title: 'Respect on Set',
-    body: `I keep things professional and expect the same. If a session becomes unsafe, aggressive, or just stops feeling right, I reserve the right to end it early. That's rare — I've never had to — but it's in here so we're both clear. Otherwise: let's have fun and make something great.`,
+    title: 'Professional Conduct',
+    body: `Both parties agree to conduct themselves in a professional, respectful, and safe manner throughout the session. Photographer reserves the right to terminate a session without refund if Client engages in behavior that is unsafe, harassing, unlawful, or otherwise incompatible with a professional working environment. This provision applies to Client and any guests or subjects present during the session.`,
   },
   {
-    title: 'Governing Law',
-    body: `This agreement is governed by the laws of North Carolina. Any disputes would be handled in Mecklenburg County. Hopefully we never need this section.`,
+    title: 'Entire Agreement & Governing Law',
+    body: `This Agreement constitutes the entire agreement between the parties with respect to its subject matter and supersedes all prior communications, representations, or understandings. This Agreement shall be governed by and construed in accordance with the laws of the State of North Carolina, without regard to conflict of law principles. Any disputes arising under this Agreement shall be subject to the exclusive jurisdiction of the courts of Mecklenburg County, North Carolina.`,
   },
 ]
 
@@ -312,7 +312,7 @@ export default function ContractSign() {
               {agreed && <span className="text-gold text-xs">✓</span>}
             </div>
             <span className="font-body text-sm text-cream/50 leading-relaxed">
-              I've read everything above and I agree. I understand the deposit policy, cancellation terms, and that Cam may use my photos for his portfolio unless I tell him otherwise.
+              I have read, understood, and agree to all terms of this Photography Services Agreement, including the deposit and payment policy, cancellation terms, copyright and licensing provisions, and model release. I acknowledge that my electronic signature below constitutes a legally binding acceptance of this Agreement.
             </span>
           </label>
 
