@@ -4,38 +4,44 @@ import { motion } from 'framer-motion'
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi'
 import { sendContractEmail, logContractToCRM } from '../utils/emailService'
 
-const CONTRACT_TEXT = `PHOTOGRAPHY SERVICES AGREEMENT
-
-This Photography Services Agreement ("Agreement") is entered into between Cameron Currence, operating as Shot by Seven ("Photographer"), and the client identified below ("Client").
-
-1. SERVICES
-Photographer agrees to provide photography services as described in the booking request submitted by Client via shotbyseven.com. Session details (date, location, duration, session type) are as confirmed via email correspondence.
-
-2. PAYMENT & DEPOSIT
-A non-refundable deposit of $100 is required to confirm and hold the session date. The remaining balance is due on the day of the session. Failure to pay deposit within 48 hours of booking confirmation may result in forfeiture of the date.
-
-3. CANCELLATION & RESCHEDULING
-Client may reschedule with at least 48 hours notice at no additional charge. Cancellations within 24 hours of the session forfeit the deposit. Photographer reserves the right to reschedule due to weather, illness, or emergency with no penalty.
-
-4. DELIVERY
-Edited photos will be delivered via PicTime gallery within 7 business days of the session. A sneak peek of 5–10 images will be delivered within 48–72 hours. Rush delivery available for an additional fee.
-
-5. USAGE RIGHTS
-Photographer retains full copyright of all images. Client receives a personal use license for printing and sharing. Photographer may use images for portfolio, website, and social media unless Client opts out in writing before the session.
-
-6. MODEL RELEASE
-Client grants Photographer permission to use photographs for marketing, portfolio display, and promotional purposes. Client may opt out of this release by notifying Photographer in writing prior to the session.
-
-7. LIABILITY WAIVER
-Photographer is not liable for equipment failure, weather conditions, venue restrictions, or any circumstances beyond Photographer's reasonable control. In the event of Photographer inability to perform (illness, emergency), a full refund or rescheduled session will be offered.
-
-8. CONDUCT
-Both parties agree to conduct themselves professionally. Photographer reserves the right to end a session early without refund if Client behavior is unsafe, disrespectful, or violates agreed-upon session parameters.
-
-9. GOVERNING LAW
-This Agreement shall be governed by the laws of the State of North Carolina.
-
-By signing below, Client acknowledges reading, understanding, and agreeing to all terms of this Agreement.`
+const CONTRACT_SECTIONS = [
+  {
+    title: 'The Session',
+    body: `This agreement is between Cameron Currence (Shot by Seven) and you, the client. The session details — date, time, location, duration, and session type — are whatever we confirmed over email or through the booking form. If anything has changed since you submitted, reach out before we shoot.`,
+  },
+  {
+    title: 'Deposit & Payment',
+    body: `A $100 non-refundable deposit is required to lock in your date. Nothing is confirmed until the deposit is paid. The remaining balance is due in full on the day of the shoot — cash, Venmo, or Zelle. If the deposit isn't received within 48 hours of booking confirmation, I reserve the right to release your date.`,
+  },
+  {
+    title: 'Cancellations & Rescheduling',
+    body: `Life happens. You can reschedule with at least 48 hours notice — no questions, no extra charge. Cancel within 24 hours of the shoot and the deposit is forfeited. If I have to cancel due to a real emergency, I'll either reschedule or refund you completely. Weather calls are made together — we can push to studio or find a new date.`,
+  },
+  {
+    title: 'Your Photos',
+    body: `You'll get a sneak peek of 5–10 edited photos within 48–72 hours. Your full gallery drops via PicTime within 7 business days. From there you can download, share, favorite, and order prints directly. Rush delivery is available — just ask upfront. The gallery stays up for 90 days; download what you want before then.`,
+  },
+  {
+    title: 'Copyright & Usage',
+    body: `I own the copyright to every photo I take — that's standard in photography. What you get is a personal use license: post them, print them, use them however you want for non-commercial purposes. I may use select images for my portfolio, website, and social media. If you'd prefer I don't use a specific photo publicly, just let me know before or right after the session and I'll respect that.`,
+  },
+  {
+    title: 'Model Release',
+    body: `By signing this agreement, you're giving me permission to feature your photos in my portfolio and promotional materials (Instagram, website, etc.). This helps me grow the business and show future clients what a real session looks like. If you want to opt out entirely, write it in the notes when booking or email me before the shoot.`,
+  },
+  {
+    title: 'Stuff Outside My Control',
+    body: `I show up ready every time. But I'm not liable for equipment failure mid-shoot, venues that don't cooperate, weather that turns, or anything else genuinely out of my hands. If I genuinely cannot deliver (illness, real emergency), you'll get a full reschedule or refund — no runaround. I'm not that photographer.`,
+  },
+  {
+    title: 'Respect on Set',
+    body: `I keep things professional and expect the same. If a session becomes unsafe, aggressive, or just stops feeling right, I reserve the right to end it early. That's rare — I've never had to — but it's in here so we're both clear. Otherwise: let's have fun and make something great.`,
+  },
+  {
+    title: 'Governing Law',
+    body: `This agreement is governed by the laws of North Carolina. Any disputes would be handled in Mecklenburg County. Hopefully we never need this section.`,
+  },
+]
 
 export default function ContractSign() {
   const { bookingId } = useParams()
@@ -200,16 +206,23 @@ export default function ContractSign() {
           <p className="text-cream/40 font-body text-sm">{today}</p>
         </motion.div>
 
-        {/* Contract Text */}
+        {/* Contract Sections */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="border border-cream/10 bg-cream/3 p-6 mb-8 max-h-72 overflow-y-auto"
+          className="mb-10 space-y-0 border border-cream/10"
         >
-          <pre className="whitespace-pre-wrap font-body text-xs text-cream/40 leading-relaxed">
-            {CONTRACT_TEXT}
-          </pre>
+          {CONTRACT_SECTIONS.map((section, i) => (
+            <div key={i} className="border-b border-cream/10 last:border-b-0 px-6 py-5">
+              <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold mb-2">
+                {String(i + 1).padStart(2, '0')} — {section.title}
+              </p>
+              <p className="font-body text-sm text-cream/50 leading-relaxed">
+                {section.body}
+              </p>
+            </div>
+          ))}
         </motion.div>
 
         {/* Form */}
@@ -299,7 +312,7 @@ export default function ContractSign() {
               {agreed && <span className="text-gold text-xs">✓</span>}
             </div>
             <span className="font-body text-sm text-cream/50 leading-relaxed">
-              I have read and agree to all terms of the Photography Services Agreement, including the model release, liability waiver, and payment policy.
+              I've read everything above and I agree. I understand the deposit policy, cancellation terms, and that Cam may use my photos for his portfolio unless I tell him otherwise.
             </span>
           </label>
 
