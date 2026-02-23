@@ -11,7 +11,7 @@ const CONTRACT_SECTIONS = [
   },
   {
     title: 'Deposit & Payment Terms',
-    body: `A non-refundable deposit (minimum $100.00 USD, exact amount confirmed at booking) is required to reserve and confirm the session date. No date is held without receipt of the deposit. The remaining session balance is due in full on or before the day of the session, payable via cash, Venmo, or Zelle. Failure to remit the deposit within 48 hours of booking confirmation may result in forfeiture of the reserved date without further notice.`,
+    body: `A non-refundable deposit of $100.00 USD is required to reserve and confirm the session date. No date is held without receipt of the deposit. The remaining session balance is due in full on or before the day of the session, payable via cash, Venmo, or Zelle. Studio fees (NoDa Art House: $60/hr) are billed separately and are the Client's responsibility in addition to the session rate. Failure to remit the deposit within 48 hours of booking confirmation may result in forfeiture of the reserved date without further notice.`,
   },
   {
     title: 'Cancellation & Rescheduling Policy',

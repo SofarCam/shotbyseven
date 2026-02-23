@@ -96,7 +96,7 @@ export default function SmartBooking() {
   const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
-  const depositAmount = Math.max(100, Math.round(finalPrice * 0.2))
+  const depositAmount = 100
 
   const handleSubmit = async (e) => {
     e.preventDefault()
