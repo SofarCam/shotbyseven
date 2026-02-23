@@ -173,7 +173,13 @@ export default function SmartBooking() {
               <p className="text-gold font-heading text-sm tracking-wide">50% loyalty discount has been noted!</p>
             </div>
           )}
-          <div className="bg-gold/5 border border-gold/20 p-6 max-w-md mx-auto">
+          <div className="bg-gold/5 border border-gold/30 p-5 max-w-md mx-auto mb-4">
+            <p className="text-gold font-heading text-[10px] tracking-[0.25em] uppercase mb-2">Next Step</p>
+            <p className="text-cream/60 text-sm font-body leading-relaxed">
+              Check your email — I&apos;ll send a contract link to review and sign before your session. No shoot happens without a signed agreement.
+            </p>
+          </div>
+          <div className="bg-cream/3 border border-cream/10 p-6 max-w-md mx-auto">
             <p className="text-cream/40 text-sm mb-2">Questions? Reach out directly:</p>
             <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold-light transition-colors">
               shotbyseven777@gmail.com

@@ -14,11 +14,13 @@ import Gallery from './components/Gallery'
 import Services from './components/Services'
 import SmartBooking from './components/SmartBooking'
 import Testimonials from './components/Testimonials'
+import FAQ from './components/FAQ'
 // InstagramFeed removed — using static gallery instead
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ImageManager from './components/ImageManager'
 import PasswordGate from './components/PasswordGate'
+import ContractSign from './components/ContractSign'
 import ChatBot from './components/ChatBot'
 import { GemTracker } from './components/HiddenGems'
 
@@ -62,6 +64,8 @@ function HomePage() {
             <SmartBooking />
             <Testimonials />
             <SectionDivider />
+            <FAQ />
+            <SectionDivider />
             <Contact />
           </main>
           <Footer />
@@ -90,6 +94,8 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/manage" element={<ManagePage />} />
+      <Route path="/contract/:bookingId" element={<ContractSign />} />
+      <Route path="/contract" element={<ContractSign />} />
     </Routes>
   )
 }
