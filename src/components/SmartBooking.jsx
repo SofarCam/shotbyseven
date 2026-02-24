@@ -24,7 +24,7 @@ const sessionTypes = [
   { id: 'couples', label: 'Couples/Engagement', basePrice: 200, minDuration: 1.5 },
   { id: 'graduation', label: 'Graduation', basePrice: 250, minDuration: 2 },
   { id: 'maternity', label: 'Maternity/Family', basePrice: 300, minDuration: 2 },
-  { id: 'event', label: 'Event Coverage', basePrice: 400, minDuration: 3 },
+  { id: 'event', label: 'Event Coverage', basePrice: 250, minDuration: 3 },
   { id: 'fashion', label: 'Fashion/Editorial', basePrice: 350, minDuration: 2 },
   { id: 'sports', label: 'Sports/Action', basePrice: 200, minDuration: 1.5 },
 ]
