@@ -21,6 +21,7 @@ import Footer from './components/Footer'
 import ImageManager from './components/ImageManager'
 import PasswordGate from './components/PasswordGate'
 import ContractSign from './components/ContractSign'
+import ClientPortal from './components/ClientPortal'
 import ChatBot from './components/ChatBot'
 import { GemTracker } from './components/HiddenGems'
 
@@ -96,6 +97,8 @@ function App() {
       <Route path="/manage" element={<ManagePage />} />
       <Route path="/contract/:bookingId" element={<ContractSign />} />
       <Route path="/contract" element={<ContractSign />} />
+      <Route path="/portal" element={<ClientPortal />} />
+      <Route path="/portal/:bookingId" element={<ClientPortal />} />
     </Routes>
   )
 }

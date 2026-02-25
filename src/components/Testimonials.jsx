@@ -1,7 +1,89 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
+import { HiChevronLeft, HiChevronRight, HiPlay } from 'react-icons/hi'
 import { GemMarker } from './HiddenGems'
+
+const videoTestimonials = [
+  {
+    url: '',
+    thumbnail: '',
+    name: 'Coming Soon',
+    session: 'Portrait',
+    quote: 'Video testimonial slot 1 — add YouTube URL',
+  },
+  {
+    url: '',
+    thumbnail: '',
+    name: 'Coming Soon',
+    session: 'Couples',
+    quote: 'Video testimonial slot 2 — add YouTube URL',
+  },
+  {
+    url: '',
+    thumbnail: '',
+    name: 'Coming Soon',
+    session: 'Event',
+    quote: 'Video testimonial slot 3 — add YouTube URL',
+  },
+]
+
+function VideoCard({ video, index }) {
+  const [playing, setPlaying] = useState(false)
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: '-50px' })
+
+  const getEmbedUrl = (url) => {
+    if (!url) return ''
+    const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/)
+    if (match) return `https://www.youtube.com/embed/${match[1]}?autoplay=1`
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/)
+    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`
+    return url
+  }
+
+  if (!video.url) return null
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: index * 0.1, duration: 0.6 }}
+      className="border border-cream/10 overflow-hidden group"
+    >
+      <div className="relative aspect-video bg-warm-black">
+        {playing ? (
+          <iframe
+            src={getEmbedUrl(video.url)}
+            className="w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <div
+            className="w-full h-full flex items-center justify-center cursor-pointer relative"
+            onClick={() => setPlaying(true)}
+          >
+            {video.thumbnail ? (
+              <img src={video.thumbnail} alt={video.name} className="w-full h-full object-cover absolute inset-0" />
+            ) : (
+              <div className="w-full h-full bg-cream/5 absolute inset-0" />
+            )}
+            <div className="relative z-10 w-14 h-14 rounded-full bg-gold flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <HiPlay className="w-6 h-6 text-ink ml-1" />
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="p-4 bg-warm-black">
+        <p className="text-cream/60 text-sm font-body italic leading-relaxed mb-3">&ldquo;{video.quote}&rdquo;</p>
+        <p className="font-display text-cream text-sm font-bold">{video.name}</p>
+        <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-cream/30 mt-0.5">{video.session}</p>
+      </div>
+    </motion.div>
+  )
+}
+
 
 const testimonials = [
   {
@@ -38,6 +120,8 @@ export default function Testimonials() {
 
   const next = () => setCurrent((prev) => (prev + 1) % testimonials.length)
   const prev = () => setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length)
+
+  const hasVideos = videoTestimonials.some(v => v.url)
 
   return (
     <section className="py-32 bg-warm-black">
@@ -104,6 +188,27 @@ export default function Testimonials() {
             </button>
           </div>
         </div>
+
+        {/* Video Stories — only renders when at least one URL is set */}
+        {hasVideos && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.4, duration: 0.8 }}
+            className="mt-24"
+          >
+            <span className="font-heading text-xs tracking-[0.3em] uppercase text-gold mb-4 block">Video Stories</span>
+            <h3 className="font-display text-3xl md:text-4xl font-bold text-cream mb-12">
+              Hear It From <span className="italic text-gold">Them</span>
+            </h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+              {videoTestimonials.map((video, i) => (
+                <VideoCard key={i} video={video} index={i} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
       </div>
     </section>
   )
