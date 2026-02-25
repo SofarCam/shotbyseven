@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HiCheckCircle, HiClock, HiMail, HiPhone, HiExternalLink, HiDocumentText, HiPhotograph, HiLockClosed } from 'react-icons/hi'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
@@ -48,6 +48,15 @@ function StatusBar({ currentStatus }) {
 function LoginForm({ onLogin, loading, error }) {
   const [email, setEmail] = useState('')
   const [bookingId, setBookingId] = useState('')
+
+  // Auto-fill booking ID from URL: /portal/ABC123 or /portal?id=ABC123
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const idFromQuery = params.get('id')
+    const idFromPath = window.location.pathname.split('/').pop()
+    const id = idFromQuery || (idFromPath && idFromPath !== 'portal' ? idFromPath : '')
+    if (id) setBookingId(id.toUpperCase())
+  }, [])
 
   const handleSubmit = (e) => {
     e.preventDefault()

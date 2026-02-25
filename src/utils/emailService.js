@@ -21,6 +21,7 @@ export async function sendBookingEmail(formData, packageInfo) {
 
   const templateParams = {
     to_email: 'shotbyseven777@gmail.com',
+    reply_to: formData.email,
     from_name: formData.name,
     from_email: formData.email,
     phone: formData.phone || 'Not provided',
@@ -30,6 +31,10 @@ export async function sendBookingEmail(formData, packageInfo) {
     preferred_date: formData.date,
     event_type: formData.eventType || '',
     message: formData.message || 'No additional details',
+    booking_id: formData.bookingId || '',
+    portal_url: formData.portalUrl || '',
+    stripe_url: formData.stripeUrl || 'Payment link coming soon',
+    deposit_amount: formData.depositAmount ? `$${formData.depositAmount}` : '',
   }
 
   return emailjs.send(SERVICE_ID, BOOKING_TEMPLATE, templateParams)

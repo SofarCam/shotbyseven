@@ -59,6 +59,8 @@ export default function SmartBooking() {
     budget: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submittedBookingId, setSubmittedBookingId] = useState('')
+  const [submittedStripeUrl, setSubmittedStripeUrl] = useState('')
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
   const [previousBookings, setPreviousBookings] = useState(null) // null = not looked up yet
@@ -103,6 +105,13 @@ export default function SmartBooking() {
     setSending(true)
     setSendError('')
 
+    // Generate unique 9-char booking ID
+    const bookingId = (Date.now().toString(36) + Math.random().toString(36).substring(2, 6)).toUpperCase().substring(0, 9)
+    const portalUrl = `https://shotbyseven.com/portal/${bookingId}`
+    const stripeUrl = STRIPE_DEPOSIT_URL
+      ? `${STRIPE_DEPOSIT_URL}?client_reference_id=${bookingId}&prefilled_email=${encodeURIComponent(formData.email)}`
+      : null
+
     const selectedType = sessionTypes.find(t => t.id === formData.sessionType)
     const selectedLocation = charlotteLocations.find(l => l.id === formData.location)
     const loyaltyStatus = hasLoyaltyDiscount
@@ -126,7 +135,12 @@ export default function SmartBooking() {
       preferredContact: 'Email',
       date: datesString,
       eventType: formData.headcount + (formData.headcount === '1' ? ' person' : ' people'),
+      bookingId,
+      portalUrl,
+      stripeUrl,
+      depositAmount,
       message: [
+        'BOOKING ID: ' + bookingId,
         'AVAILABILITY:\n' + datesString,
         'LOYALTY: ' + loyaltyStatus,
         'VISION: ' + (formData.vision || 'Open to creative direction'),
@@ -150,7 +164,12 @@ export default function SmartBooking() {
         loyalty_status: hasLoyaltyDiscount ? '50% OFF Applied' : 'None',
         vision: formData.vision || '',
         budget: formData.budget || '',
+        booking_id: bookingId,
+        portal_url: portalUrl,
+        deposit_amount: String(depositAmount),
       })
+      setSubmittedBookingId(bookingId)
+      setSubmittedStripeUrl(stripeUrl)
       setSubmitted(true)
     } catch (err) {
       console.error('Booking email failed:', err)
@@ -169,6 +188,13 @@ export default function SmartBooking() {
           <p className="text-cream/60 max-w-md mx-auto mb-6">
             Your booking request has been sent! I&apos;ll respond within 24 hours.
           </p>
+          {/* Booking ID — save this! */}
+          <div className="mb-6 p-4 border border-gold/30 bg-gold/5 max-w-md mx-auto text-left">
+            <p className="text-cream/50 font-heading text-[10px] tracking-[0.2em] uppercase mb-1">Your Booking ID</p>
+            <p className="text-gold font-mono text-2xl tracking-widest font-bold">{submittedBookingId}</p>
+            <p className="text-cream/30 text-[10px] font-body mt-1">Save this — you&apos;ll need it to check your status at shotbyseven.com/portal</p>
+          </div>
+
           {hasLoyaltyDiscount && (
             <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-6 flex items-center gap-3">
               <HiGift className="text-gold w-5 h-5 flex-shrink-0" />
@@ -193,7 +219,7 @@ export default function SmartBooking() {
               A non-refundable deposit of <span className="text-cream font-bold">${depositAmount}</span> is required to lock in your date. Your date is not confirmed until the deposit is received. The remaining balance of <span className="text-cream/80">${finalPrice - depositAmount}</span> is due on shoot day.
               {hasLoyaltyDiscount && ' Your 50% loyalty discount has already been applied.'}
             </p>
-            {STRIPE_DEPOSIT_URL ? (
+            {submittedStripeUrl ? (
               <>
                 <div className="bg-gold/10 border border-gold/20 px-4 py-2 mb-3 flex items-center gap-2">
                   <span className="text-gold/70 text-[10px] font-heading tracking-[0.15em] uppercase">Enter exactly</span>
@@ -201,7 +227,7 @@ export default function SmartBooking() {
                   <span className="text-gold/70 text-[10px] font-heading tracking-[0.15em] uppercase">at checkout</span>
                 </div>
                 <a
-                  href={STRIPE_DEPOSIT_URL}
+                  href={submittedStripeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-full py-3 bg-gold text-ink font-heading text-xs tracking-[0.2em] uppercase text-center hover:bg-gold/90 transition-colors duration-200"
