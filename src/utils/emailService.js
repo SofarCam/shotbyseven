@@ -35,6 +35,8 @@ export async function sendBookingEmail(formData, packageInfo) {
     portal_url: formData.portalUrl || '',
     stripe_url: formData.stripeUrl || 'Payment link coming soon',
     deposit_amount: formData.depositAmount ? `$${formData.depositAmount}` : '',
+    photo_references: formData.photoReferences || 'None attached',
+    photo_count: String(formData.photoCount || 0),
   }
 
   return emailjs.send(SERVICE_ID, BOOKING_TEMPLATE, templateParams)

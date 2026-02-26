@@ -6,6 +6,8 @@ import { sendBookingEmail } from '../utils/emailService'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
 const logToCRM = async (data) => {
   if (!CRM_URL) return
@@ -65,6 +67,9 @@ export default function SmartBooking() {
   const [sendError, setSendError] = useState('')
   const [previousBookings, setPreviousBookings] = useState(null) // null = not looked up yet
   const [lookupLoading, setLookupLoading] = useState(false)
+  const [uploadedPhotos, setUploadedPhotos] = useState([]) // [{url, thumbnail}]
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
 
   const checkLoyalty = async (email) => {
     if (!CRM_URL || !email || !email.includes('@')) return
@@ -79,6 +84,40 @@ export default function SmartBooking() {
     } finally {
       setLookupLoading(false)
     }
+  }
+
+  const handlePhotoUpload = async (files) => {
+    setUploadError('')
+    const remaining = 3 - uploadedPhotos.length
+    if (remaining <= 0) { setUploadError('Max 3 photos already uploaded.'); return }
+    const toUpload = Array.from(files).slice(0, remaining)
+
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      setUploadError('Photo upload not configured yet — describe your vision in text or email references to shotbyseven777@gmail.com.')
+      return
+    }
+
+    setIsUploading(true)
+    for (const file of toUpload) {
+      if (!file.type.startsWith('image/')) { setUploadError('JPG/PNG only.'); continue }
+      if (file.size > 5 * 1024 * 1024) { setUploadError(`${file.name} is over 5MB — try a smaller file.`); continue }
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: fd })
+        const data = await res.json()
+        if (data.secure_url) {
+          const thumb = data.secure_url.replace('/upload/', '/upload/w_200,h_200,c_fill/')
+          setUploadedPhotos(prev => [...prev, { url: data.secure_url, thumbnail: thumb }])
+        } else {
+          setUploadError('Upload failed — try again.')
+        }
+      } catch {
+        setUploadError('Upload failed — check connection and try again.')
+      }
+    }
+    setIsUploading(false)
   }
 
   const getBasePrice = () => {
@@ -139,13 +178,16 @@ export default function SmartBooking() {
       portalUrl,
       stripeUrl,
       depositAmount,
+      photoReferences: uploadedPhotos.length > 0 ? uploadedPhotos.map(p => p.url).join('\n') : '',
+      photoCount: uploadedPhotos.length,
       message: [
         'BOOKING ID: ' + bookingId,
         'AVAILABILITY:\n' + datesString,
         'LOYALTY: ' + loyaltyStatus,
         'VISION: ' + (formData.vision || 'Open to creative direction'),
         'BUDGET: ' + (formData.budget || 'Not specified'),
-      ].join('\n\n'),
+        uploadedPhotos.length > 0 ? 'PHOTO REFERENCES (' + uploadedPhotos.length + '):\n' + uploadedPhotos.map((p, i) => (i + 1) + '. ' + p.url).join('\n') : '',
+      ].filter(Boolean).join('\n\n'),
     }
 
     try {
@@ -516,6 +558,52 @@ export default function SmartBooking() {
                   className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none resize-none"
                   placeholder="Mood, style, inspiration, references..."
                 />
+              </div>
+
+              {/* Photo Upload */}
+              <div>
+                <label className="block text-cream/60 text-sm mb-3">Inspiration / Reference Photos <span className="text-cream/30">(optional, max 3)</span></label>
+                {CLOUDINARY_CLOUD_NAME ? (
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => { e.preventDefault(); if (!isUploading && uploadedPhotos.length < 3) handlePhotoUpload(e.dataTransfer.files) }}
+                    onClick={() => { if (!isUploading && uploadedPhotos.length < 3) document.getElementById('photo-upload-input').click() }}
+                    className={'border-2 border-dashed p-6 text-center transition-colors ' + (uploadedPhotos.length < 3 && !isUploading ? 'border-cream/20 hover:border-gold/50 cursor-pointer' : 'border-cream/10 cursor-default')}
+                  >
+                    {isUploading ? (
+                      <p className="text-gold/70 text-sm font-heading tracking-wide animate-pulse">Uploading...</p>
+                    ) : uploadedPhotos.length >= 3 ? (
+                      <p className="text-cream/30 text-sm">3 photos uploaded ✓</p>
+                    ) : (
+                      <>
+                        <p className="text-cream/50 text-sm">Drag photos here or <span className="text-gold underline">click to browse</span></p>
+                        <p className="text-cream/25 text-xs mt-1">Max 3 photos · 5MB each · JPG or PNG</p>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div className="border border-cream/10 bg-cream/3 p-4">
+                    <p className="text-cream/40 text-xs font-body">Photo upload coming soon — paste inspo links in your vision above, or email references to <span className="text-gold">shotbyseven777@gmail.com</span></p>
+                  </div>
+                )}
+                <input type="file" id="photo-upload-input" multiple accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { handlePhotoUpload(e.target.files); e.target.value = '' }} />
+                {uploadedPhotos.length > 0 && (
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {uploadedPhotos.map((photo, idx) => (
+                      <div key={idx} className="relative group">
+                        <img src={photo.thumbnail} alt={'Ref ' + (idx + 1)} className="w-20 h-20 object-cover border border-cream/10" />
+                        <button
+                          type="button"
+                          onClick={() => setUploadedPhotos(prev => prev.filter((_, i) => i !== idx))}
+                          className="absolute -top-1 -right-1 w-5 h-5 bg-red-500/80 text-white text-xs flex items-center justify-center hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >×</button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {uploadError && (
+                  <p className="text-red-400/70 text-xs font-body mt-2">{uploadError}</p>
+                )}
               </div>
 
               <div>
