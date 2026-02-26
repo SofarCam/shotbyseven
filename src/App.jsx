@@ -36,7 +36,7 @@ function HomePage() {
   const handleServiceSelect = useCallback((serviceId) => {
     setSelectedService(serviceId)
     setTimeout(() => {
-      const el = document.getElementById('booking')
+      const el = document.getElementById('smart-booking')
       if (el) el.scrollIntoView({ behavior: 'smooth' })
     }, 100)
   }, [])
