@@ -25,6 +25,7 @@ import ContractSign from './components/ContractSign'
 import ClientPortal from './components/ClientPortal'
 import Blog from './components/Blog'
 import BlogPost from './components/BlogPost'
+import StudioPage from './components/StudioPage'
 import ChatBot from './components/ChatBot'
 import { GemTracker } from './components/HiddenGems'
 
@@ -106,6 +107,7 @@ function App() {
       <Route path="/portal/:bookingId" element={<ClientPortal />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:slug" element={<BlogPost />} />
+      <Route path="/studio" element={<StudioPage />} />
     </Routes>
   )
 }

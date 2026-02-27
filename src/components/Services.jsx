@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh } from 'react-icons/hi'
 import { GemMarker } from './HiddenGems'
 
@@ -111,7 +112,13 @@ export default function Services({ onServiceSelect }) {
             </a>{' '}
             in Charlotte, NC. Studio rental is $60/hr and is not included in session pricing.
           </p>
-          <div className="mt-2 flex justify-center">
+          <div className="mt-4 flex items-center justify-center gap-4">
+            <Link
+              to="/studio"
+              className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold/70 hover:text-gold border border-gold/30 hover:border-gold/60 px-5 py-2 transition-all duration-200"
+            >
+              Book Studio A →
+            </Link>
             <GemMarker gemIndex={2} />
           </div>
         </motion.div>
