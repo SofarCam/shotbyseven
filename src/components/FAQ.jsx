@@ -5,7 +5,7 @@ import { HiPlus, HiMinus } from 'react-icons/hi'
 const faqs = [
   {
     q: 'How much do you charge?',
-    a: '$50/hr with a $100 minimum. Pricing varies by session type and duration — use the Smart Booking form to get an exact quote before you commit.',
+    a: 'Sessions start at $150 for portraits, $200 for couples/sports, $250 for graduation/events, $300 for maternity/family, and $350 for fashion/editorial. Extra time is $75/hr beyond the session minimum. Studio rental at NoDa Art House is $60/hr (not included). Use the Pricing Calculator on this page for an instant quote.',
   },
   {
     q: 'How long until I get my photos?',
@@ -34,6 +34,14 @@ const faqs = [
   {
     q: "What's your style?",
     a: 'Bold, warm, and editorial. I love golden hour light, real moments, and shots that feel like a movie still. Check the gallery above to see what that looks like.',
+  },
+  {
+    q: 'How do I book Studio A at NoDa Art House?',
+    a: 'Use the Book Studio form at shotbyseven.com/studio. Seven (my AI assistant) will check availability for your dates and send you the direct NoDa Art House booking link. Studio rental is $60/hr, billed separately from session fees.',
+  },
+  {
+    q: 'Do you offer a loyalty discount?',
+    a: 'Yes — returning clients with 3 or more sessions get 50% off their next booking. The discount is verified automatically when you enter your email at checkout.',
   },
 ]
 

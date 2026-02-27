@@ -3,29 +3,9 @@ import { useRef, useState } from 'react'
 import { HiChevronLeft, HiChevronRight, HiPlay } from 'react-icons/hi'
 import { GemMarker } from './HiddenGems'
 
-const videoTestimonials = [
-  {
-    url: '',
-    thumbnail: '',
-    name: 'Coming Soon',
-    session: 'Portrait',
-    quote: 'Video testimonial slot 1 — add YouTube URL',
-  },
-  {
-    url: '',
-    thumbnail: '',
-    name: 'Coming Soon',
-    session: 'Couples',
-    quote: 'Video testimonial slot 2 — add YouTube URL',
-  },
-  {
-    url: '',
-    thumbnail: '',
-    name: 'Coming Soon',
-    session: 'Event',
-    quote: 'Video testimonial slot 3 — add YouTube URL',
-  },
-]
+// Add YouTube/Vimeo URLs here when available — video section auto-shows when at least one is set
+// Example: { url: 'https://youtu.be/XXXXXXXXXXX', thumbnail: '', name: 'Client Name', session: 'Portrait', quote: 'Their quote here' }
+const videoTestimonials = []
 
 function VideoCard({ video, index }) {
   const [playing, setPlaying] = useState(false)
