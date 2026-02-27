@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import { HiMenuAlt4, HiX } from 'react-icons/hi'
 
 const navLinks = [
@@ -7,6 +8,7 @@ const navLinks = [
   { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
   { label: 'Book', href: '#smart-booking' },
+  { label: 'Journal', href: '/blog', route: true },
   { label: 'Contact', href: '#contact' },
 ]
 
@@ -36,16 +38,27 @@ export default function Navbar() {
           </a>
 
           <div className="hidden md:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="font-heading text-xs font-medium tracking-[0.2em] uppercase text-cream/50 hover:text-gold transition-colors duration-300 relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.route ? (
+                <Link
+                  key={link.label}
+                  to={link.href}
+                  className="font-heading text-xs font-medium tracking-[0.2em] uppercase text-cream/50 hover:text-gold transition-colors duration-300 relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
+                </Link>
+              ) : (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="font-heading text-xs font-medium tracking-[0.2em] uppercase text-cream/50 hover:text-gold transition-colors duration-300 relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full" />
+                </a>
+              )
+            )}
           </div>
 
           <button
@@ -67,19 +80,36 @@ export default function Navbar() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-40 bg-ink flex flex-col items-center justify-center gap-8"
           >
-            {navLinks.map((link, i) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + i * 0.08, duration: 0.5 }}
-                onClick={() => setIsOpen(false)}
-                className="font-display text-4xl text-cream hover:text-gold transition-colors"
-              >
-                {link.label}
-              </motion.a>
-            ))}
+            {navLinks.map((link, i) =>
+              link.route ? (
+                <motion.div
+                  key={link.label}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.08, duration: 0.5 }}
+                >
+                  <Link
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="font-display text-4xl text-cream hover:text-gold transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ) : (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + i * 0.08, duration: 0.5 }}
+                  onClick={() => setIsOpen(false)}
+                  className="font-display text-4xl text-cream hover:text-gold transition-colors"
+                >
+                  {link.label}
+                </motion.a>
+              )
+            )}
           </motion.div>
         )}
       </AnimatePresence>
