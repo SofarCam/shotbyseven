@@ -12,6 +12,7 @@ import SectionDivider from './components/SectionDivider'
 import About from './components/About'
 import Gallery from './components/Gallery'
 import Services from './components/Services'
+import PricingCalculator from './components/PricingCalculator'
 import SmartBooking from './components/SmartBooking'
 import Testimonials from './components/Testimonials'
 import FAQ from './components/FAQ'
@@ -61,6 +62,8 @@ function HomePage() {
             <Gallery />
             <Marquee />
             <Services onServiceSelect={handleServiceSelect} />
+            <SectionDivider />
+            <PricingCalculator onBookNow={handleServiceSelect} />
             <SectionDivider />
             <SmartBooking />
             <Testimonials />
