@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
+import BookingCalendar from './BookingCalendar'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
@@ -416,15 +417,28 @@ export default function SmartBooking() {
           {step === 2 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
               <div className="text-center mb-6">
-                <p className="text-cream/60">When are <strong className="text-cream">YOU</strong> free? Pick up to 3 options.</p>
+                <p className="text-cream/60">Pick an available slot — or scroll to find a time that works for you.</p>
               </div>
 
-              {[0, 1, 2].map((i) => (
-                <div key={i} className="grid sm:grid-cols-2 gap-4 border border-cream/10 p-4">
-                  <div>
-                    <label className="block text-cream/60 text-sm mb-2">
-                      <HiCalendar className="inline mr-1" />Preferred Date {i + 1}{i === 0 ? ' *' : ''}
-                    </label>
+              <BookingCalendar
+                selectedDate={formData.theirDates[0]}
+                selectedTime={formData.theirTimes[0]}
+                onSelect={({ date, time }) => {
+                  const newDates = formData.theirDates.slice()
+                  const newTimes = formData.theirTimes.slice()
+                  newDates[0] = date || ''
+                  newTimes[0] = time || ''
+                  setFormData(Object.assign({}, formData, { theirDates: newDates, theirTimes: newTimes }))
+                }}
+              />
+
+              {/* Fallback manual entry for 2nd/3rd preference */}
+              <div>
+                <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-cream/20 mb-3">
+                  Add backup dates (optional)
+                </p>
+                {[1, 2].map((i) => (
+                  <div key={i} className="grid sm:grid-cols-2 gap-3 mb-3">
                     <input
                       type="date"
                       value={formData.theirDates[i]}
@@ -434,12 +448,8 @@ export default function SmartBooking() {
                         setFormData(Object.assign({}, formData, { theirDates: newDates }))
                       }}
                       min={new Date().toISOString().split('T')[0]}
-                      className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
-                      required={i === 0}
+                      className="w-full bg-transparent border border-cream/10 px-4 py-2 text-cream/50 focus:border-gold outline-none text-sm"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-cream/60 text-sm mb-2">Preferred Time</label>
                     <select
                       value={formData.theirTimes[i]}
                       onChange={(e) => {
@@ -447,15 +457,15 @@ export default function SmartBooking() {
                         newTimes[i] = e.target.value
                         setFormData(Object.assign({}, formData, { theirTimes: newTimes }))
                       }}
-                      className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
+                      className="w-full bg-transparent border border-cream/10 px-4 py-2 text-cream/50 focus:border-gold outline-none text-sm"
                     >
-                      <option value="morning" className="bg-ink">Morning (9am-12pm)</option>
-                      <option value="afternoon" className="bg-ink">Afternoon (12pm-5pm)</option>
-                      <option value="evening" className="bg-ink">Evening (5pm-9pm)</option>
+                      <option value="morning" className="bg-ink">Morning (9am–12pm)</option>
+                      <option value="afternoon" className="bg-ink">Afternoon (12pm–5pm)</option>
+                      <option value="evening" className="bg-ink">Evening (5pm–9pm)</option>
                     </select>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
 
               <div className="flex gap-4">
                 <button type="button" onClick={() => setStep(1)}
