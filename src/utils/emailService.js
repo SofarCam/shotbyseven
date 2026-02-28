@@ -62,21 +62,33 @@ export async function sendContactEmail(formData) {
 }
 
 export async function sendContractEmail({ clientName, clientEmail, bookingId, signedDate, signatureImage }) {
-  if (!PUBLIC_KEY || !SERVICE_ID || !CONTRACT_TEMPLATE) {
-    console.warn('Contract EmailJS template not configured — contract data:', { clientName, clientEmail, bookingId, signedDate })
+  if (!PUBLIC_KEY || !SERVICE_ID || !BOOKING_TEMPLATE) {
+    console.warn('Contract EmailJS not configured — contract data:', { clientName, clientEmail, bookingId, signedDate })
     return { status: 200, text: 'OK (dev mode)' }
   }
 
+  // Routes through booking template — no 3rd template slot needed
   const templateParams = {
     to_email: 'shotbyseven777@gmail.com',
-    client_email: clientEmail,
-    client_name: clientName,
+    reply_to: clientEmail,
+    from_name: clientName,
+    from_email: clientEmail,
+    phone: 'N/A',
+    preferred_contact: 'Email',
+    package_name: '📝 CONTRACT SIGNED',
+    package_price: '',
+    preferred_date: signedDate,
+    event_type: 'Contract',
+    message: `Contract signed for Booking #${bookingId}.\n\nClient: ${clientName}\nEmail: ${clientEmail}\nSigned: ${signedDate}`,
     booking_id: bookingId,
-    signed_date: signedDate,
-    signature_image: signatureImage,
+    portal_url: '',
+    stripe_url: '',
+    deposit_amount: '',
+    photo_references: 'N/A',
+    photo_count: '0',
   }
 
-  return emailjs.send(SERVICE_ID, CONTRACT_TEMPLATE, templateParams)
+  return emailjs.send(SERVICE_ID, BOOKING_TEMPLATE, templateParams)
 }
 
 export function logContractToCRM(data) {
