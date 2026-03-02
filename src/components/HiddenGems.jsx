@@ -215,8 +215,8 @@ export function GemTracker() {
     setShowUnlock(false)
   }
 
-  // Don't show if no gems found yet or already submitted email
-  if (foundCount === 0 && !submitted) return null
+  // Don't show tracker until at least one gem has been found
+  if (foundCount === 0) return null
 
   return (
     <>

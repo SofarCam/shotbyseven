@@ -523,7 +523,7 @@ export default function SmartBooking() {
                         newDates[i] = e.target.value
                         setFormData(Object.assign({}, formData, { theirDates: newDates }))
                       }}
-                      min={new Date().toISOString().split('T')[0]}
+                      min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
                       className="w-full bg-transparent border border-cream/10 px-4 py-2 text-cream/50 focus:border-gold outline-none text-sm"
                     />
                     <select

@@ -119,7 +119,7 @@ export default function BookingCalendar({ onSelect, selectedDate, selectedTime, 
     setViewStart(d)
   }
 
-  const canGoBack = viewStart > new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000)
+  const canGoBack = viewStart > tomorrow
   const canGoForward = viewEnd < maxDate
 
   const handleSelectSlot = (dateStr, time) => {
