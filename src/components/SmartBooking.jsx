@@ -439,7 +439,7 @@ export default function SmartBooking() {
                   >
                     View NoDa's Live Calendar →
                   </a>
-                  <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $65/hr · Open 7 days</p>
+                  <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $60/hr · Open 7 days</p>
                 </motion.div>
               )}
 
