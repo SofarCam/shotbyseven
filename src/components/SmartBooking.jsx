@@ -100,22 +100,23 @@ export default function SmartBooking() {
 
     setIsUploading(true)
     for (const file of toUpload) {
-      if (!file.type.startsWith('image/')) { setUploadError('JPG/PNG only.'); continue }
-      if (file.size > 5 * 1024 * 1024) { setUploadError(`${file.name} is over 5MB — try a smaller file.`); continue }
+      if (!file.type.startsWith('image/')) { setUploadError('JPG/PNG only.'); break }
+      if (file.size > 5 * 1024 * 1024) { setUploadError(`${file.name} is over 5MB — try a smaller file.`); break }
       const fd = new FormData()
       fd.append('file', file)
       fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
       try {
         const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: fd })
+        if (!res.ok) { setUploadError('Upload failed — try again.'); break }
         const data = await res.json()
         if (data.secure_url) {
           const thumb = data.secure_url.replace('/upload/', '/upload/w_200,h_200,c_fill/')
           setUploadedPhotos(prev => [...prev, { url: data.secure_url, thumbnail: thumb }])
         } else {
-          setUploadError('Upload failed — try again.')
+          setUploadError('Upload failed — try again.'); break
         }
       } catch {
-        setUploadError('Upload failed — check connection and try again.')
+        setUploadError('Upload failed — check connection and try again.'); break
       }
     }
     setIsUploading(false)
@@ -134,7 +135,7 @@ export default function SmartBooking() {
     return price
   }
 
-  const effectiveCount = previousBookings !== null ? previousBookings : parseInt(formData.sessionsCount) || 0
+  const effectiveCount = previousBookings !== null ? previousBookings : 0
   const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice

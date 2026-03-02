@@ -2,6 +2,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useCallback } from 'react'
 import { HiX } from 'react-icons/hi'
 import { getHiddenGems } from '../imageConfig'
+import emailjs from '@emailjs/browser'
+
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || ''
+const CONTACT_TEMPLATE = import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE || ''
 
 // Persistent storage for found gems
 function getFoundGems() {
@@ -177,17 +182,33 @@ export function GemTracker() {
     return () => window.removeEventListener('gem-found', handleGemFound)
   }, [gems.length])
 
-  const handleEmailSubmit = (e) => {
+  const handleEmailSubmit = async (e) => {
     e.preventDefault()
     if (!email) return
 
-    // Send to EmailJS or just store locally for now
-    // In production, connect this to your email service
+    // Save locally as backup
     try {
       const subscribers = JSON.parse(localStorage.getItem('shotbyseven_subscribers') || '[]')
       subscribers.push({ email, source: 'hidden_gems', date: new Date().toISOString() })
       localStorage.setItem('shotbyseven_subscribers', JSON.stringify(subscribers))
     } catch { /* ignore */ }
+
+    // Send to Cam via EmailJS
+    if (PUBLIC_KEY && SERVICE_ID && CONTACT_TEMPLATE) {
+      try {
+        await emailjs.send(SERVICE_ID, CONTACT_TEMPLATE, {
+          to_email: 'shotbyseven777@gmail.com',
+          from_name: 'Hidden Exhibit Finder',
+          from_email: email,
+          phone: 'N/A',
+          preferred_contact: 'Email',
+          instagram_handle: 'N/A',
+          message: `🏆 Someone found ALL hidden gems and joined the inner circle!\n\nEmail: ${email}\nDate: ${new Date().toLocaleString()}\nSource: Hidden Exhibit — all gems collected`,
+        }, PUBLIC_KEY)
+      } catch (err) {
+        console.warn('HiddenGems EmailJS send failed (non-blocking):', err)
+      }
+    }
 
     markEmailSubmitted()
     setSubmitted(true)
