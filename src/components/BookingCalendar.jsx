@@ -25,7 +25,11 @@ function formatEndTime(time24) {
 const PAGE_DAYS = 28       // show 4 weeks at a time
 const MAX_DAYS_OUT = 365   // allow booking up to 1 year in advance
 
-export default function BookingCalendar({ onSelect, selectedDate, selectedTime }) {
+// NoDa Art House — open 7 days, 9am–9pm standard hours
+// Standard session start slots (leaving room for session + wrap)
+const NODA_SLOTS = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00']
+
+export default function BookingCalendar({ onSelect, selectedDate, selectedTime, isStudio = false }) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
@@ -54,18 +58,24 @@ export default function BookingCalendar({ onSelect, selectedDate, selectedTime }
     fetchAvailability()
   }, [viewStart])
 
-  const generateMockAvailability = (days) => {
-    const allSlots = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00']
+  const generateAvailability = (days) => {
     const map = {}
     for (const day of days) {
       const dow = day.getDay()
-      if (dow === 0) continue
       const dateStr = day.toISOString().split('T')[0]
-      const seed = parseInt(dateStr.replace(/-/g, ''), 10)
-      const count = dow === 6 ? (seed % 2 === 0 ? 2 : 3) : (seed % 3 === 0 ? 0 : seed % 3 === 1 ? 2 : 3)
-      if (count === 0) { map[dateStr] = []; continue }
-      const picked = allSlots.filter((_, i) => (seed + i) % Math.ceil(allSlots.length / count) === 0).slice(0, count)
-      map[dateStr] = picked.length ? picked : allSlots.slice(0, count)
+      if (isStudio) {
+        // NoDa Art House: open every day 9am–9pm, all standard slots available
+        map[dateStr] = NODA_SLOTS
+      } else {
+        // Generic outdoor/location sessions: Mon–Sat only, estimated slots
+        if (dow === 0) continue
+        const seed = parseInt(dateStr.replace(/-/g, ''), 10)
+        const allSlots = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00']
+        const count = dow === 6 ? (seed % 2 === 0 ? 2 : 3) : (seed % 3 === 0 ? 0 : seed % 3 === 1 ? 2 : 3)
+        if (count === 0) { map[dateStr] = []; continue }
+        const picked = allSlots.filter((_, i) => (seed + i) % Math.ceil(allSlots.length / count) === 0).slice(0, count)
+        map[dateStr] = picked.length ? picked : allSlots.slice(0, count)
+      }
     }
     return map
   }
@@ -84,11 +94,11 @@ export default function BookingCalendar({ onSelect, selectedDate, selectedTime }
         map[day.date] = day.slots
       }
       setAvailability(map)
-      setSource(data.source || '')
+      setSource(data.source || 'live')
     } catch {
-      // No live API — show estimated availability so booking still works
-      setAvailability(generateMockAvailability(viewDays))
-      setSource('mock')
+      // No live API — show NoDa hours or estimated outdoor slots
+      setAvailability(generateAvailability(viewDays))
+      setSource(isStudio ? 'noda' : 'mock')
       setError('')
     } finally {
       setLoading(false)
@@ -125,11 +135,16 @@ export default function BookingCalendar({ onSelect, selectedDate, selectedTime }
         <div className="flex items-center gap-2">
           <HiCalendar className="text-gold w-4 h-4" />
           <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">
-            Live Availability
+            {isStudio ? 'Studio Availability' : 'Live Availability'}
           </span>
           {source === 'live' && (
             <span className="font-heading text-[9px] tracking-[0.1em] uppercase text-green-400/60 border border-green-400/20 px-2 py-0.5">
               Live
+            </span>
+          )}
+          {source === 'noda' && (
+            <span className="font-heading text-[9px] tracking-[0.1em] uppercase text-gold/50 border border-gold/20 px-2 py-0.5">
+              NoDa Hours
             </span>
           )}
           {source === 'mock' && (

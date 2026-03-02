@@ -424,6 +424,7 @@ export default function SmartBooking() {
               <BookingCalendar
                 selectedDate={formData.theirDates[0]}
                 selectedTime={formData.theirTimes[0]}
+                isStudio={formData.location === 'studio'}
                 onSelect={({ date, time }) => {
                   const newDates = formData.theirDates.slice()
                   const newTimes = formData.theirTimes.slice()
