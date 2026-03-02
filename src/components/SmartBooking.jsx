@@ -391,7 +391,11 @@ export default function SmartBooking() {
                         <button
                           key={loc.id}
                           type="button"
-                          onClick={() => setFormData(Object.assign({}, formData, { location: loc.id }))}
+                          onClick={() => {
+                            const newTimes = formData.theirTimes.slice()
+                            newTimes[0] = loc.id === 'studio' ? '' : 'afternoon'
+                            setFormData(Object.assign({}, formData, { location: loc.id, theirTimes: newTimes }))
+                          }}
                           className={'p-4 border text-left transition-all ' + (formData.location === loc.id ? 'border-gold bg-gold/10' : 'border-cream/10 hover:border-gold/30')}
                         >
                           <p className={'font-heading text-[10px] tracking-[0.1em] uppercase ' + (formData.location === loc.id ? 'text-gold' : 'text-cream/50')}>
@@ -418,43 +422,91 @@ export default function SmartBooking() {
           {step === 2 && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
               <div className="text-center mb-6">
-                <p className="text-cream/60">Pick an available slot — or scroll to find a time that works for you.</p>
+                <p className="text-cream/60">
+                  {formData.location === 'studio'
+                    ? 'Check NoDa\'s calendar for open slots, then enter your date and time below.'
+                    : 'Pick an available slot — or scroll to find a time that works for you.'}
+                </p>
               </div>
 
-              {formData.location === 'studio' && (
-                <motion.div
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="border border-gold/30 bg-gold/5 p-5"
-                >
-                  <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/60 mb-2">Studio A — NoDa Art House</p>
-                  <p className="text-cream/50 text-sm leading-relaxed mb-4">
-                    Check NoDa's live calendar for real-time availability, then enter your preferred date and time below.
-                  </p>
-                  <a
-                    href="https://www.nodaarthouse.com/booking-calendar/1hr-all-access-studio-rental"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-heading text-[10px] tracking-[0.2em] uppercase text-ink bg-gold px-5 py-2.5 hover:bg-gold/90 transition-colors"
+              {formData.location === 'studio' ? (
+                <div className="space-y-6">
+                  {/* NoDa banner */}
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border border-gold/30 bg-gold/5 p-5"
                   >
-                    View NoDa's Live Calendar →
-                  </a>
-                  <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $60/hr · Open 7 days</p>
-                </motion.div>
-              )}
+                    <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/60 mb-2">Studio A — NoDa Art House</p>
+                    <p className="text-cream/50 text-sm leading-relaxed mb-4">
+                      Check NoDa's live calendar for real-time availability, then enter your preferred date and time below.
+                    </p>
+                    <a
+                      href="https://www.nodaarthouse.com/booking-calendar/1hr-all-access-studio-rental"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 font-heading text-[10px] tracking-[0.2em] uppercase text-ink bg-gold px-5 py-2.5 hover:bg-gold/90 transition-colors"
+                    >
+                      View NoDa's Live Calendar →
+                    </a>
+                    <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $60/hr · Open 7 days</p>
+                  </motion.div>
 
-              <BookingCalendar
-                selectedDate={formData.theirDates[0]}
-                selectedTime={formData.theirTimes[0]}
-                isStudio={formData.location === 'studio'}
-                onSelect={({ date, time }) => {
-                  const newDates = formData.theirDates.slice()
-                  const newTimes = formData.theirTimes.slice()
-                  newDates[0] = date || ''
-                  newTimes[0] = time || ''
-                  setFormData(Object.assign({}, formData, { theirDates: newDates, theirTimes: newTimes }))
-                }}
-              />
+                  {/* Manual date + time entry for studio */}
+                  <div>
+                    <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-cream/30 mb-3">
+                      Your preferred date &amp; time
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <input
+                        type="date"
+                        value={formData.theirDates[0]}
+                        onChange={(e) => {
+                          const newDates = formData.theirDates.slice()
+                          newDates[0] = e.target.value
+                          setFormData(Object.assign({}, formData, { theirDates: newDates }))
+                        }}
+                        min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
+                        className="w-full bg-transparent border border-cream/10 px-4 py-3 text-cream/70 focus:border-gold outline-none text-sm"
+                      />
+                      <select
+                        value={formData.theirTimes[0]}
+                        onChange={(e) => {
+                          const newTimes = formData.theirTimes.slice()
+                          newTimes[0] = e.target.value
+                          setFormData(Object.assign({}, formData, { theirTimes: newTimes }))
+                        }}
+                        className="w-full bg-ink border border-cream/10 px-4 py-3 text-cream/70 focus:border-gold outline-none text-sm"
+                      >
+                        <option value="" className="bg-ink text-cream/40">Select a time</option>
+                        <option value="09:00" className="bg-ink">9:00am</option>
+                        <option value="10:00" className="bg-ink">10:00am</option>
+                        <option value="11:00" className="bg-ink">11:00am</option>
+                        <option value="12:00" className="bg-ink">12:00pm</option>
+                        <option value="13:00" className="bg-ink">1:00pm</option>
+                        <option value="14:00" className="bg-ink">2:00pm</option>
+                        <option value="15:00" className="bg-ink">3:00pm</option>
+                        <option value="16:00" className="bg-ink">4:00pm</option>
+                        <option value="17:00" className="bg-ink">5:00pm</option>
+                        <option value="18:00" className="bg-ink">6:00pm</option>
+                        <option value="19:00" className="bg-ink">7:00pm</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <BookingCalendar
+                  selectedDate={formData.theirDates[0]}
+                  selectedTime={formData.theirTimes[0]}
+                  onSelect={({ date, time }) => {
+                    const newDates = formData.theirDates.slice()
+                    const newTimes = formData.theirTimes.slice()
+                    newDates[0] = date || ''
+                    newTimes[0] = time || ''
+                    setFormData(Object.assign({}, formData, { theirDates: newDates, theirTimes: newTimes }))
+                  }}
+                />
+              )}
 
               {/* Fallback manual entry for 2nd/3rd preference */}
               <div>
@@ -497,7 +549,7 @@ export default function SmartBooking() {
                   Back
                 </button>
                 <button type="button" onClick={() => setStep(3)}
-                  disabled={!formData.theirDates[0]}
+                  disabled={!formData.theirDates[0] || (formData.location === 'studio' && !formData.theirTimes[0])}
                   className="flex-1 font-heading text-xs tracking-[0.2em] uppercase text-ink bg-gold px-8 py-4 hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                   Next: Contact Info
                 </button>
