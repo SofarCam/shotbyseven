@@ -421,6 +421,28 @@ export default function SmartBooking() {
                 <p className="text-cream/60">Pick an available slot — or scroll to find a time that works for you.</p>
               </div>
 
+              {formData.location === 'studio' && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="border border-gold/30 bg-gold/5 p-5"
+                >
+                  <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/60 mb-2">Studio A — NoDa Art House</p>
+                  <p className="text-cream/50 text-sm leading-relaxed mb-4">
+                    Check NoDa's live calendar for real-time availability, then enter your preferred date and time below.
+                  </p>
+                  <a
+                    href="https://www.nodaarthouse.com/booking-calendar/1hr-all-access-studio-rental"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 font-heading text-[10px] tracking-[0.2em] uppercase text-ink bg-gold px-5 py-2.5 hover:bg-gold/90 transition-colors"
+                  >
+                    View NoDa's Live Calendar →
+                  </a>
+                  <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $65/hr · Open 7 days</p>
+                </motion.div>
+              )}
+
               <BookingCalendar
                 selectedDate={formData.theirDates[0]}
                 selectedTime={formData.theirTimes[0]}
