@@ -94,7 +94,7 @@ export default function SmartBooking() {
     const toUpload = Array.from(files).slice(0, remaining)
 
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-      setUploadError('Photo upload not configured yet — describe your vision in text or email references to shotbyseven777@gmail.com.')
+      setUploadError('Upload failed. Describe your vision in text above, or email references to shotbyseven777@gmail.com.')
       return
     }
 
