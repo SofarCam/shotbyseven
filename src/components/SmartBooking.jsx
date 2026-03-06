@@ -215,6 +215,10 @@ export default function SmartBooking() {
       setSubmittedBookingId(bookingId)
       setSubmittedStripeUrl(stripeUrl)
       setSubmitted(true)
+      // Auto-open Stripe deposit page so client pays immediately
+      if (stripeUrl) {
+        window.open(stripeUrl, '_blank', 'noopener,noreferrer')
+      }
     } catch (err) {
       console.error('Booking email failed:', err)
       setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
@@ -227,66 +231,65 @@ export default function SmartBooking() {
     return (
       <section id="smart-booking" className="py-32 px-6 lg:px-12 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
-          <HiCheckCircle className="w-20 h-20 text-gold mx-auto mb-8" />
-          <h2 className="font-display text-4xl font-bold text-cream mb-4">Request Sent!</h2>
-          <p className="text-cream/60 max-w-md mx-auto mb-6">
-            Your booking request has been sent! I&apos;ll respond within 24 hours.
+          <HiCheckCircle className="w-20 h-20 text-gold mx-auto mb-6" />
+          <h2 className="font-display text-4xl font-bold text-cream mb-3">Request Received!</h2>
+          <p className="text-cream/60 max-w-md mx-auto mb-8">
+            Almost done — your date is <span className="text-cream font-semibold">not confirmed</span> until the deposit is paid.
           </p>
-          {/* Booking ID — save this! */}
-          <div className="mb-6 p-4 border border-gold/30 bg-gold/5 max-w-md mx-auto text-left">
-            <p className="text-cream/50 font-heading text-[10px] tracking-[0.2em] uppercase mb-1">Your Booking ID</p>
-            <p className="text-gold font-mono text-2xl tracking-widest font-bold">{submittedBookingId}</p>
-            <p className="text-cream/30 text-[10px] font-body mt-1">Save this — you&apos;ll need it to check your status at shotbyseven.com/portal</p>
-          </div>
 
-          {hasLoyaltyDiscount && (
-            <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-6 flex items-center gap-3">
-              <HiGift className="text-gold w-5 h-5 flex-shrink-0" />
-              <p className="text-gold font-heading text-sm tracking-wide">50% loyalty discount has been noted!</p>
+          {/* DEPOSIT — lead with this */}
+          {submittedStripeUrl ? (
+            <div className="border-2 border-gold bg-gold/10 p-6 max-w-md mx-auto mb-6">
+              <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/70 mb-2">Lock In Your Date</p>
+              <p className="text-cream font-body text-sm leading-relaxed mb-1">
+                Pay your <span className="text-gold font-bold">${depositAmount} deposit</span> now to secure your spot.
+                {hasLoyaltyDiscount && <span className="text-gold"> 50% loyalty discount already applied.</span>}
+              </p>
+              <p className="text-cream/40 text-xs font-body mb-4">
+                Remaining balance: <span className="text-cream/70">${finalPrice - depositAmount}</span> due on shoot day.
+              </p>
+              <a
+                href={submittedStripeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-4 bg-gold text-ink font-heading text-sm tracking-[0.2em] uppercase text-center hover:bg-gold/90 transition-colors duration-200 font-bold"
+              >
+                Pay ${depositAmount} Deposit Now →
+              </a>
+              <p className="text-cream/30 text-[10px] font-body mt-3">Secure checkout via Stripe · No account needed</p>
+            </div>
+          ) : (
+            <div className="border border-gold/30 bg-gold/5 p-5 max-w-md mx-auto mb-6">
+              <p className="text-gold font-heading text-xs tracking-wide mb-2">Secure Your Date</p>
+              <p className="text-cream/50 text-sm font-body">Cam will send your deposit link via email within 24 hours.</p>
             </div>
           )}
 
-          {/* Step 1: Contract */}
-          <div className="border border-cream/10 bg-cream/3 p-5 max-w-md mx-auto mb-4 text-left">
-            <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-1">Step 1</p>
-            <p className="text-cream font-heading text-xs tracking-wide mb-2">Sign Your Contract</p>
+          {hasLoyaltyDiscount && (
+            <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-5 flex items-center gap-3">
+              <HiGift className="text-gold w-5 h-5 flex-shrink-0" />
+              <p className="text-gold font-heading text-sm tracking-wide">50% loyalty discount applied!</p>
+            </div>
+          )}
+
+          {/* Booking ID */}
+          <div className="mb-5 p-4 border border-cream/10 bg-cream/3 max-w-md mx-auto text-left">
+            <p className="text-cream/50 font-heading text-[10px] tracking-[0.2em] uppercase mb-1">Booking ID — save this</p>
+            <p className="text-gold font-mono text-2xl tracking-widest font-bold">{submittedBookingId}</p>
+            <p className="text-cream/30 text-[10px] font-body mt-1">Check status at shotbyseven.com/portal</p>
+          </div>
+
+          {/* Contract note */}
+          <div className="border border-cream/10 p-5 max-w-md mx-auto mb-5 text-left">
+            <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-1">Next: Contract</p>
             <p className="text-cream/50 text-sm font-body leading-relaxed">
-              Check your email — I&apos;ll send a contract link to review and sign before your session. No shoot happens without a signed agreement.
+              I&apos;ll email you a contract to sign before your session. Check your inbox within 24 hours.
             </p>
           </div>
 
-          {/* Step 2: Deposit */}
-          <div className="border border-gold/30 bg-gold/5 p-5 max-w-md mx-auto mb-6 text-left">
-            <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/50 mb-1">Step 2</p>
-            <p className="text-gold font-heading text-xs tracking-wide mb-2">Secure Your Date</p>
-            <p className="text-cream/50 text-sm font-body leading-relaxed mb-3">
-              A non-refundable deposit of <span className="text-cream font-bold">${depositAmount}</span> is required to lock in your date. Your date is not confirmed until the deposit is received. The remaining balance of <span className="text-cream/80">${finalPrice - depositAmount}</span> is due on shoot day.
-              {hasLoyaltyDiscount && ' Your 50% loyalty discount has already been applied.'}
-            </p>
-            {submittedStripeUrl ? (
-              <>
-                <div className="bg-gold/10 border border-gold/20 px-4 py-2 mb-3 flex items-center gap-2">
-                  <span className="text-gold/70 text-[10px] font-heading tracking-[0.15em] uppercase">Enter exactly</span>
-                  <span className="text-gold font-bold text-lg">${depositAmount}</span>
-                  <span className="text-gold/70 text-[10px] font-heading tracking-[0.15em] uppercase">at checkout</span>
-                </div>
-                <a
-                  href={submittedStripeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block w-full py-3 bg-gold text-ink font-heading text-xs tracking-[0.2em] uppercase text-center hover:bg-gold/90 transition-colors duration-200"
-                >
-                  Pay ${depositAmount} Deposit →
-                </a>
-              </>
-            ) : (
-              <p className="text-cream/30 text-xs font-body italic">Deposit link coming soon — Cam will send it via email.</p>
-            )}
-          </div>
-
-          <div className="border border-cream/10 p-5 max-w-md mx-auto">
-            <p className="text-cream/40 text-sm mb-2">Questions? Reach out directly:</p>
-            <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold/80 transition-colors">
+          <div className="border border-cream/10 p-4 max-w-md mx-auto">
+            <p className="text-cream/40 text-sm mb-2">Questions?</p>
+            <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold/80 transition-colors text-sm">
               shotbyseven777@gmail.com
             </a>
           </div>
