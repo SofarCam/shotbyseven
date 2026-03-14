@@ -216,6 +216,9 @@ export const blogPosts = [
     readTime: '4 min read',
     cover: '/photos/webp/edit_28_websize.webp',
     excerpt: `A jersey, a yellow backdrop, and a vision for something that lives at the intersection of streetwear and editorial. Here's how the Court Couture shoot came together.`,
+    seoTitle: 'Sports Meets Fashion Editorial Photography Charlotte NC | Shot by Seven',
+    seoDescription: 'Behind the scenes of the Court Couture jersey editorial — how to shoot athletic wear like a magazine spread. Studio sessions at NoDa Art House, Charlotte NC.',
+    cta: { headline: 'Book a fashion or editorial session.', sub: 'Studio A at NoDa Art House. Bring your concept — I handle the rest. Sessions from $350.', label: 'Book an Editorial Session →' },
     body: [
       {
         type: 'p',
@@ -255,6 +258,9 @@ export const blogPosts = [
     readTime: '3 min read',
     cover: '/photos/webp/DM0A6636_websize.webp',
     excerpt: `Graduation season is one of my favorite times of year. Here's why these sessions mean something different — and how I approach them to make the photos actually last.`,
+    seoTitle: 'Graduation Photography Charlotte NC | UNCC Grad Portraits | Shot by Seven',
+    seoDescription: 'Graduation portrait sessions in Charlotte NC — UNCC, Freedom Park, Marshall Park. Book early, spring fills fast. Two looks, golden hour, 20+ edited selects.',
+    cta: { headline: 'Book your graduation session.', sub: "Spring fills up fast — don't wait until two weeks before. Lock in your date now.", label: 'Book Graduation Photos →' },
     body: [
       {
         type: 'p',
