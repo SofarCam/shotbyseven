@@ -149,7 +149,7 @@ export default function SmartBooking() {
   const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
-  const depositAmount = 100
+  const depositAmount = finalPrice ? Math.max(50, Math.round(finalPrice * 0.25)) : 100
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -158,7 +158,7 @@ export default function SmartBooking() {
 
     // Generate unique 9-char booking ID
     const bookingId = (Date.now().toString(36) + Math.random().toString(36).substring(2, 6)).toUpperCase().substring(0, 9)
-    const portalUrl = `https://shotbyseven.com/portal/${bookingId}`
+    const portalUrl = `${window.location.origin}/portal/${bookingId}`
     const stripeUrl = STRIPE_DEPOSIT_URL
       ? `${STRIPE_DEPOSIT_URL}?client_reference_id=${bookingId}&prefilled_email=${encodeURIComponent(formData.email)}`
       : null
