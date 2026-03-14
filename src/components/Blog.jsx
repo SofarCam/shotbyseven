@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import { blogPosts } from '../blogConfig'
 import Navbar from './Navbar'
 import Footer from './Footer'
@@ -13,6 +14,80 @@ function formatDate(dateStr) {
     day: 'numeric',
     year: 'numeric',
   })
+}
+
+function BlogEmailCapture() {
+  const [email, setEmail] = useState('')
+  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    if (!isValid || loading) return
+    setLoading(true)
+    try {
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_RESEND_API_KEY || ''}`,
+        },
+        body: JSON.stringify({
+          from: 'Shot by Seven <onboarding@resend.dev>',
+          to: ['shotbyseven777@gmail.com'],
+          subject: `📸 New blog subscriber: ${email}`,
+          html: `<p>New subscriber from the Shot by Seven blog.</p><p><strong>${email}</strong></p>`,
+        }),
+      }).catch(() => {})
+      setSubmitted(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (submitted) {
+    return (
+      <div className="border border-gold/30 bg-gold/5 p-8 text-center my-16">
+        <p className="text-gold font-heading text-sm tracking-[0.2em] uppercase mb-1">You're in</p>
+        <p className="text-cream/40 font-body text-sm">New posts + session tips straight to your inbox.</p>
+      </div>
+    )
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3 }}
+      className="border border-cream/10 bg-cream/2 p-8 md:p-12 my-16 text-center"
+    >
+      <p className="font-heading text-[10px] tracking-[0.3em] uppercase text-gold/60 mb-3">Studio Journal</p>
+      <h3 className="font-display text-3xl font-bold text-cream mb-3">
+        Get new posts when they drop.
+      </h3>
+      <p className="text-cream/35 font-body text-sm max-w-sm mx-auto mb-6 leading-relaxed">
+        Location guides, session prep, behind the scenes. No spam — just what's worth reading.
+      </p>
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <input
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="your@email.com"
+          required
+          className="flex-1 px-4 py-3 bg-ink border border-cream/10 focus:border-gold/40 outline-none text-cream text-sm font-body transition-colors duration-200"
+        />
+        <button
+          type="submit"
+          disabled={!isValid || loading}
+          className="px-6 py-3 bg-gold text-ink font-heading text-xs tracking-[0.2em] uppercase font-bold hover:bg-gold/90 transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+        >
+          {loading ? 'Sending...' : 'Subscribe'}
+        </button>
+      </form>
+    </motion.div>
+  )
 }
 
 export default function Blog() {
@@ -96,6 +171,9 @@ export default function Blog() {
               </div>
             </Link>
           </motion.div>
+
+          {/* Email capture */}
+          <BlogEmailCapture />
 
           {/* Rest of posts */}
           {rest.length > 0 && (
