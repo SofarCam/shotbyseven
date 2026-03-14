@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link, useParams, Navigate } from 'react-router-dom'
-import { getPostBySlug } from '../blogConfig'
+import { useEffect } from 'react'
+import { getPostBySlug, getRecentPosts } from '../blogConfig'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -13,6 +14,39 @@ function formatDate(dateStr) {
     day: 'numeric',
     year: 'numeric',
   })
+}
+
+function useSEO(post) {
+  useEffect(() => {
+    if (!post) return
+    const title = post.seoTitle || `${post.title} | Shot by Seven`
+    const desc = post.seoDescription || post.excerpt
+    const url = `https://shotbyseven.com/blog/${post.slug}`
+
+    document.title = title
+
+    const setMeta = (name, content, prop = false) => {
+      const attr = prop ? 'property' : 'name'
+      let el = document.querySelector(`meta[${attr}="${name}"]`)
+      if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el) }
+      el.setAttribute('content', content)
+    }
+
+    setMeta('description', desc)
+    setMeta('og:title', title, true)
+    setMeta('og:description', desc, true)
+    setMeta('og:url', url, true)
+    setMeta('og:image', `https://shotbyseven.com${post.cover}`, true)
+    setMeta('twitter:title', title, true)
+    setMeta('twitter:description', desc, true)
+    setMeta('twitter:image', `https://shotbyseven.com${post.cover}`, true)
+
+    let canonical = document.querySelector('link[rel="canonical"]')
+    if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical) }
+    canonical.href = url
+
+    return () => { document.title = 'Shot by Seven | Charlotte NC Photographer' }
+  }, [post])
 }
 
 function BodyBlock({ block }) {
@@ -41,8 +75,12 @@ function BodyBlock({ block }) {
 export default function BlogPost() {
   const { slug } = useParams()
   const post = getPostBySlug(slug)
+  useSEO(post)
 
   if (!post) return <Navigate to="/blog" replace />
+
+  const related = getRecentPosts(4).filter(p => p.slug !== slug).slice(0, 2)
+  const cta = post.cta || { headline: "Let's build something together.", sub: "Charlotte-based sessions available now. Studios, outdoor, events — let's talk.", label: 'Book a Session →' }
 
   return (
     <>
@@ -161,16 +199,22 @@ export default function BlogPost() {
             </div>
           )}
 
-          {/* CTA */}
-          <div className="border border-cream/10 p-8 text-center">
+          {/* Post-specific CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="border-2 border-gold/30 bg-gold/5 p-8 text-center"
+          >
             <p className="font-heading text-[10px] tracking-[0.3em] uppercase text-gold/50 mb-3">
-              Ready to Create?
+              Book a Session
             </p>
-            <h3 className="font-display text-2xl font-bold text-cream mb-4">
-              Let&apos;s build something together.
+            <h3 className="font-display text-2xl font-bold text-cream mb-3">
+              {cta.headline}
             </h3>
-            <p className="text-cream/30 text-sm font-body mb-6 max-w-sm mx-auto">
-              Charlotte-based sessions available now. Studios, outdoor, events — let&apos;s talk.
+            <p className="text-cream/40 text-sm font-body mb-6 max-w-sm mx-auto leading-relaxed">
+              {cta.sub}
             </p>
             <Link
               to="/#smart-booking"
@@ -180,11 +224,46 @@ export default function BlogPost() {
                   if (el) el.scrollIntoView({ behavior: 'smooth' })
                 }, 100)
               }}
-              className="inline-block px-8 py-3 bg-gold text-ink font-heading text-xs tracking-[0.25em] uppercase hover:bg-gold/90 transition-colors duration-200"
+              className="inline-block px-8 py-4 bg-gold text-ink font-heading text-xs tracking-[0.25em] uppercase hover:bg-gold/90 transition-colors duration-200 font-bold"
             >
-              Book a Session →
+              {cta.label}
             </Link>
-          </div>
+          </motion.div>
+
+          {/* Related posts */}
+          {related.length > 0 && (
+            <div className="mt-16 pt-12 border-t border-cream/10">
+              <p className="font-heading text-[10px] tracking-[0.3em] uppercase text-cream/25 mb-8">
+                More From the Journal
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                {related.map(p => (
+                  <Link
+                    key={p.slug}
+                    to={`/blog/${p.slug}`}
+                    className="group block border border-cream/10 hover:border-gold/30 transition-all duration-300 overflow-hidden"
+                  >
+                    <div className="relative h-40 overflow-hidden">
+                      <img
+                        src={p.cover}
+                        alt={p.title}
+                        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                        style={{ filter: 'saturate(0.85) contrast(1.05)' }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                    </div>
+                    <div className="p-5">
+                      <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-gold/60 mb-2">{p.category}</p>
+                      <h4 className="font-display text-lg font-bold text-cream group-hover:text-gold/90 transition-colors duration-200 leading-snug mb-1">
+                        {p.title}
+                      </h4>
+                      <p className="text-cream/30 text-xs font-body">{formatDate(p.date)}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Back link */}
           <div className="mt-12 pt-8 border-t border-cream/10">

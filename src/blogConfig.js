@@ -16,6 +16,9 @@ export const blogPosts = [
     readTime: '5 min read',
     cover: '/photos/webp/DM0A5634_websize.webp',
     excerpt: `Everyone shoots Freedom Park. Here are the spots I actually use — and why the light in Charlotte is better than most photographers give it credit for.`,
+    seoTitle: 'Best Portrait Photography Locations in Charlotte NC | Shot by Seven',
+    seoDescription: "The real Charlotte photo spots — NoDa, Uptown after dark, the Rail Trail, Marshall Park. A Charlotte photographer's guide to where the light actually works.",
+    cta: { headline: 'Want to shoot at one of these spots?', sub: "Tell me your vision and I'll match it to the right location and time of day.", label: 'Book a Location Session →' },
     body: [
       {
         type: 'p',
@@ -69,6 +72,9 @@ export const blogPosts = [
     readTime: '4 min read',
     cover: '/photos/webp/edit_1_websize.webp',
     excerpt: `Forget the generic advice. Here's what actually photographs well — and the mistakes I see in almost every session that didn't come with prep.`,
+    seoTitle: 'What to Wear for a Portrait Session in Charlotte NC | Shot by Seven',
+    seoDescription: "Real advice on what to wear for your portrait session — what works, what doesn't, and the one thing most people miss. From a Charlotte photographer who's seen it all.",
+    cta: { headline: 'Ready to book your session?', sub: "Once you're booked I'll send you a full prep guide — outfit tips, location info, everything you need to show up confident.", label: 'Book Your Session →' },
     body: [
       {
         type: 'p',
@@ -117,6 +123,9 @@ export const blogPosts = [
     readTime: '4 min read',
     cover: '/photos/webp/Kyasia_lighting-107_websize.webp',
     excerpt: `Most headshot sessions feel transactional. Here's how I do them differently — and what you should be looking for when you're shopping photographers in Charlotte.`,
+    seoTitle: 'Headshots Charlotte NC | Professional Headshot Photographer | Shot by Seven',
+    seoDescription: 'Getting headshots in Charlotte? Here is what to expect, how to prep, and why the photographer matters more than the location. Sessions from $150.',
+    cta: { headline: 'Book your headshots in Charlotte.', sub: 'LinkedIn, brand, acting — tell me what platform it is for and I\'ll set up the session to match. $150, one hour, 15+ selects.', label: 'Book Headshots →' },
     body: [
       {
         type: 'p',
@@ -165,6 +174,9 @@ export const blogPosts = [
     readTime: '3 min read',
     cover: '/photos/webp/DM0A9139_websize.webp',
     excerpt: `Valentine's week. Studio A at NoDa Art House. One model, a floor covered in roses, and two hours to make something cinematic.`,
+    seoTitle: 'Studio Portrait Session at NoDa Art House Charlotte | Shot by Seven',
+    seoDescription: 'Behind the scenes of a cinematic rose editorial at Studio A, NoDa Art House, Charlotte NC. See how a concept shoot comes together from setup to final edit.',
+    cta: { headline: 'Book Studio A in Charlotte.', sub: 'Studio sessions at NoDa Art House start at $150. Bring your concept — I\'ll handle the rest.', label: 'Book a Studio Session →' },
     body: [
       {
         type: 'p',
