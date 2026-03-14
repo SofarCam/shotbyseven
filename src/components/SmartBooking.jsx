@@ -1,5 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
@@ -44,6 +45,7 @@ const charlotteLocations = [
 export default function SmartBooking() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
     sessionType: '',
@@ -212,90 +214,25 @@ export default function SmartBooking() {
         portal_url: portalUrl,
         deposit_amount: String(depositAmount),
       })
-      setSubmittedBookingId(bookingId)
-      setSubmittedStripeUrl(stripeUrl)
-      setSubmitted(true)
       // Auto-open Stripe deposit page so client pays immediately
       if (stripeUrl) {
         window.open(stripeUrl, '_blank', 'noopener,noreferrer')
       }
+      // Redirect to thank you page with booking data
+      const params = new URLSearchParams({
+        id: bookingId,
+        stripe: stripeUrl,
+        deposit: String(depositAmount),
+        loyalty: hasLoyaltyDiscount ? '1' : '0',
+        type: packageInfo.label,
+      })
+      navigate(`/thank-you?${params.toString()}`)
     } catch (err) {
       console.error('Booking email failed:', err)
       setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
     } finally {
       setSending(false)
     }
-  }
-
-  if (submitted) {
-    return (
-      <section id="smart-booking" className="py-32 px-6 lg:px-12 max-w-4xl mx-auto">
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center">
-          <HiCheckCircle className="w-20 h-20 text-gold mx-auto mb-6" />
-          <h2 className="font-display text-4xl font-bold text-cream mb-3">Request Received!</h2>
-          <p className="text-cream/60 max-w-md mx-auto mb-8">
-            Almost done — your date is <span className="text-cream font-semibold">not confirmed</span> until the deposit is paid.
-          </p>
-
-          {/* DEPOSIT — lead with this */}
-          {submittedStripeUrl ? (
-            <div className="border-2 border-gold bg-gold/10 p-6 max-w-md mx-auto mb-6">
-              <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-gold/70 mb-2">Lock In Your Date</p>
-              <p className="text-cream font-body text-sm leading-relaxed mb-1">
-                Pay your <span className="text-gold font-bold">${depositAmount} deposit</span> now to secure your spot.
-                {hasLoyaltyDiscount && <span className="text-gold"> 50% loyalty discount already applied.</span>}
-              </p>
-              <p className="text-cream/40 text-xs font-body mb-4">
-                Remaining balance: <span className="text-cream/70">${finalPrice - depositAmount}</span> due on shoot day.
-              </p>
-              <a
-                href={submittedStripeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-4 bg-gold text-ink font-heading text-sm tracking-[0.2em] uppercase text-center hover:bg-gold/90 transition-colors duration-200 font-bold"
-              >
-                Pay ${depositAmount} Deposit Now →
-              </a>
-              <p className="text-cream/30 text-[10px] font-body mt-3">Secure checkout via Stripe · No account needed</p>
-            </div>
-          ) : (
-            <div className="border border-gold/30 bg-gold/5 p-5 max-w-md mx-auto mb-6">
-              <p className="text-gold font-heading text-xs tracking-wide mb-2">Secure Your Date</p>
-              <p className="text-cream/50 text-sm font-body">Cam will send your deposit link via email within 24 hours.</p>
-            </div>
-          )}
-
-          {hasLoyaltyDiscount && (
-            <div className="bg-gold/10 border border-gold/40 p-4 max-w-md mx-auto mb-5 flex items-center gap-3">
-              <HiGift className="text-gold w-5 h-5 flex-shrink-0" />
-              <p className="text-gold font-heading text-sm tracking-wide">50% loyalty discount applied!</p>
-            </div>
-          )}
-
-          {/* Booking ID */}
-          <div className="mb-5 p-4 border border-cream/10 bg-cream/3 max-w-md mx-auto text-left">
-            <p className="text-cream/50 font-heading text-[10px] tracking-[0.2em] uppercase mb-1">Booking ID — save this</p>
-            <p className="text-gold font-mono text-2xl tracking-widest font-bold">{submittedBookingId}</p>
-            <p className="text-cream/30 text-[10px] font-body mt-1">Check status at shotbyseven.com/portal</p>
-          </div>
-
-          {/* Contract note */}
-          <div className="border border-cream/10 p-5 max-w-md mx-auto mb-5 text-left">
-            <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-1">Next: Contract</p>
-            <p className="text-cream/50 text-sm font-body leading-relaxed">
-              I&apos;ll email you a contract to sign before your session. Check your inbox within 24 hours.
-            </p>
-          </div>
-
-          <div className="border border-cream/10 p-4 max-w-md mx-auto">
-            <p className="text-cream/40 text-sm mb-2">Questions?</p>
-            <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold/80 transition-colors text-sm">
-              shotbyseven777@gmail.com
-            </a>
-          </div>
-        </motion.div>
-      </section>
-    )
   }
 
   return (
