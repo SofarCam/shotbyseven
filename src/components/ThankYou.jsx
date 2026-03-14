@@ -86,7 +86,7 @@ export default function ThankYou() {
   const sessionType = params.get('type') || 'Session'
 
   const referralCode = generateReferralCode(bookingId)
-  const referralUrl = `https://shotbyseven.com?ref=${referralCode}`
+  const referralUrl = `${window.location.origin}?ref=${referralCode}`
   const referralMessage = `Just booked a session with Shot by Seven in Charlotte 📸 Use my referral link and we both save: ${referralUrl}`
 
   // Track that deposit page was opened

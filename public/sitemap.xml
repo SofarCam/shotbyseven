@@ -19,15 +19,45 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://shotbyseven.com/portal</loc>
+    <loc>https://shotbyseven.com/blog/best-photo-spots-charlotte-nc</loc>
     <lastmod>2026-03-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://shotbyseven.com/blog/what-to-wear-portrait-session</loc>
+    <lastmod>2026-03-10</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://shotbyseven.com/thank-you</loc>
+    <loc>https://shotbyseven.com/blog/headshots-charlotte-what-to-expect</loc>
+    <lastmod>2026-03-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://shotbyseven.com/blog/petal-and-shadow-rose-studio-shoot</loc>
+    <lastmod>2026-02-14</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://shotbyseven.com/blog/court-couture-jersey-editorial</loc>
+    <lastmod>2026-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://shotbyseven.com/blog/walk-the-stage-graduation-portraits</loc>
+    <lastmod>2026-01-10</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://shotbyseven.com/portal</loc>
     <lastmod>2026-03-14</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.4</priority>
   </url>
 </urlset>

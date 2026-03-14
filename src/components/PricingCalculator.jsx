@@ -35,8 +35,8 @@ export default function PricingCalculator({ onBookNow }) {
   }
 
   const price = calcPrice()
-  const deposit = price ? 100 : null
-  const remaining = price ? price - 100 : null
+  const deposit = price ? Math.max(50, Math.round(price * 0.25)) : null
+  const remaining = price ? price - deposit : null
 
   const handleBookNow = () => {
     if (onBookNow && sessionType) onBookNow(sessionType)
