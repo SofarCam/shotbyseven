@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion'
-import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useRef, useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
@@ -46,6 +46,14 @@ export default function SmartBooking() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const [referralCode, setReferralCode] = useState('')
+
+  // Capture referral code from URL on mount
+  useEffect(() => {
+    const ref = searchParams.get('ref')
+    if (ref) setReferralCode(ref)
+  }, [searchParams])
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState({
     sessionType: '',
@@ -190,6 +198,7 @@ export default function SmartBooking() {
         'LOYALTY: ' + loyaltyStatus,
         'VISION: ' + (formData.vision || 'Open to creative direction'),
         'BUDGET: ' + (formData.budget || 'Not specified'),
+        referralCode ? 'REFERRAL CODE: ' + referralCode : '',
         uploadedPhotos.length > 0 ? 'PHOTO REFERENCES (' + uploadedPhotos.length + '):\n' + uploadedPhotos.map((p, i) => (i + 1) + '. ' + p.url).join('\n') : '',
       ].filter(Boolean).join('\n\n'),
     }
@@ -213,6 +222,7 @@ export default function SmartBooking() {
         booking_id: bookingId,
         portal_url: portalUrl,
         deposit_amount: String(depositAmount),
+        referral_code: referralCode || '',
       })
       // Auto-open Stripe deposit page so client pays immediately
       if (stripeUrl) {

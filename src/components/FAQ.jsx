@@ -43,6 +43,10 @@ const faqs = [
     q: 'Do you offer a loyalty discount?',
     a: 'Yes — returning clients with 3 or more sessions get 50% off their next booking. The discount is verified automatically when you enter your email at checkout.',
   },
+  {
+    q: 'Do you have a referral program?',
+    a: 'Yes — refer a friend and you both get $25 off your next session. After you book, you\'ll get a unique referral link on your confirmation page. Share it, and when your friend books, reach out and I\'ll apply the discount to both of you.',
+  },
 ]
 
 function FAQItem({ item, index }) {

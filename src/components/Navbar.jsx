@@ -5,9 +5,9 @@ import { HiMenuAlt4, HiX } from 'react-icons/hi'
 
 const navLinks = [
   { label: 'Work', href: '#gallery' },
-  { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
   { label: 'Book', href: '#smart-booking' },
+  { label: 'Studio', href: '/studio', route: true },
   { label: 'Journal', href: '/blog', route: true },
   { label: 'Contact', href: '#contact' },
 ]
