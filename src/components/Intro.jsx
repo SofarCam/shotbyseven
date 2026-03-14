@@ -1,18 +1,41 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 
+const INTRO_KEY = 'sbs_intro_seen'
+
 export default function Intro({ onComplete }) {
   const [phase, setPhase] = useState(0)
+  const [skipped] = useState(() => {
+    try { return !!sessionStorage.getItem(INTRO_KEY) } catch { return false }
+  })
 
   useEffect(() => {
+    // Return visitor or same-session: skip immediately
+    if (skipped) {
+      onComplete()
+      return
+    }
+
+    // First visit this session: run intro, then mark seen
     const timers = [
       setTimeout(() => setPhase(1), 500),
       setTimeout(() => setPhase(2), 1400),
       setTimeout(() => setPhase(3), 2800),
-      setTimeout(() => onComplete(), 3800),
+      setTimeout(() => {
+        try { sessionStorage.setItem(INTRO_KEY, '1') } catch {}
+        onComplete()
+      }, 3800),
     ]
     return () => timers.forEach(clearTimeout)
-  }, [onComplete])
+  }, [onComplete, skipped])
+
+  // Click anywhere to skip early
+  function handleSkip() {
+    try { sessionStorage.setItem(INTRO_KEY, '1') } catch {}
+    onComplete()
+  }
+
+  if (skipped) return null
 
   return (
     <AnimatePresence>
@@ -20,7 +43,8 @@ export default function Intro({ onComplete }) {
         <motion.div
           exit={{ opacity: 0 }}
           transition={{ duration: 1 }}
-          className="fixed inset-0 z-[200] bg-ink flex items-center justify-center overflow-hidden"
+          className="fixed inset-0 z-[200] bg-ink flex items-center justify-center overflow-hidden cursor-pointer"
+          onClick={handleSkip}
         >
           {/* Aperture blades */}
           <div className="absolute inset-0 flex items-center justify-center">
@@ -130,6 +154,16 @@ export default function Intro({ onComplete }) {
               className="font-heading text-[9px] tracking-[0.3em] text-gold/40 mt-4"
             >
               f/1.4 · 1/125 · ISO 400
+            </motion.p>
+
+            {/* Skip hint — appears after 1s */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: phase >= 1 ? 0.2 : 0 }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+              className="font-heading text-[8px] tracking-[0.3em] uppercase text-cream/20 mt-10"
+            >
+              tap to skip
             </motion.p>
           </div>
         </motion.div>

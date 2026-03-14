@@ -19,15 +19,16 @@ export default function Hero() {
       ref={ref}
       className="relative h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background */}
+      {/* Background — <img> instead of background-image so LCP is measurable */}
       <motion.div style={{ y, scale }} className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/40 to-ink z-10" />
-        <div
-          className="w-full h-full bg-cover bg-center"
-          style={{
-            backgroundImage: `url('${heroImage}')`,
-            filter: 'saturate(0.8) contrast(1.1)',
-          }}
+        <img
+          src={heroImage}
+          alt=""
+          fetchpriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          style={{ filter: 'saturate(0.8) contrast(1.1)' }}
         />
         {/* Golden hour overlay */}
         <div className="absolute inset-0 z-10 bg-gradient-to-br from-transparent via-amber/5 to-gold/10" />

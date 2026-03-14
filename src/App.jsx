@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react'
-import { Routes, Route, useNavigate, useLocation } from 'react-router-dom'
+import { useState, useCallback, lazy, Suspense } from 'react'
+import { Routes, Route, useNavigate } from 'react-router-dom'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
@@ -16,30 +16,35 @@ import PricingCalculator from './components/PricingCalculator'
 import SmartBooking from './components/SmartBooking'
 import Testimonials from './components/Testimonials'
 import FAQ from './components/FAQ'
-// InstagramFeed removed — using static gallery instead
 import Contact from './components/Contact'
 import Footer from './components/Footer'
-import ImageManager from './components/ImageManager'
-import PasswordGate from './components/PasswordGate'
-import ContractSign from './components/ContractSign'
-import ClientPortal from './components/ClientPortal'
-import Blog from './components/Blog'
-import BlogPost from './components/BlogPost'
-import StudioPage from './components/StudioPage'
-import ThankYou from './components/ThankYou'
 import ChatBot from './components/ChatBot'
 import { GemTracker } from './components/HiddenGems'
 
+// Lazy-loaded routes — only downloaded when visited
+const ManageInner   = lazy(() => import('./components/ImageManager'))
+const PasswordGate  = lazy(() => import('./components/PasswordGate'))
+const ContractSign  = lazy(() => import('./components/ContractSign'))
+const ClientPortal  = lazy(() => import('./components/ClientPortal'))
+const Blog          = lazy(() => import('./components/Blog'))
+const BlogPost      = lazy(() => import('./components/BlogPost'))
+const StudioPage    = lazy(() => import('./components/StudioPage'))
+const ThankYou      = lazy(() => import('./components/ThankYou'))
+
+// Minimal fallback that matches the site's dark background
+function PageLoader() {
+  return <div className="min-h-screen bg-ink" />
+}
+
 function HomePage() {
   const [introComplete, setIntroComplete] = useState(false)
-  const [selectedService, setSelectedService] = useState(null)
 
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true)
   }, [])
 
   const handleServiceSelect = useCallback((serviceId) => {
-    setSelectedService(serviceId)
+    void serviceId
     setTimeout(() => {
       const el = document.getElementById('smart-booking')
       if (el) el.scrollIntoView({ behavior: 'smooth' })
@@ -88,12 +93,12 @@ function HomePage() {
 function ManagePage() {
   const navigate = useNavigate()
   return (
-    <>
+    <Suspense fallback={<PageLoader />}>
       <CustomCursor />
       <PasswordGate>
-        <ImageManager onBack={() => navigate('/')} />
+        <ManageInner onBack={() => navigate('/')} />
       </PasswordGate>
-    </>
+    </Suspense>
   )
 }
 
@@ -102,14 +107,38 @@ function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/manage" element={<ManagePage />} />
-      <Route path="/contract/:bookingId" element={<ContractSign />} />
-      <Route path="/contract" element={<ContractSign />} />
-      <Route path="/portal" element={<ClientPortal />} />
-      <Route path="/portal/:bookingId" element={<ClientPortal />} />
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:slug" element={<BlogPost />} />
-      <Route path="/studio" element={<StudioPage />} />
-      <Route path="/thank-you" element={<ThankYou />} />
+      <Route
+        path="/contract/:bookingId"
+        element={<Suspense fallback={<PageLoader />}><ContractSign /></Suspense>}
+      />
+      <Route
+        path="/contract"
+        element={<Suspense fallback={<PageLoader />}><ContractSign /></Suspense>}
+      />
+      <Route
+        path="/portal"
+        element={<Suspense fallback={<PageLoader />}><ClientPortal /></Suspense>}
+      />
+      <Route
+        path="/portal/:bookingId"
+        element={<Suspense fallback={<PageLoader />}><ClientPortal /></Suspense>}
+      />
+      <Route
+        path="/blog"
+        element={<Suspense fallback={<PageLoader />}><Blog /></Suspense>}
+      />
+      <Route
+        path="/blog/:slug"
+        element={<Suspense fallback={<PageLoader />}><BlogPost /></Suspense>}
+      />
+      <Route
+        path="/studio"
+        element={<Suspense fallback={<PageLoader />}><StudioPage /></Suspense>}
+      />
+      <Route
+        path="/thank-you"
+        element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>}
+      />
     </Routes>
   )
 }
