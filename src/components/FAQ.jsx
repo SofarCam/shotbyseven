@@ -4,6 +4,10 @@ import { HiPlus, HiMinus } from 'react-icons/hi'
 
 const faqs = [
   {
+    q: 'How do I book?',
+    a: 'Use the Smart Booking form on this page. Tell me your session type, dates, and vision — I\'ll confirm within 24 hours. A $100 deposit holds your date.',
+  },
+  {
     q: 'How much do you charge?',
     a: 'Sessions start at $150 for portraits, $200 for couples/sports, $250 for graduation/events, $300 for maternity/family, and $350 for fashion/editorial. Extra time is $75/hr beyond the session minimum. Studio rental at NoDa Art House is $60/hr (not included). Use the Pricing Calculator on this page for an instant quote.',
   },
@@ -22,10 +26,6 @@ const faqs = [
   {
     q: 'Can I bring a friend or partner?',
     a: 'Absolutely. No extra charge for a plus one. Just let me know headcount when booking so I can plan the session timing.',
-  },
-  {
-    q: 'How do I book?',
-    a: 'Use the Smart Booking form on this page. Tell me your session type, dates, and vision — I\'ll confirm within 24 hours.',
   },
   {
     q: 'Do you travel outside Charlotte?',

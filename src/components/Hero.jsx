@@ -39,7 +39,7 @@ export default function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 3.4, duration: 0.8 }}
+          transition={{ delay: 0.4, duration: 0.8 }}
           className="font-heading text-[11px] tracking-[0.4em] uppercase text-gold/70 mb-6"
         >
           Charlotte Based Photographer
@@ -48,7 +48,7 @@ export default function Hero() {
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 3.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold leading-[0.9] text-cream mb-4"
         >
           Shot by
@@ -59,30 +59,35 @@ export default function Hero() {
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 4.2, duration: 1 }}
+          transition={{ delay: 1.0, duration: 1 }}
           className="font-body text-base text-cream/40 max-w-md mx-auto mb-10"
         >
-          Capturing bold, timeless moments through a lens of warmth and intention.
+          Portraits, graduations &amp; brand sessions — from $150.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 4.6, duration: 0.8 }}
-          className="flex items-center justify-center gap-6"
+          transition={{ delay: 1.4, duration: 0.8 }}
+          className="flex flex-col items-center gap-4"
         >
-          <a
-            href="#gallery"
-            className="font-heading text-xs tracking-[0.2em] uppercase px-8 py-4 bg-gold text-ink hover:bg-gold-light transition-colors duration-300"
-          >
-            View Work
-          </a>
-          <a
-            href="#smart-booking"
-            className="font-heading text-xs tracking-[0.2em] uppercase px-8 py-4 border border-cream/20 text-cream hover:border-gold/50 hover:text-gold transition-all duration-300"
-          >
-            Book a Session
-          </a>
+          <div className="flex items-center justify-center gap-6">
+            <a
+              href="#smart-booking"
+              className="font-heading text-xs tracking-[0.2em] uppercase px-8 py-4 bg-gold text-ink hover:bg-gold-light transition-colors duration-300"
+            >
+              Book a Session
+            </a>
+            <a
+              href="#gallery"
+              className="font-heading text-xs tracking-[0.2em] uppercase px-8 py-4 border border-cream/20 text-cream hover:border-gold/50 hover:text-gold transition-all duration-300"
+            >
+              View Work
+            </a>
+          </div>
+          <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30">
+            $100 deposit to hold your date &nbsp;·&nbsp; Same-day confirmation
+          </p>
         </motion.div>
       </motion.div>
 
@@ -90,7 +95,7 @@ export default function Hero() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 5.2, duration: 1 }}
+        transition={{ delay: 2.0, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3"
       >
         <span className="font-heading text-[9px] tracking-[0.4em] uppercase text-cream/30">

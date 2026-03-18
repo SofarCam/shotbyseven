@@ -89,7 +89,7 @@ export default function Services({ onServiceSelect }) {
                   <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">
                     {service.price}
                   </span>
-                  <span className="font-heading text-[9px] tracking-[0.15em] uppercase text-cream/20 group-hover:text-gold/50 transition-colors">
+                  <span className="font-heading text-[10px] tracking-[0.15em] uppercase text-gold/60 group-hover:text-gold transition-colors">
                     Book Now →
                   </span>
                 </div>
