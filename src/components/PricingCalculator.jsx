@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const sessionTypes = [
-  { id: 'portrait',   label: 'Portrait / Headshots',    basePrice: 150, minDuration: 1,   icon: '🎭' },
-  { id: 'couples',    label: 'Couples / Engagement',     basePrice: 200, minDuration: 1.5, icon: '💍' },
-  { id: 'graduation', label: 'Graduation',               basePrice: 250, minDuration: 2,   icon: '🎓' },
-  { id: 'maternity',  label: 'Maternity / Family',       basePrice: 300, minDuration: 2,   icon: '🌿' },
-  { id: 'fashion',    label: 'Fashion / Editorial',      basePrice: 350, minDuration: 2,   icon: '✨' },
-  { id: 'sports',     label: 'Sports / Action',          basePrice: 200, minDuration: 1.5, icon: '⚡' },
-  { id: 'event',      label: 'Event Coverage',           basePrice: 250, minDuration: 3,   icon: '🎪' },
+  { id: 'portrait',   label: 'Portrait / Headshots',    basePrice: 325, minDuration: 1,   icon: '🎭' },
+  { id: 'couples',    label: 'Couples / Engagement',     basePrice: 375, minDuration: 1.5, icon: '💍' },
+  { id: 'graduation', label: 'Graduation',               basePrice: 325, minDuration: 2,   icon: '🎓' },
+  { id: 'maternity',  label: 'Maternity / Family',       basePrice: 425, minDuration: 2,   icon: '🌿' },
+  { id: 'fashion',    label: 'Fashion / Editorial',      basePrice: 500, minDuration: 2,   icon: '✨' },
+  { id: 'sports',     label: 'Sports / Action',          basePrice: 325, minDuration: 1.5, icon: '⚡' },
+  { id: 'event',      label: 'Event Coverage',           basePrice: 450, minDuration: 3,   icon: '🎪' },
 ]
 
 const durations = [1, 1.5, 2, 2.5, 3, 4, 5, 6]
@@ -27,10 +27,10 @@ export default function PricingCalculator({ onBookNow }) {
     if (!selected) return null
     let price = selected.basePrice
     if (effectiveDuration > selected.minDuration) {
-      price += (effectiveDuration - selected.minDuration) * 75
+      price += (effectiveDuration - selected.minDuration) * 100
     }
-    if (studio) price += effectiveDuration * 60
-    if (returning) price = Math.round(price * 0.5)
+    if (studio) price += effectiveDuration * 75
+    if (returning) price = Math.round(price * 0.8)
     return price
   }
 
@@ -140,7 +140,7 @@ export default function PricingCalculator({ onBookNow }) {
                 </div>
                 <div onClick={() => setStudio(!studio)}>
                   <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/70">Studio A — NoDa Art House</p>
-                  <p className="text-cream/30 text-xs mt-0.5">+$60/hr · Professional studio space</p>
+                  <p className="text-cream/30 text-xs mt-0.5">+$75/hr · Professional studio space</p>
                 </div>
               </label>
 
@@ -155,7 +155,7 @@ export default function PricingCalculator({ onBookNow }) {
                 </div>
                 <div onClick={() => setReturning(!returning)}>
                   <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/70">Returning Client (3+ sessions)</p>
-                  <p className="text-cream/30 text-xs mt-0.5">50% loyalty discount · Automatically verified at checkout</p>
+                  <p className="text-cream/30 text-xs mt-0.5">20% loyalty discount · Automatically verified at checkout</p>
                 </div>
               </label>
             </div>
@@ -219,8 +219,8 @@ export default function PricingCalculator({ onBookNow }) {
 
                     {returning && (
                       <div className="flex justify-between items-center">
-                        <span className="text-gold/70 text-sm font-body">Loyalty discount (50%)</span>
-                        <span className="text-gold text-sm font-body">-50%</span>
+                        <span className="text-gold/70 text-sm font-body">Loyalty discount (20%)</span>
+                        <span className="text-gold text-sm font-body">-20%</span>
                       </div>
                     )}
                   </div>
