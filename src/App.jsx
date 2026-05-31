@@ -30,6 +30,7 @@ const Blog          = lazy(() => import('./components/Blog'))
 const BlogPost      = lazy(() => import('./components/BlogPost'))
 const StudioPage    = lazy(() => import('./components/StudioPage'))
 const ThankYou      = lazy(() => import('./components/ThankYou'))
+const ContentEngine = lazy(() => import('./components/ContentEngine'))
 
 // Minimal fallback that matches the site's dark background
 function PageLoader() {
@@ -138,6 +139,16 @@ function App() {
       <Route
         path="/thank-you"
         element={<Suspense fallback={<PageLoader />}><ThankYou /></Suspense>}
+      />
+      <Route
+        path="/content"
+        element={
+          <Suspense fallback={<PageLoader />}>
+            <PasswordGate>
+              <ContentEngine />
+            </PasswordGate>
+          </Suspense>
+        }
       />
     </Routes>
   )
