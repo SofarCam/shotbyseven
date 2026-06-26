@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiChat, HiX, HiPaperAirplane } from 'react-icons/hi'
+import { scrollToSection } from '../utils/scroll'
 
 // ============================================
 // SEVEN BOT — Site Guide & Booking Assistant
@@ -375,7 +376,7 @@ export default function ChatBot() {
       const section = userMsg.replace('scroll-', '')
       const el = document.getElementById(section)
       if (el) {
-        el.scrollIntoView({ behavior: 'smooth' })
+        scrollToSection(el)
         setIsOpen(false)
       }
       return
@@ -407,8 +408,7 @@ export default function ChatBot() {
       if (response.action) {
         setTimeout(() => {
           const section = response.action.replace('scroll-', '')
-          const el = document.getElementById(section)
-          if (el) el.scrollIntoView({ behavior: 'smooth' })
+          scrollToSection(section)
         }, 500)
       }
     }, delay)

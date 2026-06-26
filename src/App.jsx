@@ -4,6 +4,8 @@ import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
 import ScrollProgress from './components/ScrollProgress'
+import SmoothScroll from './components/SmoothScroll'
+import { scrollToSection } from './utils/scroll'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import Marquee from './components/Marquee'
@@ -45,10 +47,7 @@ function HomePage() {
 
   const handleServiceSelect = useCallback((serviceId) => {
     void serviceId
-    setTimeout(() => {
-      const el = document.getElementById('smart-booking')
-      if (el) el.scrollIntoView({ behavior: 'smooth' })
-    }, 100)
+    setTimeout(() => scrollToSection('smart-booking'), 100)
   }, [])
 
   return (
@@ -59,6 +58,7 @@ function HomePage() {
 
       {introComplete && (
         <>
+          <SmoothScroll />
           <ScrollProgress />
           <Navbar />
           <main>
