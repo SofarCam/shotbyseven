@@ -36,6 +36,7 @@ function useSEO(post) {
     setMeta('og:title', title, true)
     setMeta('og:description', desc, true)
     setMeta('og:url', url, true)
+    setMeta('og:type', 'article', true)
     setMeta('og:image', `https://shotbyseven.com${post.cover}`, true)
     setMeta('twitter:title', title, true)
     setMeta('twitter:description', desc, true)
@@ -45,7 +46,37 @@ function useSEO(post) {
     if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical) }
     canonical.href = url
 
-    return () => { document.title = 'Shot by Seven | Charlotte NC Photographer' }
+    const articleSchema = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: post.title,
+      description: desc,
+      image: `https://shotbyseven.com${post.cover}`,
+      datePublished: post.date,
+      dateModified: post.date,
+      url,
+      author: { '@type': 'Person', name: 'Cameron Currence' },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Shot by Seven',
+        logo: { '@type': 'ImageObject', url: 'https://shotbyseven.com/favicon.svg' },
+      },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+    }
+    let schemaEl = document.getElementById('article-schema')
+    if (!schemaEl) {
+      schemaEl = document.createElement('script')
+      schemaEl.id = 'article-schema'
+      schemaEl.type = 'application/ld+json'
+      document.head.appendChild(schemaEl)
+    }
+    schemaEl.textContent = JSON.stringify(articleSchema)
+
+    return () => {
+      document.title = 'Shot by Seven | Charlotte NC Photographer'
+      const el = document.getElementById('article-schema')
+      if (el) el.remove()
+    }
   }, [post])
 }
 
