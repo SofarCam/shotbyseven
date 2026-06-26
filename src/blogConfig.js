@@ -9,6 +9,70 @@
 
 export const blogPosts = [
   {
+    slug: 'how-much-photographer-cost-charlotte',
+    title: 'How Much Does a Photographer Cost in Charlotte? (2026 Guide)',
+    date: '2026-06-26',
+    category: 'Pricing',
+    readTime: '5 min read',
+    cover: '/photos/webp/edit_10_websize.webp',
+    excerpt: `Straight answer, no "it depends" runaround. Here's what photography actually costs in Charlotte in 2026 — what you're paying for, and how to tell a fair price from a bad one.`,
+    seoTitle: 'How Much Does a Photographer Cost in Charlotte NC? 2026 Pricing Guide | Shot by Seven',
+    seoDescription: 'What does a photographer cost in Charlotte NC? Real 2026 pricing for portraits, headshots, graduation, maternity, and editorial sessions — plus what actually drives the price.',
+    cta: { headline: 'Get an instant quote for your session.', sub: 'Use the pricing calculator on the homepage, or tell me your vision and I\'ll send exact numbers within 24 hours.', label: 'Get My Quote →' },
+    body: [
+      {
+        type: 'p',
+        content: `If you've searched "photographer cost Charlotte" you've probably noticed something annoying: almost nobody lists prices. You get "inquire for pricing," a contact form, and a three-day wait to find out if it's even in your budget. I think that's backwards. So here's the real breakdown.`,
+      },
+      {
+        type: 'p',
+        content: `In Charlotte, professional session pricing in 2026 generally runs from about $300 on the low end to $1,500+ for full event or wedding coverage. Most portrait, brand, and graduation sessions land in the $325–$500 range. Anything advertised under $150 is usually someone building a portfolio — which can be fine, but know what you're getting.`,
+      },
+      {
+        type: 'tip',
+        label: 'Portraits & Headshots',
+        content: `$325 for a one-hour session. That covers two looks, studio or outdoor, professional editing, and 15+ high-res selects delivered through an online gallery. This is the most common booking I do — branding, LinkedIn, acting, personal.`,
+      },
+      {
+        type: 'tip',
+        label: 'Graduation & Couples',
+        content: `$325–$375 depending on session length and locations. Graduates get formal regalia plus a personal-outfit change; couples get a relaxed direction-led session at a Charlotte spot that fits the vibe.`,
+      },
+      {
+        type: 'tip',
+        label: 'Maternity, Family & Editorial',
+        content: `$425 for maternity/family, $500 for fashion/editorial. These run longer, often involve studio lighting at NoDa Art House, and need more setup and post — which is what the higher rate reflects.`,
+      },
+      {
+        type: 'p',
+        content: `So what actually moves the price? Four things: time (longer sessions cost more — usually +$100/hr past the session minimum), location (studio rental at NoDa Art House adds $75/hr), the number of edited images you walk away with, and turnaround. Anyone charging dramatically less is cutting one of those — usually editing time or the number of delivered frames.`,
+      },
+      {
+        type: 'p',
+        content: `Here's the part most pricing guides skip: the cheapest photographer is rarely the cheapest outcome. A $150 session that gives you eight flat, lightly-edited images you don't love means you re-book in three months. The $325 session you only pay for once. I'd rather you book the right thing first.`,
+      },
+      {
+        type: 'tip',
+        label: 'How to budget',
+        content: `Decide what the photos are for before you shop on price. Updating one LinkedIn headshot is a different job than documenting a maternity milestone you'll print and frame. Match the session to the use, not to the lowest number you can find.`,
+      },
+      {
+        type: 'p',
+        content: `Every session includes professional editing, an online gallery you can download from and order prints through, and a booking that's locked with a deposit so your date is actually yours. No surprise add-ons at delivery.`,
+      },
+      {
+        type: 'p',
+        content: `Want exact numbers for your specific shoot? The pricing calculator on my homepage gives you an instant quote — pick your session type, length, and location and it does the math live. Or just message me your vision and I'll come back with a real number within 24 hours. No "inquire for pricing" runaround.`,
+      },
+    ],
+    gallery: [
+      '/photos/webp/edit_12_websize.webp',
+      '/photos/webp/edit_19_websize.webp',
+      '/photos/webp/edit_22_websize.webp',
+    ],
+    tags: ['Pricing', 'Charlotte', 'Headshots', 'Portraits', 'Booking'],
+  },
+  {
     slug: 'best-photo-spots-charlotte-nc',
     title: 'The Best Portrait Locations in Charlotte (That Nobody Talks About)',
     date: '2026-03-14',
