@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { HiMail, HiLocationMarker } from 'react-icons/hi'
 import { FaInstagram } from 'react-icons/fa'
 import { sendContactEmail } from '../utils/emailService'
+import { trackLead } from '../utils/analytics'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const logToLeadsCRM = async (data) => {
@@ -35,6 +36,7 @@ export default function Contact() {
 
     try {
       await sendContactEmail(formData)
+      trackLead({ preferred_contact: formData.preferredContact })
       logToLeadsCRM({
         type: 'LEAD',
         name: formData.name,

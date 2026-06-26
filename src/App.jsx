@@ -1,6 +1,6 @@
 import { useState, useCallback, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import useGA4 from './hooks/useGA4'
+import useAnalytics from './hooks/useAnalytics'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
@@ -106,7 +106,7 @@ function ManagePage() {
 }
 
 function App() {
-  useGA4()
+  useAnalytics()
 
   return (
     <Routes>

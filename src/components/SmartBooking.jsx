@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
+import { trackEvent, trackBooking } from '../utils/analytics'
 import BookingCalendar from './BookingCalendar'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
@@ -205,6 +206,13 @@ export default function SmartBooking() {
 
     try {
       await sendBookingEmail(enrichedFormData, packageInfo)
+      // Track the conversion (GA4 + FB Pixel) — the key revenue event
+      trackBooking({
+        value: finalPrice,
+        session_type: selectedType ? selectedType.label : formData.sessionType,
+        deposit: depositAmount,
+        booking_id: bookingId,
+      })
       // Log to Google Sheets CRM (fire-and-forget, non-blocking)
       logToCRM({
         name: formData.name,
@@ -358,7 +366,13 @@ export default function SmartBooking() {
 
                   <button
                     type="button"
-                    onClick={() => setStep(2)}
+                    onClick={() => {
+                      trackEvent('booking_step_1_complete', {
+                        session_type: formData.sessionType,
+                        location: formData.location,
+                      })
+                      setStep(2)
+                    }}
                     disabled={!formData.location || !formData.headcount}
                     className="w-full font-heading text-xs tracking-[0.2em] uppercase text-ink bg-gold px-8 py-4 hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >

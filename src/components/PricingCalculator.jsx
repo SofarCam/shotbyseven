@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackEvent } from '../utils/analytics'
 
 const sessionTypes = [
   { id: 'portrait',   label: 'Portrait / Headshots',    basePrice: 325, minDuration: 1,   icon: '🎭' },
@@ -39,6 +40,7 @@ export default function PricingCalculator({ onBookNow }) {
   const remaining = price ? price - deposit : null
 
   const handleBookNow = () => {
+    trackEvent('pricing_book_now', { session_type: sessionType, price })
     if (onBookNow && sessionType) onBookNow(sessionType)
     const el = document.getElementById('smart-booking')
     if (el) el.scrollIntoView({ behavior: 'smooth' })
