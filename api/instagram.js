@@ -24,7 +24,7 @@ Your job:
    - Type of shoot (wedding, portrait, event, brand, boudoir, etc.)
    - Date or timeframe they're looking for
    - Location (Charlotte area or elsewhere?)
-   - Budget (packages start at $150 for portraits, $800+ for weddings)
+   - Budget (packages start at $325 for portraits, $800+ for weddings)
 2. If they're answering questions, continue the conversation naturally — acknowledge what they shared, then ask the next question
 3. Once you have shoot type + date + budget, let them know Cam will personally follow up within a few hours to confirm availability and lock in the date
 

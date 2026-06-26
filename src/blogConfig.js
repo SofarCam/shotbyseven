@@ -124,8 +124,8 @@ export const blogPosts = [
     cover: '/photos/webp/Kyasia_lighting-107_websize.webp',
     excerpt: `Most headshot sessions feel transactional. Here's how I do them differently — and what you should be looking for when you're shopping photographers in Charlotte.`,
     seoTitle: 'Headshots Charlotte NC | Professional Headshot Photographer | Shot by Seven',
-    seoDescription: 'Getting headshots in Charlotte? Here is what to expect, how to prep, and why the photographer matters more than the location. Sessions from $150.',
-    cta: { headline: 'Book your headshots in Charlotte.', sub: 'LinkedIn, brand, acting — tell me what platform it is for and I\'ll set up the session to match. $150, one hour, 15+ selects.', label: 'Book Headshots →' },
+    seoDescription: 'Getting headshots in Charlotte? Here is what to expect, how to prep, and why the photographer matters more than the location. Sessions from $325.',
+    cta: { headline: 'Book your headshots in Charlotte.', sub: 'LinkedIn, brand, acting — tell me what platform it is for and I\'ll set up the session to match. $325, one hour, 15+ selects.', label: 'Book Headshots →' },
     body: [
       {
         type: 'p',
@@ -152,7 +152,7 @@ export const blogPosts = [
       },
       {
         type: 'p',
-        content: `Headshots start at $150 for a one-hour session in Charlotte. That includes two looks, studio or outdoor, and 15+ edited selects delivered digitally. If you're updating your brand presence this year — this is the fastest ROI you can get on an hour of your time.`,
+        content: `Headshots start at $325 for a one-hour session in Charlotte. That includes two looks, studio or outdoor, and 15+ edited selects delivered digitally. If you're updating your brand presence this year — this is the fastest ROI you can get on an hour of your time.`,
       },
       {
         type: 'p',
@@ -176,7 +176,7 @@ export const blogPosts = [
     excerpt: `Valentine's week. Studio A at NoDa Art House. One model, a floor covered in roses, and two hours to make something cinematic.`,
     seoTitle: 'Studio Portrait Session at NoDa Art House Charlotte | Shot by Seven',
     seoDescription: 'Behind the scenes of a cinematic rose editorial at Studio A, NoDa Art House, Charlotte NC. See how a concept shoot comes together from setup to final edit.',
-    cta: { headline: 'Book Studio A in Charlotte.', sub: 'Studio sessions at NoDa Art House start at $150. Bring your concept — I\'ll handle the rest.', label: 'Book a Studio Session →' },
+    cta: { headline: 'Book Studio A in Charlotte.', sub: 'Studio sessions at NoDa Art House start at $425. Bring your concept — I\'ll handle the rest.', label: 'Book a Studio Session →' },
     body: [
       {
         type: 'p',
@@ -218,7 +218,7 @@ export const blogPosts = [
     excerpt: `A jersey, a yellow backdrop, and a vision for something that lives at the intersection of streetwear and editorial. Here's how the Court Couture shoot came together.`,
     seoTitle: 'Sports Meets Fashion Editorial Photography Charlotte NC | Shot by Seven',
     seoDescription: 'Behind the scenes of the Court Couture jersey editorial — how to shoot athletic wear like a magazine spread. Studio sessions at NoDa Art House, Charlotte NC.',
-    cta: { headline: 'Book a fashion or editorial session.', sub: 'Studio A at NoDa Art House. Bring your concept — I handle the rest. Sessions from $350.', label: 'Book an Editorial Session →' },
+    cta: { headline: 'Book a fashion or editorial session.', sub: 'Studio A at NoDa Art House. Bring your concept — I handle the rest. Sessions from $500.', label: 'Book an Editorial Session →' },
     body: [
       {
         type: 'p',

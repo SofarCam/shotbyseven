@@ -62,7 +62,7 @@ export default function Hero() {
           transition={{ delay: 1.0, duration: 1 }}
           className="font-body text-base text-cream/40 max-w-md mx-auto mb-10"
         >
-          Portraits, graduations &amp; brand sessions — from $150.
+          Portraits, graduations &amp; brand sessions — from $325.
         </motion.p>
 
         <motion.div

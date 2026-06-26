@@ -9,7 +9,7 @@ const faqs = [
   },
   {
     q: 'How much do you charge?',
-    a: 'Sessions start at $150 for portraits, $200 for couples/sports, $250 for graduation/events, $300 for maternity/family, and $350 for fashion/editorial. Extra time is $75/hr beyond the session minimum. Studio rental at NoDa Art House is $60/hr (not included). Use the Pricing Calculator on this page for an instant quote.',
+    a: 'Sessions start at $325 for portraits, $375 for couples, $325 for graduation/sports, $425 for maternity/family, and $500 for fashion/editorial. Extra time is $100/hr beyond the session minimum. Studio rental at NoDa Art House is $75/hr (not included). Use the Pricing Calculator on this page for an instant quote.',
   },
   {
     q: 'How long until I get my photos?',

@@ -24,13 +24,13 @@ const logToCRM = async (data) => {
 }
 
 const sessionTypes = [
-  { id: 'portrait', label: 'Portrait/Headshots', basePrice: 150, minDuration: 1 },
-  { id: 'couples', label: 'Couples/Engagement', basePrice: 200, minDuration: 1.5 },
-  { id: 'graduation', label: 'Graduation', basePrice: 250, minDuration: 2 },
-  { id: 'maternity', label: 'Maternity/Family', basePrice: 300, minDuration: 2 },
-  { id: 'event', label: 'Event Coverage', basePrice: 250, minDuration: 3 },
-  { id: 'fashion', label: 'Fashion/Editorial', basePrice: 350, minDuration: 2 },
-  { id: 'sports', label: 'Sports/Action', basePrice: 200, minDuration: 1.5 },
+  { id: 'portrait', label: 'Portrait/Headshots', basePrice: 325, minDuration: 1 },
+  { id: 'couples', label: 'Couples/Engagement', basePrice: 375, minDuration: 1.5 },
+  { id: 'graduation', label: 'Graduation', basePrice: 325, minDuration: 2 },
+  { id: 'maternity', label: 'Maternity/Family', basePrice: 425, minDuration: 2 },
+  { id: 'event', label: 'Event Coverage', basePrice: 450, minDuration: 3 },
+  { id: 'fashion', label: 'Fashion/Editorial', basePrice: 500, minDuration: 2 },
+  { id: 'sports', label: 'Sports/Action', basePrice: 325, minDuration: 1.5 },
 ]
 
 const charlotteLocations = [
@@ -39,7 +39,7 @@ const charlotteLocations = [
   { id: 'noda', label: 'NoDa Arts District' },
   { id: 'freedom', label: 'Freedom Park' },
   { id: 'romare', label: 'Romare Bearden Park' },
-  { id: 'studio', label: 'Studio A — NoDa Art House (+$60/hr)' },
+  { id: 'studio', label: 'Studio A — NoDa Art House (+$75/hr)' },
 ]
 
 export default function SmartBooking() {
@@ -137,10 +137,10 @@ export default function SmartBooking() {
     if (!type) return 0
     let price = type.basePrice
     if (formData.duration > type.minDuration) {
-      price += (formData.duration - type.minDuration) * 75
+      price += (formData.duration - type.minDuration) * 100
     }
     if (formData.location === 'studio') {
-      price += formData.duration * 60
+      price += formData.duration * 75
     }
     return price
   }
@@ -148,7 +148,7 @@ export default function SmartBooking() {
   const effectiveCount = previousBookings !== null ? previousBookings : 0
   const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
-  const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
+  const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.8) : basePrice
   const depositAmount = finalPrice ? Math.max(50, Math.round(finalPrice * 0.25)) : 100
 
   const handleSubmit = async (e) => {
