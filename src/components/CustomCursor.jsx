@@ -18,6 +18,8 @@ export default function CustomCursor() {
       cursorX.set(e.clientX)
       cursorY.set(e.clientY)
     }
+    // passive: this listener never calls preventDefault, so the browser
+    // doesn't have to wait on it before handling the move.
 
     const handleOver = (e) => {
       const t = e.target
@@ -38,7 +40,7 @@ export default function CustomCursor() {
     const handleLeave = () => setIsHidden(true)
     const handleEnter = () => setIsHidden(false)
 
-    window.addEventListener('mousemove', moveCursor)
+    window.addEventListener('mousemove', moveCursor, { passive: true })
     document.addEventListener('mouseover', handleOver)
     document.addEventListener('mouseout', handleOut)
     document.documentElement.addEventListener('mouseleave', handleLeave)
@@ -60,10 +62,13 @@ export default function CustomCursor() {
   if (isOnImage) {
     return (
       <motion.div
-        style={{ left: ringX, top: ringY, x: '-50%', y: '-50%', opacity: isHidden ? 0 : 1 }}
-        className="fixed pointer-events-none z-[9999]"
+        style={{ x: ringX, y: ringY, willChange: 'transform' }}
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
       >
-        <div className="w-[60px] h-[60px] border border-gold/70 rounded-full relative">
+        <div
+          className="w-[60px] h-[60px] border border-gold/70 rounded-full relative -translate-x-1/2 -translate-y-1/2 transition-opacity duration-150"
+          style={{ opacity: isHidden ? 0 : 1 }}
+        >
           <div className="absolute top-1/2 left-0 w-2 h-[0.5px] bg-gold/50 -translate-y-1/2" />
           <div className="absolute top-1/2 right-0 w-2 h-[0.5px] bg-gold/50 -translate-y-1/2" />
           <div className="absolute left-1/2 top-0 w-[0.5px] h-2 bg-gold/50 -translate-x-1/2" />
@@ -77,24 +82,33 @@ export default function CustomCursor() {
   return (
     <>
       <motion.div
-        style={{
-          left: cursorX, top: cursorY, x: '-50%', y: '-50%',
-          opacity: isHidden ? 0 : 1,
-          scale: isHovering ? 0 : 1,
-        }}
-        className="fixed w-2 h-2 bg-gold rounded-full pointer-events-none z-[9999] mix-blend-difference"
-      />
-      <motion.div
-        style={{
-          left: ringX, top: ringY, x: '-50%', y: '-50%',
-          opacity: isHidden ? 0 : 0.6,
-          scale: isHovering ? 1.5 : 1,
-        }}
-        className="fixed pointer-events-none z-[9998]"
+        style={{ x: cursorX, y: cursorY, willChange: 'transform' }}
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
       >
-        <div className={`rounded-full border transition-all duration-200 ${
-          isHovering ? 'w-12 h-12 border-gold bg-gold/10' : 'w-8 h-8 border-gold/40'
-        }`} />
+        <motion.div
+          style={{
+            x: '-50%', y: '-50%',
+            opacity: isHidden ? 0 : 1,
+            scale: isHovering ? 0 : 1,
+          }}
+          className="w-2 h-2 bg-gold rounded-full mix-blend-difference"
+        />
+      </motion.div>
+      <motion.div
+        style={{ x: ringX, y: ringY, willChange: 'transform' }}
+        className="fixed top-0 left-0 pointer-events-none z-[9998]"
+      >
+        <motion.div
+          style={{
+            x: '-50%', y: '-50%',
+            opacity: isHidden ? 0 : 0.6,
+            scale: isHovering ? 1.5 : 1,
+          }}
+        >
+          <div className={`rounded-full border transition-all duration-200 ${
+            isHovering ? 'w-12 h-12 border-gold bg-gold/10' : 'w-8 h-8 border-gold/40'
+          }`} />
+        </motion.div>
       </motion.div>
     </>
   )
