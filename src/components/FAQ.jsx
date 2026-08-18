@@ -5,11 +5,15 @@ import { HiPlus, HiMinus } from 'react-icons/hi'
 const faqs = [
   {
     q: 'How do I book?',
-    a: 'Use the Smart Booking form on this page. Tell me your session type, dates, and vision — I\'ll confirm within 24 hours. A $100 deposit holds your date.',
+    a: 'Use the Smart Booking form on this page. Tell me your session type, dates, and vision — I\'ll confirm within 24 hours. A $50 deposit holds your date ($100 for sessions $300+).',
+  },
+  {
+    q: 'Where are you located?',
+    a: 'I\'m based in Charlotte, NC. Studio sessions are held at NoDa Art House — 3109 Cullman Ave, Charlotte, NC 28206 — in the heart of the NoDa arts district. Outdoor sessions take place at locations across Charlotte and the surrounding area. I also travel — within 100 miles is a $50 flat fee.',
   },
   {
     q: 'How much do you charge?',
-    a: 'Sessions start at $150 for portraits, $200 for couples/sports, $250 for graduation/events, $300 for maternity/family, and $350 for fashion/editorial. Extra time is $75/hr beyond the session minimum. Studio rental at NoDa Art House is $60/hr (not included). Use the Pricing Calculator on this page for an instant quote.',
+    a: 'Everything is $50/hr with a 2-hour minimum, so most sessions start at $100. Graduation and maternity/family start at $250. Studio rental at NoDa Art House is $60/hr (not included), and travel within 100 miles is a $50 flat fee. Weddings and corporate events are custom quotes — just reach out. Use the Pricing Calculator on this page for an instant quote.',
   },
   {
     q: 'How long until I get my photos?',
