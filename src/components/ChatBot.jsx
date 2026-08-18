@@ -21,16 +21,16 @@ const INFO = {
   portalUrl: '/portal',
   stripeUrl: 'https://buy.stripe.com/00w00ja802Rl5g74ar8og00',
   services: {
-    portrait:   { name: 'Portrait / Headshots',   basePrice: 150, extraPerHr: 75, minHrs: 1,   description: 'Headshots, personal branding, couples, family, lifestyle' },
-    couples:    { name: 'Couples / Engagement',    basePrice: 200, extraPerHr: 75, minHrs: 1.5, description: 'Romantic couples sessions and engagement shoots' },
-    graduation: { name: 'Graduation',              basePrice: 250, extraPerHr: 75, minHrs: 2,   description: 'Cap & gown portraits and creative graduation shoots' },
-    maternity:  { name: 'Maternity / Family',      basePrice: 300, extraPerHr: 75, minHrs: 2,   description: 'Maternity and family sessions — timeless, emotional, beautiful' },
-    events:     { name: 'Event Coverage',          basePrice: 250, extraPerHr: 75, minHrs: 3,   description: 'Weddings, proposals, birthdays, corporate events, parties' },
-    fashion:    { name: 'Fashion / Editorial',     basePrice: 350, extraPerHr: 75, minHrs: 2,   description: 'Editorial, fashion, artistic concepts at NoDa Art House' },
-    sports:     { name: 'Sports / Action',         basePrice: 200, extraPerHr: 75, minHrs: 1.5, description: 'Sports, action, fitness, and lifestyle shoots' },
+    portrait:   { name: 'Portrait / Headshots',   basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Headshots, personal branding, couples, family, lifestyle' },
+    couples:    { name: 'Couples / Engagement',    basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Romantic couples sessions and engagement shoots' },
+    graduation: { name: 'Graduation',              basePrice: 250, extraPerHr: 50, minHrs: 2, description: 'Cap & gown portraits and creative graduation shoots' },
+    maternity:  { name: 'Maternity / Family',      basePrice: 250, extraPerHr: 50, minHrs: 2, description: 'Maternity and family sessions — timeless, emotional, beautiful' },
+    events:     { name: 'Birthday / Event',        basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Birthdays, parties & simple events — weddings and corporate are custom quotes' },
+    fashion:    { name: 'Fashion / Editorial',     basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Editorial, fashion, artistic concepts at NoDa Art House' },
+    sports:     { name: 'Sports / Action',         basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Sports, action, fitness, and lifestyle shoots' },
   },
+  hourlyRate: 50, // $50/hr, 2-hour minimum
   studioFee: 60, // per hour extra for Studio A
-  depositPct: 0.25, // 25% deposit
   depositMin: 50,
   turnaround: '7 business days',
   loyalty: '3+ sessions = 50% off your next booking',
@@ -87,9 +87,8 @@ function getServiceSummary() {
 }
 
 function getDepositExample() {
-  const ex = INFO.services.portrait
-  const total = ex.basePrice
-  const dep = Math.max(INFO.depositMin, Math.round(total * INFO.depositPct))
+  const total = INFO.services.portrait.basePrice
+  const dep = total < 300 ? 50 : 100
   return { total, dep }
 }
 
@@ -108,7 +107,7 @@ function getBotResponse(input) {
     case 'services': {
       const list = getServiceSummary()
       return {
-        text: `Here's what I offer:\n\n${list}\n\nAll base prices are for the minimum session duration. Add studio time at NoDa Art House for +$${INFO.studioFee}/hr. Ready to book?`,
+        text: `Here's what I offer:\n\n${list}\n\nEverything's $${INFO.hourlyRate}/hr with a 2-hour minimum. Add studio time at NoDa Art House for +$${INFO.studioFee}/hr. Ready to book?`,
         quickReplies: BOOKING_REPLIES,
       }
     }
@@ -116,7 +115,7 @@ function getBotResponse(input) {
     case 'deposit': {
       const { total, dep } = getDepositExample()
       return {
-        text: `**Deposits are 25% of your session total** (minimum $${INFO.depositMin}).\n\nExample: A $${total} portrait session = **$${dep} deposit** to lock in your date.\n\nThe remaining balance is due on shoot day. Deposits are non-refundable.\n\nYou can pay your deposit here:`,
+        text: `**A deposit locks in your date** — $50 for sessions under $300, $100 for $300+.\n\nExample: a $${total} portrait session = **$${dep} deposit**, with the balance due on shoot day. Deposits are non-refundable.\n\nYou can pay your deposit here:`,
         quickReplies: [
           { label: 'Pay Deposit →', value: 'open-stripe' },
           { label: 'Book First', value: 'scroll-smart-booking' },

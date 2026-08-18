@@ -2,17 +2,23 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { scrollToSection } from '../utils/scroll'
 
+// $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
+// Studio (NoDa Art House) adds $60/hr on top. Loyalty = 50% off after 3 sessions.
+const HOURLY_RATE = 50
+const STUDIO_RATE = 60
+const MIN_HOURS = 2
+
 const sessionTypes = [
-  { id: 'portrait',   label: 'Portrait / Headshots',    basePrice: 325, minDuration: 1,   icon: '🎭' },
-  { id: 'couples',    label: 'Couples / Engagement',     basePrice: 375, minDuration: 1.5, icon: '💍' },
-  { id: 'graduation', label: 'Graduation',               basePrice: 325, minDuration: 2,   icon: '🎓' },
-  { id: 'maternity',  label: 'Maternity / Family',       basePrice: 425, minDuration: 2,   icon: '🌿' },
-  { id: 'fashion',    label: 'Fashion / Editorial',      basePrice: 500, minDuration: 2,   icon: '✨' },
-  { id: 'sports',     label: 'Sports / Action',          basePrice: 325, minDuration: 1.5, icon: '⚡' },
-  { id: 'event',      label: 'Event Coverage',           basePrice: 450, minDuration: 3,   icon: '🎪' },
+  { id: 'portrait',   label: 'Portrait / Headshots', minPrice: 100, icon: '🎭' },
+  { id: 'couples',    label: 'Couples / Engagement',  minPrice: 100, icon: '💍' },
+  { id: 'graduation', label: 'Graduation',            minPrice: 250, icon: '🎓' },
+  { id: 'maternity',  label: 'Maternity / Family',    minPrice: 250, icon: '🌿' },
+  { id: 'fashion',    label: 'Fashion / Editorial',   minPrice: 100, icon: '✨' },
+  { id: 'sports',     label: 'Sports / Action',       minPrice: 100, icon: '⚡' },
+  { id: 'event',      label: 'Birthday / Event',      minPrice: 100, icon: '🎪' },
 ]
 
-const durations = [1, 1.5, 2, 2.5, 3, 4, 5, 6]
+const durations = [2, 2.5, 3, 4, 5, 6]
 
 export default function PricingCalculator({ onBookNow }) {
   const [sessionType, setSessionType] = useState(null)
@@ -21,22 +27,16 @@ export default function PricingCalculator({ onBookNow }) {
   const [returning, setReturning] = useState(false)
 
   const selected = sessionTypes.find(t => t.id === sessionType)
-  const minDuration = selected ? selected.minDuration : 1
-  const effectiveDuration = Math.max(duration, minDuration)
+  const effectiveDuration = Math.max(MIN_HOURS, duration)
 
-  const calcPrice = () => {
-    if (!selected) return null
-    let price = selected.basePrice
-    if (effectiveDuration > selected.minDuration) {
-      price += (effectiveDuration - selected.minDuration) * 100
-    }
-    if (studio) price += effectiveDuration * 75
-    if (returning) price = Math.round(price * 0.8)
-    return price
-  }
+  const hourlyTotal = effectiveDuration * HOURLY_RATE
+  const sessionSubtotal = selected ? Math.max(hourlyTotal, selected.minPrice) : 0
+  const minApplied = selected && sessionSubtotal > hourlyTotal
+  const studioAdd = studio ? effectiveDuration * STUDIO_RATE : 0
+  const subtotal = sessionSubtotal + studioAdd
+  const price = selected ? (returning ? Math.round(subtotal * 0.5) : subtotal) : null
 
-  const price = calcPrice()
-  const deposit = price ? Math.max(50, Math.round(price * 0.25)) : null
+  const deposit = price ? (price < 300 ? 50 : 100) : null
   const remaining = price ? price - deposit : null
 
   const handleBookNow = () => {
@@ -59,7 +59,7 @@ export default function PricingCalculator({ onBookNow }) {
           What&apos;s Your Session?
         </h2>
         <p className="text-cream/40 text-sm max-w-md mx-auto">
-          Pick your session type, set the time, and see your price in real time. No surprises.
+          $50/hr, 2-hour minimum. Set your time, add studio if you need it, and see your price in real time. No surprises.
         </p>
       </motion.div>
 
@@ -79,10 +79,7 @@ export default function PricingCalculator({ onBookNow }) {
               {sessionTypes.map(t => (
                 <button
                   key={t.id}
-                  onClick={() => {
-                    setSessionType(t.id)
-                    if (duration < t.minDuration) setDuration(t.minDuration)
-                  }}
+                  onClick={() => setSessionType(t.id)}
                   className={`text-left px-4 py-3 border transition-all duration-200 ${
                     sessionType === t.id
                       ? 'border-gold bg-gold/10 text-cream'
@@ -100,28 +97,22 @@ export default function PricingCalculator({ onBookNow }) {
           <div>
             <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-4">
               Duration
-              {selected && <span className="text-gold/50 ml-2">(min {selected.minDuration}hr)</span>}
+              <span className="text-gold/50 ml-2">(2hr min)</span>
             </p>
             <div className="flex flex-wrap gap-2">
-              {durations.map(d => {
-                const locked = d < minDuration
-                return (
-                  <button
-                    key={d}
-                    disabled={locked}
-                    onClick={() => !locked && setDuration(d)}
-                    className={`px-4 py-2 border font-heading text-[10px] tracking-[0.15em] uppercase transition-all duration-200 ${
-                      effectiveDuration === d && !locked
-                        ? 'border-gold bg-gold/10 text-cream'
-                        : locked
-                        ? 'border-cream/5 text-cream/20 cursor-not-allowed'
-                        : 'border-cream/10 text-cream/50 hover:border-cream/30 hover:text-cream/80'
-                    }`}
-                  >
-                    {d}hr
-                  </button>
-                )
-              })}
+              {durations.map(d => (
+                <button
+                  key={d}
+                  onClick={() => setDuration(d)}
+                  className={`px-4 py-2 border font-heading text-[10px] tracking-[0.15em] uppercase transition-all duration-200 ${
+                    effectiveDuration === d
+                      ? 'border-gold bg-gold/10 text-cream'
+                      : 'border-cream/10 text-cream/50 hover:border-cream/30 hover:text-cream/80'
+                  }`}
+                >
+                  {d}hr
+                </button>
+              ))}
             </div>
           </div>
 
@@ -140,7 +131,7 @@ export default function PricingCalculator({ onBookNow }) {
                 </div>
                 <div onClick={() => setStudio(!studio)}>
                   <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/70">Studio A — NoDa Art House</p>
-                  <p className="text-cream/30 text-xs mt-0.5">+$75/hr · Professional studio space</p>
+                  <p className="text-cream/30 text-xs mt-0.5">+$60/hr · Professional studio space</p>
                 </div>
               </label>
 
@@ -155,7 +146,7 @@ export default function PricingCalculator({ onBookNow }) {
                 </div>
                 <div onClick={() => setReturning(!returning)}>
                   <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/70">Returning Client (3+ sessions)</p>
-                  <p className="text-cream/30 text-xs mt-0.5">20% loyalty discount · Automatically verified at checkout</p>
+                  <p className="text-cream/30 text-xs mt-0.5">50% loyalty discount · Automatically verified at checkout</p>
                 </div>
               </label>
             </div>
@@ -195,32 +186,30 @@ export default function PricingCalculator({ onBookNow }) {
                   {/* Session summary */}
                   <div className="space-y-3 mb-8">
                     <div className="flex justify-between items-center">
-                      <span className="text-cream/40 text-sm font-body">{selected.label}</span>
-                      <span className="text-cream/70 text-sm font-body">${selected.basePrice}</span>
+                      <span className="text-cream/40 text-sm font-body">
+                        {selected.label}
+                        <span className="text-cream/25"> · {effectiveDuration}hr × $50</span>
+                      </span>
+                      <span className="text-cream/70 text-sm font-body">${sessionSubtotal}</span>
                     </div>
 
-                    {effectiveDuration > selected.minDuration && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-cream/40 text-sm font-body">
-                          +{(effectiveDuration - selected.minDuration)}hr extra
-                        </span>
-                        <span className="text-cream/70 text-sm font-body">
-                          +${(effectiveDuration - selected.minDuration) * 75}
-                        </span>
-                      </div>
+                    {minApplied && (
+                      <p className="text-gold/40 text-[10px] font-body">
+                        ${selected.minPrice} package minimum applied
+                      </p>
                     )}
 
                     {studio && (
                       <div className="flex justify-between items-center">
-                        <span className="text-cream/40 text-sm font-body">Studio A ({effectiveDuration}hr)</span>
-                        <span className="text-cream/70 text-sm font-body">+${effectiveDuration * 60}</span>
+                        <span className="text-cream/40 text-sm font-body">Studio A ({effectiveDuration}hr × $60)</span>
+                        <span className="text-cream/70 text-sm font-body">+${studioAdd}</span>
                       </div>
                     )}
 
                     {returning && (
                       <div className="flex justify-between items-center">
-                        <span className="text-gold/70 text-sm font-body">Loyalty discount (20%)</span>
-                        <span className="text-gold text-sm font-body">-20%</span>
+                        <span className="text-gold/70 text-sm font-body">Loyalty discount (50%)</span>
+                        <span className="text-gold text-sm font-body">-50%</span>
                       </div>
                     )}
                   </div>
@@ -246,6 +235,7 @@ export default function PricingCalculator({ onBookNow }) {
                     {effectiveDuration}hr {selected.label.toLowerCase()}
                     {studio ? ' · Studio A' : ''}
                     {returning ? ' · Loyalty rate' : ''}
+                    {' · +$50 travel (Charlotte area)'}
                   </p>
 
                   {/* Deposit breakdown */}

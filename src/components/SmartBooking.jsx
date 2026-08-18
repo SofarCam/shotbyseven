@@ -23,14 +23,16 @@ const logToCRM = async (data) => {
   }
 }
 
+// $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
+// Studio (NoDa Art House) adds $60/hr. minPrice = the floor for a 2hr booking.
 const sessionTypes = [
-  { id: 'portrait', label: 'Portrait/Headshots', basePrice: 150, minDuration: 1 },
-  { id: 'couples', label: 'Couples/Engagement', basePrice: 200, minDuration: 1.5 },
-  { id: 'graduation', label: 'Graduation', basePrice: 250, minDuration: 2 },
-  { id: 'maternity', label: 'Maternity/Family', basePrice: 300, minDuration: 2 },
-  { id: 'event', label: 'Event Coverage', basePrice: 250, minDuration: 3 },
-  { id: 'fashion', label: 'Fashion/Editorial', basePrice: 350, minDuration: 2 },
-  { id: 'sports', label: 'Sports/Action', basePrice: 200, minDuration: 1.5 },
+  { id: 'portrait', label: 'Portrait/Headshots', minPrice: 100, minDuration: 2 },
+  { id: 'couples', label: 'Couples/Engagement', minPrice: 100, minDuration: 2 },
+  { id: 'graduation', label: 'Graduation', minPrice: 250, minDuration: 2 },
+  { id: 'maternity', label: 'Maternity/Family', minPrice: 250, minDuration: 2 },
+  { id: 'event', label: 'Birthday/Event', minPrice: 100, minDuration: 2 },
+  { id: 'fashion', label: 'Fashion/Editorial', minPrice: 100, minDuration: 2 },
+  { id: 'sports', label: 'Sports/Action', minPrice: 100, minDuration: 2 },
 ]
 
 const charlotteLocations = [
@@ -135,12 +137,10 @@ export default function SmartBooking() {
   const getBasePrice = () => {
     const type = sessionTypes.find(t => t.id === formData.sessionType)
     if (!type) return 0
-    let price = type.basePrice
-    if (formData.duration > type.minDuration) {
-      price += (formData.duration - type.minDuration) * 75
-    }
+    const hours = Math.max(2, formData.duration)
+    let price = Math.max(hours * 50, type.minPrice)
     if (formData.location === 'studio') {
-      price += formData.duration * 60
+      price += hours * 60
     }
     return price
   }
@@ -149,7 +149,7 @@ export default function SmartBooking() {
   const hasLoyaltyDiscount = effectiveCount >= 3
   const basePrice = getBasePrice()
   const finalPrice = hasLoyaltyDiscount ? Math.round(basePrice * 0.5) : basePrice
-  const depositAmount = finalPrice ? Math.max(50, Math.round(finalPrice * 0.25)) : 100
+  const depositAmount = finalPrice ? (finalPrice < 300 ? 50 : 100) : 100
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -286,7 +286,7 @@ export default function SmartBooking() {
                       className={'p-4 border text-left transition-all ' + (formData.sessionType === type.id ? 'border-gold bg-gold/10' : 'border-cream/10 hover:border-gold/30')}
                     >
                       <p className={'font-display ' + (formData.sessionType === type.id ? 'text-cream' : 'text-cream/70')}>{type.label}</p>
-                      <p className="text-gold text-sm">From ${type.basePrice}</p>
+                      <p className="text-gold text-sm">From ${type.minPrice}</p>
                     </button>
                   ))}
                 </div>

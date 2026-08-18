@@ -62,7 +62,7 @@ export default function Hero() {
           transition={{ delay: 1.0, duration: 1 }}
           className="font-body text-base text-cream/40 max-w-md mx-auto mb-10"
         >
-          Portraits, graduations &amp; brand sessions — from $150.
+          Portraits, grads &amp; brand sessions — $50/hr, 2-hour minimum.
         </motion.p>
 
         <motion.div
@@ -86,7 +86,7 @@ export default function Hero() {
             </a>
           </div>
           <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30">
-            $100 deposit to hold your date &nbsp;·&nbsp; Same-day confirmation
+            $50 deposit to hold your date &nbsp;·&nbsp; Same-day confirmation
           </p>
         </motion.div>
       </motion.div>
