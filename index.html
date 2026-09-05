@@ -40,22 +40,25 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
+      "@type": ["LocalBusiness", "ProfessionalService"],
       "@id": "https://shotbyseven.com",
       "name": "Shot by Seven",
       "alternateName": "Shot by Seven Photography",
-      "description": "Charlotte, NC photographer specializing in portraits, headshots, graduation, maternity, fashion, studio, and event photography. Studio sessions at NoDa Art House.",
+      "description": "Charlotte, NC photographer specializing in portraits, headshots, couples & engagement, graduation, maternity, fashion, editorial, sports, and event photography. Studio sessions at NoDa Art House in the NoDa arts district.",
       "url": "https://shotbyseven.com",
-      "telephone": "",
       "email": "shotbyseven777@gmail.com",
       "founder": {
         "@type": "Person",
-        "name": "Cameron Currence"
+        "name": "Cameron Currence",
+        "alternateName": "Seven",
+        "sameAs": "https://instagram.com/shotbyseven777"
       },
       "address": {
         "@type": "PostalAddress",
+        "streetAddress": "3109 Cullman Ave",
         "addressLocality": "Charlotte",
         "addressRegion": "NC",
+        "postalCode": "28206",
         "addressCountry": "US"
       },
       "geo": {
@@ -63,11 +66,17 @@
         "latitude": 35.2271,
         "longitude": -80.8431
       },
-      "areaServed": {
-        "@type": "City",
-        "name": "Charlotte",
-        "sameAs": "https://en.wikipedia.org/wiki/Charlotte,_North_Carolina"
-      },
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Charlotte",
+          "sameAs": "https://en.wikipedia.org/wiki/Charlotte,_North_Carolina"
+        },
+        {
+          "@type": "State",
+          "name": "North Carolina"
+        }
+      ],
       "priceRange": "$$",
       "image": "https://shotbyseven.com/photos/webp/DM0A9139_websize.webp",
       "logo": "https://shotbyseven.com/favicon.svg",
@@ -78,12 +87,14 @@
         "@type": "OfferCatalog",
         "name": "Photography Services",
         "itemListElement": [
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Portrait Photography", "description": "Professional portrait sessions in Charlotte NC" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Graduation Photography", "description": "Graduation portrait sessions at Charlotte locations" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Headshot Photography", "description": "Professional headshots for LinkedIn, brand, and acting in Charlotte" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Studio Photography", "description": "Studio sessions at NoDa Art House, Charlotte NC" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fashion & Editorial Photography", "description": "Fashion and editorial photography in Charlotte NC" } },
-          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Maternity Photography", "description": "Maternity and family sessions in Charlotte NC" } }
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Portrait & Headshot Photography", "description": "Professional portrait and headshot sessions in Charlotte NC — ideal for LinkedIn, personal branding, and acting" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Couples & Engagement Photography", "description": "Couples and engagement sessions at Charlotte locations" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Graduation Photography", "description": "Graduation portrait sessions at Charlotte, NC locations" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Maternity & Family Photography", "description": "Maternity and family sessions in Charlotte NC" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Event Coverage", "description": "Weddings, proposals, birthdays, and corporate event photography in Charlotte NC" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Fashion & Editorial Photography", "description": "Fashion and editorial photography in Charlotte NC — studio and on location" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Sports & Action Photography", "description": "Sports and action photography in the Charlotte, NC area" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Studio Photography", "description": "Creative studio sessions at NoDa Art House, 3109 Cullman Ave, Charlotte NC 28206" } }
         ]
       }
     }
