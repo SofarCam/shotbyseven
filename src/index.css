@@ -86,6 +86,13 @@ a, button { cursor: none; }
   animation: lightLeak2 20s ease-in-out infinite 5s;
 }
 
+/* Ambient overlays (grain/light-leak) run forever and full-viewport — honor
+   reduced motion like SmoothScroll/CustomCursor already do, both for
+   accessibility and to cut needless continuous compositing. */
+@media (prefers-reduced-motion: reduce) {
+  .film-grain, .light-leak, .light-leak-2 { animation: none; }
+}
+
 .masonry-grid { column-count: 3; column-gap: 1.25rem; }
 .masonry-grid > * { break-inside: avoid; margin-bottom: 1.25rem; }
 @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }

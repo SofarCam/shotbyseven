@@ -30,15 +30,15 @@ const services = [
     id: 'events',
     icon: HiGlobe,
     title: 'Events',
-    description: 'Weddings, proposals, birthdays, corporate events, and special occasions throughout Charlotte, NC captured with artistry.',
-    price: 'Prices Vary',
+    description: 'Birthdays and simple events book online at the hourly rate. Weddings, corporate, and large events get a custom quote.',
+    price: 'From $100 · Weddings/corporate: custom quote',
   },
   {
     id: 'monthly',
     icon: HiRefresh,
     title: 'Monthly Package',
-    description: 'Multiple Charlotte shoots per month at a flat rate. Perfect for content creators, brands, and artists who need consistent visuals.',
-    price: 'Flat Rate',
+    description: '4 sessions per month (2hr each) at a bundled rate. Perfect for content creators, brands, and artists who need consistent visuals.',
+    price: '$350/mo',
   },
 ]
 

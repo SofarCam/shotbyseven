@@ -11,6 +11,7 @@ import FeaturedStrip from './components/FeaturedStrip'
 import SectionDivider from './components/SectionDivider'
 import About from './components/About'
 import Gallery from './components/Gallery'
+import InstagramStrip from './components/InstagramStrip'
 import Services from './components/Services'
 import PricingCalculator from './components/PricingCalculator'
 import SmartBooking from './components/SmartBooking'
@@ -70,6 +71,7 @@ function HomePage() {
             <About />
             <SectionDivider />
             <Gallery />
+            <InstagramStrip />
             <Marquee />
             <Services onServiceSelect={handleServiceSelect} />
             <SectionDivider />
