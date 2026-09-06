@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { HiMenuAlt4, HiX } from 'react-icons/hi'
+import { scrollToSection } from '../utils/scroll'
 
 const navLinks = [
   { label: 'Work', href: '#gallery' },
@@ -52,6 +53,7 @@ export default function Navbar() {
                 <a
                   key={link.label}
                   href={link.href}
+                  onClick={(e) => { e.preventDefault(); scrollToSection(link.href.slice(1)) }}
                   className="font-heading text-xs font-medium tracking-[0.2em] uppercase text-cream/50 hover:text-gold transition-colors duration-300 relative group"
                 >
                   {link.label}
@@ -103,7 +105,11 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.08, duration: 0.5 }}
-                  onClick={() => setIsOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setIsOpen(false)
+                    scrollToSection(link.href.slice(1))
+                  }}
                   className="font-display text-4xl text-cream hover:text-gold transition-colors"
                 >
                   {link.label}
