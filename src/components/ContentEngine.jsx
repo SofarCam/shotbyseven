@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
-  HiClipboard, HiCheck, HiRefresh, HiSave, HiLightningBolt, HiCamera,
+  HiClipboard, HiCheck, HiRefresh, HiSave, HiLightningBolt, HiCamera, HiDownload,
 } from 'react-icons/hi'
 
 const LS_VOICE_KEY = 'sbs_voice_profile'
@@ -23,6 +23,27 @@ function CopyBtn({ text, label = 'Copy' }) {
     >
       {copied ? <HiCheck className="w-3 h-3 text-gold" /> : <HiClipboard className="w-3 h-3" />}
       {copied ? 'Copied!' : label}
+    </button>
+  )
+}
+
+function DownloadBtn({ text, filename }) {
+  const download = useCallback(() => {
+    const blob = new Blob([text], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [text, filename])
+  return (
+    <button
+      onClick={download}
+      className="flex items-center gap-1.5 font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30 hover:text-gold transition-colors"
+    >
+      <HiDownload className="w-3 h-3" />
+      Download
     </button>
   )
 }
@@ -408,7 +429,15 @@ export default function ContentEngine() {
                   <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">
                     {loading === 'content' ? 'Writing your content...' : 'Your Content Month'}
                   </h2>
-                  {contentOutput && <CopyBtn text={contentOutput} label="Copy All" />}
+                  {contentOutput && (
+                    <div className="flex items-center gap-4">
+                      <DownloadBtn
+                        text={contentOutput}
+                        filename={`content-${intake.subject ? intake.subject.replace(/\s+/g, '-').toLowerCase() : 'shoot'}-${new Date().toISOString().slice(0,10)}.txt`}
+                      />
+                      <CopyBtn text={contentOutput} label="Copy All" />
+                    </div>
+                  )}
                 </div>
 
                 {contentSections.length > 0 ? (
