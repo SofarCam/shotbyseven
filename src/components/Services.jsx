@@ -1,15 +1,39 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh } from 'react-icons/hi'
+import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh, HiLightningBolt, HiIdentification, HiBriefcase, HiGift } from 'react-icons/hi'
 import { GemMarker } from './HiddenGems'
 
 const services = [
   {
+    id: 'mini',
+    icon: HiLightningBolt,
+    title: 'Mini Sessions',
+    description: 'Quick, focused 1-hour sessions perfect for updated headshots, seasonal portraits, or trying out a shoot before booking full. Great entry point.',
+    price: 'Starting at $75',
+    badge: 'New',
+  },
+  {
+    id: 'headshots',
+    icon: HiIdentification,
+    title: 'Professional Headshots',
+    description: 'LinkedIn, corporate, and press-ready headshots delivered within 24 hours. 1–2 outfits, multiple selects, studio or outdoor — optimized for Charlotte professionals.',
+    price: 'Starting at $150',
+    badge: 'New',
+  },
+  {
+    id: 'personal-branding',
+    icon: HiBriefcase,
+    title: 'Personal Branding',
+    description: 'Quarterly content sessions for coaches, creators, and entrepreneurs who need a library of on-brand images — paired with AI-generated captions and a month of social content.',
+    price: 'Starting at $350',
+    badge: 'New',
+  },
+  {
     id: 'portrait',
     icon: HiCamera,
-    title: 'Portrait Sessions',
-    description: 'Headshots, personal branding, and lifestyle portraits in Charlotte, NC — studio and outdoor locations available.',
+    title: 'Lifestyle Portraits',
+    description: 'Couples, families, maternity, and lifestyle portraits in Charlotte, NC — studio and outdoor locations tailored to your story.',
     price: 'Starting at $100',
   },
   {
@@ -69,7 +93,7 @@ export default function Services({ onServiceSelect }) {
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {services.map((service, i) => {
             const Icon = service.icon
             return (
@@ -77,11 +101,16 @@ export default function Services({ onServiceSelect }) {
                 key={service.title}
                 initial={{ opacity: 0, y: 40 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.15 * i, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ delay: 0.1 * i, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -6 }}
                 onClick={() => handleCardClick(service.id)}
-                className="group border border-cream/5 p-8 hover:border-gold/30 transition-all duration-500 golden-gradient cursor-pointer"
+                className="group border border-cream/5 p-8 hover:border-gold/30 transition-all duration-500 golden-gradient cursor-pointer relative"
               >
+                {service.badge && (
+                  <span className="absolute top-4 right-4 font-heading text-[9px] tracking-[0.15em] uppercase text-ink bg-gold px-2 py-0.5">
+                    {service.badge}
+                  </span>
+                )}
                 <Icon className="text-gold text-2xl mb-6 group-hover:scale-110 transition-transform duration-300" />
                 <h3 className="font-display text-lg font-bold text-cream mb-3">{service.title}</h3>
                 <p className="text-cream/30 text-sm leading-relaxed mb-6">{service.description}</p>
@@ -97,6 +126,28 @@ export default function Services({ onServiceSelect }) {
             )
           })}
         </div>
+
+        {/* Gift Cards CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.85, duration: 0.8 }}
+          className="mt-6 border border-gold/20 bg-gold/5 p-5 flex flex-col sm:flex-row items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-4">
+            <HiGift className="text-gold text-2xl flex-shrink-0" />
+            <div>
+              <p className="font-display font-bold text-cream text-sm">Give the gift of a session</p>
+              <p className="text-cream/40 text-xs mt-0.5">Gift cards available in any amount — redeemable for any shoot.</p>
+            </div>
+          </div>
+          <Link
+            to="/gift"
+            className="font-heading text-[10px] tracking-[0.2em] uppercase text-ink bg-gold px-6 py-3 hover:bg-gold/90 transition-colors whitespace-nowrap flex-shrink-0"
+          >
+            Buy a Gift Card →
+          </Link>
+        </motion.div>
 
         {/* Studio fee notice */}
         <motion.div

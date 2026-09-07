@@ -24,9 +24,12 @@ const logToCRM = async (data) => {
 }
 
 // $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
-// Studio (NoDa Art House) adds $60/hr. minPrice = the floor for a 2hr booking.
+// Studio (NoDa Art House) adds $60/hr. minPrice = the floor for a booking.
 const sessionTypes = [
-  { id: 'portrait', label: 'Portrait/Headshots', minPrice: 100, minDuration: 2 },
+  { id: 'mini', label: 'Mini Session (1 hr)', minPrice: 75, minDuration: 1, badge: 'New' },
+  { id: 'headshots', label: 'Professional Headshots', minPrice: 150, minDuration: 1, badge: 'New' },
+  { id: 'personal-branding', label: 'Personal Branding', minPrice: 350, minDuration: 2, badge: 'New' },
+  { id: 'portrait', label: 'Portrait/Lifestyle', minPrice: 100, minDuration: 2 },
   { id: 'couples', label: 'Couples/Engagement', minPrice: 100, minDuration: 2 },
   { id: 'graduation', label: 'Graduation', minPrice: 250, minDuration: 2 },
   { id: 'maternity', label: 'Maternity/Family', minPrice: 250, minDuration: 2 },
@@ -282,9 +285,14 @@ export default function SmartBooking() {
                     <button
                       key={type.id}
                       type="button"
-                      onClick={() => setFormData(Object.assign({}, formData, { sessionType: type.id }))}
-                      className={'p-4 border text-left transition-all ' + (formData.sessionType === type.id ? 'border-gold bg-gold/10' : 'border-cream/10 hover:border-gold/30')}
+                      onClick={() => setFormData(Object.assign({}, formData, { sessionType: type.id, duration: type.minDuration }))}
+                      className={'p-4 border text-left transition-all relative ' + (formData.sessionType === type.id ? 'border-gold bg-gold/10' : 'border-cream/10 hover:border-gold/30')}
                     >
+                      {type.badge && (
+                        <span className="absolute top-2 right-2 font-heading text-[8px] tracking-[0.12em] uppercase text-ink bg-gold px-1.5 py-0.5">
+                          {type.badge}
+                        </span>
+                      )}
                       <p className={'font-display ' + (formData.sessionType === type.id ? 'text-cream' : 'text-cream/70')}>{type.label}</p>
                       <p className="text-gold text-sm">From ${type.minPrice}</p>
                     </button>
