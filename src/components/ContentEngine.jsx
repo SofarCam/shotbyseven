@@ -2,9 +2,34 @@ import { useState, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   HiClipboard, HiCheck, HiRefresh, HiSave, HiLightningBolt, HiCamera,
+  HiDownload, HiTrash, HiClock, HiChevronDown,
 } from 'react-icons/hi'
 
 const LS_VOICE_KEY = 'sbs_voice_profile'
+const LS_HISTORY_KEY = 'sbs_content_history'
+
+// Trigger a client-side download of text as a file
+function downloadText(filename, text) {
+  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+function slugify(s) {
+  return (s || 'content').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'content'
+}
+
+function formatDate(iso) {
+  try {
+    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  } catch { return '' }
+}
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 
@@ -119,11 +144,39 @@ export default function ContentEngine() {
   const [contentOutput, setContentOutput] = useState('')
   const [loading, setLoading] = useState(null) // null | 'voice' | 'content'
   const [error, setError] = useState('')
+  const [history, setHistory] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(LS_HISTORY_KEY) || '[]') } catch { return [] }
+  })
+  const [expandedId, setExpandedId] = useState(null)
   const voiceScrollRef = useRef(null)
   const contentScrollRef = useRef(null)
 
+  const saveToHistory = useCallback((output) => {
+    if (!output?.trim()) return
+    const entry = {
+      id: Date.now().toString(36),
+      date: new Date().toISOString(),
+      subject: intake.subject?.trim() || 'Untitled shoot',
+      goal: intake.goal?.trim() || '',
+      output,
+    }
+    setHistory((prev) => {
+      const next = [entry, ...prev].slice(0, 30) // keep last 30
+      try { localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(next)) } catch { /* storage full/unavailable */ }
+      return next
+    })
+  }, [intake])
+
+  const deleteHistoryEntry = useCallback((id) => {
+    setHistory((prev) => {
+      const next = prev.filter((h) => h.id !== id)
+      try { localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(next)) } catch { /* ignore */ }
+      return next
+    })
+  }, [])
+
   const persistVoice = useCallback((text) => {
-    try { localStorage.setItem(LS_VOICE_KEY, text) } catch {}
+    try { localStorage.setItem(LS_VOICE_KEY, text) } catch { /* storage unavailable */ }
     setVoiceSaved(true)
     setVoiceEdited(false)
     setTimeout(() => setVoiceSaved(false), 2500)
@@ -161,10 +214,11 @@ export default function ContentEngine() {
     setError('')
     setContentOutput('')
     try {
-      await streamClaude('generate', { voiceProfile, intake }, (chunk) => {
+      const final = await streamClaude('generate', { voiceProfile, intake }, (chunk) => {
         setContentOutput(chunk)
         if (contentScrollRef.current) contentScrollRef.current.scrollTop = contentScrollRef.current.scrollHeight
       })
+      saveToHistory(final)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -194,6 +248,7 @@ export default function ContentEngine() {
           {[
             { id: 'voice', label: '01  Voice Profile', Icon: HiCamera },
             { id: 'generate', label: '02  Generate', Icon: HiLightningBolt },
+            { id: 'history', label: `03  History${history.length ? ` (${history.length})` : ''}`, Icon: HiClock },
           ].map(({ id, label, Icon }) => (
             <button
               key={id}
@@ -408,7 +463,18 @@ export default function ContentEngine() {
                   <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">
                     {loading === 'content' ? 'Writing your content...' : 'Your Content Month'}
                   </h2>
-                  {contentOutput && <CopyBtn text={contentOutput} label="Copy All" />}
+                  {contentOutput && !loading && (
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => downloadText(`shotbyseven-content-${slugify(intake.subject)}.md`, contentOutput)}
+                        className="flex items-center gap-1.5 font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30 hover:text-gold transition-colors"
+                      >
+                        <HiDownload className="w-3 h-3" /> Download
+                      </button>
+                      <CopyBtn text={contentOutput} label="Copy All" />
+                    </div>
+                  )}
+                  {contentOutput && loading === 'content' && <CopyBtn text={contentOutput} label="Copy All" />}
                 </div>
 
                 {contentSections.length > 0 ? (
@@ -433,6 +499,67 @@ export default function ContentEngine() {
                   </div>
                 )}
               </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ── HISTORY TAB ── */}
+        {tab === 'history' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
+            {history.length === 0 ? (
+              <div className="border border-cream/10 p-8 text-center">
+                <HiClock className="w-6 h-6 text-cream/20 mx-auto mb-3" />
+                <p className="text-cream/40 text-sm font-body">No saved content yet.</p>
+                <p className="text-cream/25 text-[11px] font-body mt-1">
+                  Every month you generate in Step 02 is saved here automatically.
+                </p>
+              </div>
+            ) : (
+              history.map((h) => {
+                const open = expandedId === h.id
+                return (
+                  <div key={h.id} className="border border-cream/10">
+                    <div className="flex items-center justify-between px-4 py-3 gap-3">
+                      <button
+                        onClick={() => setExpandedId(open ? null : h.id)}
+                        className="flex items-center gap-3 min-w-0 text-left group flex-1"
+                      >
+                        <HiChevronDown className={`w-4 h-4 text-cream/30 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
+                        <span className="min-w-0">
+                          <span className="block font-body text-sm text-cream/80 truncate group-hover:text-cream transition-colors">
+                            {h.subject}
+                          </span>
+                          <span className="block text-cream/25 text-[11px] font-heading tracking-wider uppercase">
+                            {formatDate(h.date)}{h.goal ? ` · ${h.goal}` : ''}
+                          </span>
+                        </span>
+                      </button>
+                      <div className="flex items-center gap-3 flex-shrink-0">
+                        <CopyBtn text={h.output} />
+                        <button
+                          onClick={() => downloadText(`shotbyseven-content-${slugify(h.subject)}.md`, h.output)}
+                          className="text-cream/30 hover:text-gold transition-colors"
+                          aria-label="Download"
+                        >
+                          <HiDownload className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => deleteHistoryEntry(h.id)}
+                          className="text-cream/30 hover:text-red-400/80 transition-colors"
+                          aria-label="Delete"
+                        >
+                          <HiTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                    {open && (
+                      <div className="border-t border-cream/8 p-4 font-body text-sm text-cream/70 whitespace-pre-wrap leading-relaxed max-h-[560px] overflow-y-auto">
+                        {h.output}
+                      </div>
+                    )}
+                  </div>
+                )
+              })
             )}
           </motion.div>
         )}
