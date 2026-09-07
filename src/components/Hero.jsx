@@ -25,7 +25,7 @@ export default function Hero() {
         <img
           src={heroImage}
           alt=""
-          fetchpriority="high"
+          fetchPriority="high"
           decoding="async"
           className="absolute inset-0 w-full h-full object-cover object-center"
           style={{ filter: 'saturate(0.8) contrast(1.1)' }}
