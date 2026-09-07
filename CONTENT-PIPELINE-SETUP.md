@@ -42,10 +42,11 @@ Redeploy after adding them.
 ### Using it
 1. Generate content (Step 02), then hit **Scheduler** on any section — it drops the text into the scheduler
 2. Trim to the single caption you want
-3. **Load channels**, pick one or more, set the publish date/time, hit **Schedule Post**
-4. The post is queued in Postiz and auto-publishes at that time
+3. Paste **image URLs** (one per line) — your Cloudinary or gallery links. **Instagram & TikTok require at least one image.** Text-only platforms (X, LinkedIn, etc.) can skip this.
+4. **Load channels**, pick one or more, set the publish date/time, hit **Schedule Post**
+5. The post is queued in Postiz and auto-publishes at that time
 
 ## Notes
 - The Schedule tab safely shows "Postiz is not connected" until `POSTIZ_API_KEY` is set — nothing breaks in the meantime
 - `api/postiz.js` normalizes Postiz's channel payload and converts the caption + date into Postiz's `POST /public/v1/posts` format
-- Media/images: the API supports attaching images, but the current UI schedules text captions; image attachment can be added later (upload to Postiz media, pass the ids)
+- **Images**: the serverless function fetches each pasted URL, uploads it to Postiz (`POST /public/v1/upload`), and attaches the returned media to the post. The upload plumbing is verified end-to-end in the app; **confirm the first live scheduled post attaches its image correctly** — Postiz's `value[].image` shape has had edge cases across versions, and it's built to the documented `{ id, path }` shape.

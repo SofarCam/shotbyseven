@@ -181,6 +181,7 @@ export default function ContentEngine() {
   const [channelsError, setChannelsError] = useState('')
   const [selectedChannels, setSelectedChannels] = useState([])
   const [scheduleCaption, setScheduleCaption] = useState('')
+  const [scheduleImages, setScheduleImages] = useState('')
   const [scheduleDate, setScheduleDate] = useState('')
   const [scheduling, setScheduling] = useState(false)
   const [scheduleMsg, setScheduleMsg] = useState(null) // { type: 'ok' | 'err', text }
@@ -219,17 +220,19 @@ export default function ContentEngine() {
     if (isNaN(when.getTime()) || when.getTime() < Date.now()) {
       setScheduleMsg({ type: 'err', text: 'Pick a valid future date/time.' }); return
     }
+    const imageUrls = scheduleImages.split(/[\n,]/).map((s) => s.trim()).filter(Boolean)
     setScheduling(true)
     try {
       const res = await fetch('/api/postiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'schedule', content: scheduleCaption, channelIds: selectedChannels, date: when.toISOString() }),
+        body: JSON.stringify({ action: 'schedule', content: scheduleCaption, channelIds: selectedChannels, date: when.toISOString(), imageUrls }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
       setScheduleMsg({ type: 'ok', text: 'Scheduled ✓ — it\'s queued in Postiz.' })
       setScheduleCaption('')
+      setScheduleImages('')
     } catch (e) {
       setScheduleMsg({ type: 'err', text: e.message })
     } finally {
@@ -699,6 +702,17 @@ export default function ContentEngine() {
                 onChange={(e) => setScheduleCaption(e.target.value)}
                 rows={7}
                 placeholder="Your caption text…"
+                className={areaCls}
+              />
+            </Field>
+
+            {/* Image URLs */}
+            <Field label="Image URLs" hint="One per line — Instagram & TikTok require at least one image. Paste your gallery / Cloudinary links.">
+              <textarea
+                value={scheduleImages}
+                onChange={(e) => setScheduleImages(e.target.value)}
+                rows={3}
+                placeholder={"https://res.cloudinary.com/…/photo1.jpg\nhttps://res.cloudinary.com/…/photo2.jpg"}
                 className={areaCls}
               />
             </Field>
