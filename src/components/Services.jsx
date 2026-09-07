@@ -24,7 +24,7 @@ const services = [
     icon: HiFilm,
     title: 'Studio Concepts',
     description: 'Creative studio sessions at NoDa Art House in Charlotte — editorial, fashion, maternity, and artistic concepts brought to life.',
-    price: 'From $100 + $60/hr studio',
+    price: 'From $100 + $70/hr studio',
   },
   {
     id: 'events',
@@ -110,7 +110,7 @@ export default function Services({ onServiceSelect }) {
             <a href="https://www.nodaarthouse.org" target="_blank" rel="noopener noreferrer" className="text-gold/60 hover:text-gold underline transition-colors">
               NoDa Art House
             </a>{' '}
-            in Charlotte, NC. Studio rental is $60/hr and is not included in session pricing.
+            in Charlotte, NC. Studio rental is $70/hr and is not included in session pricing.
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <Link
