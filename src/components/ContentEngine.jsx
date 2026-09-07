@@ -31,6 +31,25 @@ function formatDate(iso) {
   } catch { return '' }
 }
 
+// Strip a leading "1." / "Caption 3:" style marker from a caption block
+function cleanCaption(s) {
+  return s.replace(/^\s*(?:caption\s*)?\d+\s*[.):-]\s*/i, '').trim()
+}
+
+// Split a "CAPTIONS" section (or any pasted block) into individual captions.
+// Tries numbered markers first, falls back to blank-line separation.
+function splitCaptions(text) {
+  if (!text) return []
+  // Drop a leading "N. CAPTIONS" or "CAPTIONS" header line
+  const t = text.replace(/^\s*\d*\.?\s*captions\b.*$/im, '').trim()
+  if (!t) return []
+  // Prefer splitting on numbered caption markers at line starts (2+ needed)
+  const byNum = t.split(/\n(?=\s*(?:caption\s*)?\d+\s*[.):-]\s)/i).map((s) => s.trim()).filter(Boolean)
+  if (byNum.length >= 2) return byNum.map(cleanCaption).filter((s) => s.length > 15)
+  // Fallback: split on blank lines
+  return t.split(/\n\s*\n+/).map((s) => s.trim()).filter((s) => s.length > 25).map(cleanCaption)
+}
+
 // ─── Utilities ────────────────────────────────────────────────────────────────
 
 function CopyBtn({ text, label = 'Copy' }) {
@@ -186,6 +205,13 @@ export default function ContentEngine() {
   const [scheduling, setScheduling] = useState(false)
   const [scheduleMsg, setScheduleMsg] = useState(null) // { type: 'ok' | 'err', text }
 
+  // Batch scheduling
+  const [batchPosts, setBatchPosts] = useState([]) // string[]
+  const [batchStart, setBatchStart] = useState('')
+  const [batchEveryDays, setBatchEveryDays] = useState(2)
+  const [batchRunning, setBatchRunning] = useState(false)
+  const [batchResult, setBatchResult] = useState(null) // { done, total, fails: [] }
+
   const loadChannels = useCallback(async () => {
     setChannelsLoading(true); setChannelsError('')
     try {
@@ -238,6 +264,52 @@ export default function ContentEngine() {
     } finally {
       setScheduling(false)
     }
+  }
+
+  const loadCaptionsForBatch = () => {
+    // Pull from the current caption box, else the last generation's captions section
+    const source = scheduleCaption.trim()
+      || (parseSections(contentOutput).find((s) => s.key === 'captions')?.content || '')
+    const posts = splitCaptions(source)
+    setBatchPosts(posts)
+    setBatchResult(null)
+  }
+
+  const updateBatchPost = (i, val) => setBatchPosts((prev) => prev.map((p, idx) => idx === i ? val : p))
+  const removeBatchPost = (i) => setBatchPosts((prev) => prev.filter((_, idx) => idx !== i))
+
+  const handleBatchSchedule = async () => {
+    setBatchResult(null)
+    const posts = batchPosts.map((p) => p.trim()).filter(Boolean)
+    if (posts.length === 0) { setScheduleMsg({ type: 'err', text: 'No posts to queue — load captions first.' }); return }
+    if (selectedChannels.length === 0) { setScheduleMsg({ type: 'err', text: 'Pick at least one channel.' }); return }
+    if (!batchStart) { setScheduleMsg({ type: 'err', text: 'Pick a start date/time for the batch.' }); return }
+    const start = new Date(batchStart)
+    if (isNaN(start.getTime()) || start.getTime() < Date.now()) {
+      setScheduleMsg({ type: 'err', text: 'Batch start must be a valid future date/time.' }); return
+    }
+    setScheduleMsg(null)
+    setBatchRunning(true)
+    const gap = Math.max(1, Number(batchEveryDays) || 1)
+    const fails = []
+    let done = 0
+    for (let i = 0; i < posts.length; i++) {
+      const when = new Date(start.getTime() + i * gap * 86400000)
+      try {
+        const res = await fetch('/api/postiz', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'schedule', content: posts[i], channelIds: selectedChannels, date: when.toISOString(), imageUrls: [] }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
+        done++
+      } catch (e) {
+        fails.push({ index: i + 1, error: e.message })
+      }
+      setBatchResult({ done, total: posts.length, fails: [...fails] })
+    }
+    setBatchRunning(false)
   }
 
   const persistVoice = useCallback((text) => {
@@ -746,6 +818,99 @@ export default function ContentEngine() {
                 <><HiPaperAirplane className="w-4 h-4 rotate-90" /> Schedule Post</>
               )}
             </button>
+
+            {/* ── Batch: schedule a whole month ── */}
+            <div className="border-t border-cream/8 pt-8 mt-4 space-y-5">
+              <div>
+                <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60 mb-1">
+                  Batch — Queue a Whole Month
+                </h2>
+                <p className="text-cream/25 text-[11px] font-body">
+                  Splits a generated CAPTIONS block into individual posts and spaces them out across your calendar. Uses the channels selected above.
+                </p>
+              </div>
+
+              <button
+                onClick={loadCaptionsForBatch}
+                className="font-heading text-[10px] tracking-[0.15em] uppercase text-gold hover:text-gold/70 transition-colors flex items-center gap-1.5"
+              >
+                <HiLightningBolt className="w-3 h-3" /> Split captions into posts
+              </button>
+
+              {batchPosts.length > 0 && (
+                <>
+                  <div className="space-y-2">
+                    {batchPosts.map((p, i) => (
+                      <div key={i} className="flex gap-2 items-start">
+                        <span className="font-heading text-[10px] text-gold/50 mt-3 w-5 flex-shrink-0">{i + 1}</span>
+                        <textarea
+                          value={p}
+                          onChange={(e) => updateBatchPost(i, e.target.value)}
+                          rows={2}
+                          className={`${areaCls} text-xs`}
+                        />
+                        <button
+                          onClick={() => removeBatchPost(i)}
+                          className="text-cream/30 hover:text-red-400/80 transition-colors mt-3 flex-shrink-0"
+                          aria-label="Remove"
+                        >
+                          <HiTrash className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Field label="Start date / time">
+                      <input
+                        type="datetime-local"
+                        value={batchStart}
+                        onChange={(e) => setBatchStart(e.target.value)}
+                        className={`${inputCls} [color-scheme:dark]`}
+                      />
+                    </Field>
+                    <Field label="Space posts every">
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          min="1"
+                          value={batchEveryDays}
+                          onChange={(e) => setBatchEveryDays(e.target.value)}
+                          className={`${inputCls} w-20`}
+                        />
+                        <span className="text-cream/40 text-sm font-body">days</span>
+                      </div>
+                    </Field>
+                  </div>
+
+                  {batchResult && (
+                    <div className={`border px-4 py-3 ${batchResult.fails.length ? 'border-red-500/25 bg-red-500/5' : 'border-gold/25 bg-gold/5'}`}>
+                      <p className={`text-xs font-heading tracking-wider ${batchResult.fails.length ? 'text-red-400/80' : 'text-gold'}`}>
+                        {batchResult.done}/{batchResult.total} scheduled{batchResult.fails.length ? ` · ${batchResult.fails.length} failed` : ' ✓'}
+                      </p>
+                      {batchResult.fails.slice(0, 3).map((f) => (
+                        <p key={f.index} className="text-red-400/60 text-[11px] font-body mt-1">#{f.index}: {f.error}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    onClick={handleBatchSchedule}
+                    disabled={batchRunning}
+                    className="w-full font-heading text-xs tracking-[0.25em] uppercase text-ink bg-gold/90 py-4 hover:bg-gold transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
+                  >
+                    {batchRunning ? (
+                      <><HiRefresh className="w-4 h-4 animate-spin" /> Queuing {batchResult ? `${batchResult.done}/${batchResult.total}` : ''}…</>
+                    ) : (
+                      <><HiCalendar className="w-4 h-4" /> Queue {batchPosts.length} Posts</>
+                    )}
+                  </button>
+                  <p className="text-cream/20 text-[10px] font-body text-center">
+                    Note: batch posts go out as text — add images per-post in Postiz for Instagram/TikTok.
+                  </p>
+                </>
+              )}
+            </div>
           </motion.div>
         )}
 
