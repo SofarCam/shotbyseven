@@ -26,6 +26,7 @@ const logToCRM = async (data) => {
 // $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
 // Studio (NoDa Art House) adds $60/hr. minPrice = the floor for a booking.
 const sessionTypes = [
+  { id: '777', label: 'The 777 Package', minPrice: 777, minDuration: 1.5, badge: '777', fixed: true },
   { id: 'mini', label: 'Mini Session (1 hr)', minPrice: 75, minDuration: 1, badge: 'New' },
   { id: 'headshots', label: 'Professional Headshots', minPrice: 150, minDuration: 1, badge: 'New' },
   { id: 'personal-branding', label: 'Personal Branding', minPrice: 350, minDuration: 2, badge: 'New' },
@@ -140,7 +141,8 @@ export default function SmartBooking() {
   const getBasePrice = () => {
     const type = sessionTypes.find(t => t.id === formData.sessionType)
     if (!type) return 0
-    const hours = Math.max(2, formData.duration)
+    if (type.fixed) return type.minPrice
+    const hours = Math.max(type.minDuration, formData.duration)
     let price = Math.max(hours * 50, type.minPrice)
     if (formData.location === 'studio') {
       price += hours * 60
@@ -289,12 +291,12 @@ export default function SmartBooking() {
                       className={'p-4 border text-left transition-all relative ' + (formData.sessionType === type.id ? 'border-gold bg-gold/10' : 'border-cream/10 hover:border-gold/30')}
                     >
                       {type.badge && (
-                        <span className="absolute top-2 right-2 font-heading text-[8px] tracking-[0.12em] uppercase text-ink bg-gold px-1.5 py-0.5">
+                        <span className={'absolute top-2 right-2 font-heading text-[8px] tracking-[0.12em] uppercase px-1.5 py-0.5 ' + (type.badge === '777' ? 'text-ink bg-gold' : 'text-ink bg-gold')}>
                           {type.badge}
                         </span>
                       )}
                       <p className={'font-display ' + (formData.sessionType === type.id ? 'text-cream' : 'text-cream/70')}>{type.label}</p>
-                      <p className="text-gold text-sm">From ${type.minPrice}</p>
+                      <p className="text-gold text-sm">{type.fixed ? `$${type.minPrice}` : `From $${type.minPrice}`}</p>
                     </button>
                   ))}
                 </div>
@@ -302,6 +304,12 @@ export default function SmartBooking() {
 
               {formData.sessionType && (
                 <>
+                  {sessionTypes.find(t => t.id === formData.sessionType)?.fixed ? (
+                    <div className="border border-gold/20 bg-gold/5 p-4">
+                      <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold mb-1">The 777 Package — Fixed Rate</p>
+                      <p className="text-cream/50 text-sm">90-min session · alignment consultation · 7 retouched selects · 1 month of content · 7-day delivery</p>
+                    </div>
+                  ) : (
                   <div>
                     <label className="block font-heading text-xs tracking-[0.2em] uppercase text-gold mb-4">
                       <HiClock className="inline mr-2" />Duration: {formData.duration} hours
@@ -321,6 +329,7 @@ export default function SmartBooking() {
                       <span>8hr max</span>
                     </div>
                   </div>
+                  )}
 
                   <div>
                     <label className="block font-heading text-xs tracking-[0.2em] uppercase text-gold mb-4">

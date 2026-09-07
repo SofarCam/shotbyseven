@@ -1,10 +1,19 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh, HiLightningBolt, HiIdentification, HiBriefcase, HiGift } from 'react-icons/hi'
+import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh, HiLightningBolt, HiIdentification, HiBriefcase, HiGift, HiSparkles } from 'react-icons/hi'
 import { GemMarker } from './HiddenGems'
 
 const services = [
+  {
+    id: '777',
+    icon: HiSparkles,
+    title: 'The 777 Package',
+    description: 'The full-frequency experience — alignment consultation, 90-min session, 77 images, 7 retouched selects, one month of AI-generated content. $777 flat.',
+    price: '$777 — All In',
+    badge: '777',
+    featured: true,
+  },
   {
     id: 'mini',
     icon: HiLightningBolt,
@@ -104,10 +113,10 @@ export default function Services({ onServiceSelect }) {
                 transition={{ delay: 0.1 * i, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -6 }}
                 onClick={() => handleCardClick(service.id)}
-                className="group border border-cream/5 p-8 hover:border-gold/30 transition-all duration-500 golden-gradient cursor-pointer relative"
+                className={'group p-8 transition-all duration-500 cursor-pointer relative ' + (service.featured ? 'border border-gold/40 bg-gradient-to-br from-gold/8 to-transparent hover:border-gold/60' : 'border border-cream/5 hover:border-gold/30 golden-gradient')}
               >
                 {service.badge && (
-                  <span className="absolute top-4 right-4 font-heading text-[9px] tracking-[0.15em] uppercase text-ink bg-gold px-2 py-0.5">
+                  <span className={'absolute top-4 right-4 font-heading text-[9px] tracking-[0.15em] uppercase px-2 py-0.5 ' + (service.badge === '777' ? 'text-ink bg-gold' : 'text-ink bg-gold')}>
                     {service.badge}
                   </span>
                 )}

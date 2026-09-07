@@ -21,6 +21,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ChatBot from './components/ChatBot'
 import { GemTracker } from './components/HiddenGems'
+import SevenFrequency from './components/SevenFrequency'
 
 // Lazy-loaded routes — only downloaded when visited
 const ManageInner   = lazy(() => import('./components/ImageManager'))
@@ -75,6 +76,8 @@ function HomePage() {
             <InstagramStrip />
             <Marquee />
             <Services onServiceSelect={handleServiceSelect} />
+            <SectionDivider />
+            <SevenFrequency />
             <SectionDivider />
             <PricingCalculator onBookNow={handleServiceSelect} />
             <SectionDivider />
