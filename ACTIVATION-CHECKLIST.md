@@ -25,8 +25,10 @@ Add any that aren't already there, then **redeploy** so the build picks them up.
 | `TELEGRAM_BOT_TOKEN` | The `8233…` bot token (openclaw config) | IG DM notifications |
 | `TELEGRAM_CHAT_ID` | `2138115398` | IG DM notifications |
 | `INSTAGRAM_VERIFY_TOKEN` | `shotbyseven_verify_2026` | IG DM webhook handshake |
-| `INSTAGRAM_ACCESS_TOKEN` | Long-lived Page token (from the FB app, step 3) | IG DM send/receive |
-| `INSTAGRAM_PAGE_ID` | Your IG Business Account ID | IG DM send/receive |
+| `INSTAGRAM_ACCESS_TOKEN` | Long-lived Page token (from the FB app, step 3) | IG DM send/receive **and** free Instagram publishing |
+| `INSTAGRAM_PAGE_ID` | Your IG Business Account ID | IG DM send/receive **and** free Instagram publishing |
+| `RESEND_API_KEY` | resend.com → API Keys. **Not** `VITE_`-prefixed — server-only, from the compliance audit fix that moved this off the client | Blog newsletter subscriber notification email |
+| `VITE_MANAGE_PASSWORD_HASH` | SHA-256 hash of your `/manage` + `/content` password. **Verify this is actually set** — a hardcoded fallback hash was removed from source during the compliance audit, so access now fails closed if this isn't configured | Admin tool access |
 
 > `VITE_`-prefixed vars are baked in at build time — you MUST redeploy after adding them.
 
