@@ -25,8 +25,9 @@ Add any that aren't already there, then **redeploy** so the build picks them up.
 | `TELEGRAM_BOT_TOKEN` | The `8233…` bot token (openclaw config) | IG DM notifications |
 | `TELEGRAM_CHAT_ID` | `2138115398` | IG DM notifications |
 | `INSTAGRAM_VERIFY_TOKEN` | `shotbyseven_verify_2026` | IG DM webhook handshake |
-| `INSTAGRAM_ACCESS_TOKEN` | Long-lived Page token (from the FB app, step 3) | IG DM send/receive |
-| `INSTAGRAM_PAGE_ID` | Your IG Business Account ID | IG DM send/receive |
+| `INSTAGRAM_ACCESS_TOKEN` | Long-lived Page token (from the FB app, step 3) | IG DM send/receive + comment-to-DM |
+| `INSTAGRAM_PAGE_ID` | Your IG Business Account ID | IG DM send/receive + skips replying to our own comments |
+| `INSTAGRAM_COMMENT_KEYWORDS` | *(optional)* comma-separated, default `PRICE,INFO,LINK,BOOK` | Comment-to-DM trigger words |
 
 > `VITE_`-prefixed vars are baked in at build time — you MUST redeploy after adding them.
 
@@ -39,12 +40,16 @@ Add any that aren't already there, then **redeploy** so the build picks them up.
 
 ---
 
-## 3. Instagram DM qualifier (the auto lead-responder)
+## 3. Instagram DM qualifier + comment-to-DM (the auto lead-responder)
 Follow `INSTAGRAM-SETUP.md` — the short version:
-1. Env vars from the table above are set.
+1. Env vars from the table above are set (including `INSTAGRAM_PAGE_ID`).
 2. developers.facebook.com → create a Business app → add the **Instagram** product → connect the Shot by Seven IG Business account → generate a long-lived token → paste as `INSTAGRAM_ACCESS_TOKEN`.
-3. In the FB app → Instagram → Webhooks → Callback URL `https://shotbyseven.com/api/instagram`, Verify Token `shotbyseven_verify_2026`, subscribe to **messages**.
-4. Verify: DM @shotbyseven777 from another account → you should get a Telegram ping within seconds.
+3. In the FB app → Instagram → Webhooks → Callback URL `https://shotbyseven.com/api/instagram`, Verify Token `shotbyseven_verify_2026`, subscribe to **both `messages` and `comments`**.
+4. Verify DMs: DM @shotbyseven777 from another account → you should get a Telegram ping within seconds.
+5. Verify comment-to-DM: comment "PRICE" on one of your own posts from another account → Telegram ping, then a private DM reply (one per comment, within 7 days per Meta's rules).
+
+See `INSTAGRAM-AI-AUTOMATION-GUIDE.md` for the full picture (why this is safe under
+the official Graph API, the 24-hour messaging window, and rate limits to respect).
 
 ---
 

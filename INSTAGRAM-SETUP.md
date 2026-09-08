@@ -1,6 +1,11 @@
-# Instagram DM Lead Qualifier — Setup Guide
+# Instagram DM Lead Qualifier + Comment-to-DM — Setup Guide
 
-The webhook is built and deployed. You need to do 3 things:
+The webhook is built and deployed (`api/instagram.js`) and now handles two things:
+- **DMs** — Seven qualifies every inbound Instagram DM.
+- **Comment-to-DM** — someone comments a keyword (`price`, `info`, `link`, or `book` by
+  default) on a post/reel and gets an instant private DM.
+
+You need to do 3 things:
 
 ---
 
@@ -17,6 +22,8 @@ Add these:
 | `TELEGRAM_CHAT_ID` | `2138115398` |
 | `INSTAGRAM_VERIFY_TOKEN` | `shotbyseven_verify_2026` |
 | `INSTAGRAM_ACCESS_TOKEN` | (get this in Step 2 below) |
+| `INSTAGRAM_PAGE_ID` | Your IG Business Account ID (Step 2) — prevents the bot from replying to its own comments |
+| `INSTAGRAM_COMMENT_KEYWORDS` | *(optional)* comma-separated list, defaults to `PRICE,INFO,LINK,BOOK` |
 
 ---
 
@@ -27,8 +34,10 @@ Add these:
 3. Name it `Shot by Seven`
 4. Once created, add the **Instagram** product (from the left sidebar "Add Product")
 5. Under Instagram → **Settings**, connect your Shot by Seven Instagram Business account
-6. Go to **Instagram → Generate Token** — copy the long-lived token
-7. Paste it as `INSTAGRAM_ACCESS_TOKEN` in Vercel (from Step 1)
+6. Go to **Instagram → Generate Token** — copy the long-lived token and the account's numeric ID
+7. Paste the token as `INSTAGRAM_ACCESS_TOKEN` and the ID as `INSTAGRAM_PAGE_ID` in Vercel (Step 1)
+8. Make sure the token/app has the `instagram_business_manage_messages` and
+   `instagram_business_manage_comments` permissions — comment-to-DM needs both.
 
 ---
 
@@ -40,7 +49,8 @@ Add these:
    - **Callback URL**: `https://shotbyseven.com/api/instagram`
    - **Verify Token**: `shotbyseven_verify_2026`
 4. Click **Verify and Save**
-5. Subscribe to the **`messages`** field
+5. Subscribe to **both** the **`messages`** field (DMs) and the **`comments`** field
+   (comment-to-DM)
 
 ---
 
@@ -48,10 +58,14 @@ Add these:
 
 Once all 3 steps are done:
 - Every Instagram DM → Seven qualifies the lead automatically
-- You get a Telegram notification for every message + every reply Seven sends
-- Seven asks about shoot type, date, location, and budget
+- Every comment containing a trigger keyword → Seven sends a private reply within seconds
+- You get a Telegram notification for every DM/comment event + every reply Seven sends
+- Seven asks about shoot type, date, location, and budget in DMs; comments get pricing + one next step
 - Once qualified, it tells them Cam will follow up personally
 
 ## Testing
 
-Send a DM to @shotbyseven777 from another account. You should get a Telegram ping within seconds.
+- **DMs**: send a DM to @shotbyseven777 from another account. You should get a Telegram ping within seconds.
+- **Comment-to-DM**: comment "PRICE" on one of your own posts from another account. You
+  should get a Telegram ping, then a private DM reply. Note Meta's private-reply rules:
+  one private reply per comment, and only within 7 days of the comment being posted.
