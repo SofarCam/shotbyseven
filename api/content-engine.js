@@ -4,7 +4,8 @@
 // Body: { action: 'voice' | 'generate', posts?, voiceProfile?, intake? }
 
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY
-const MODEL = 'claude-haiku-4-5-20251001'
+const MODEL_VOICE = 'claude-haiku-4-5-20251001'    // fast — one-time setup
+const MODEL_GENERATE = 'claude-sonnet-4-6'          // quality — runs every shoot
 
 export const config = { maxDuration: 60 }
 
@@ -96,7 +97,7 @@ export default async function handler(req, res) {
   }
 
   const apiBody = {
-    model: MODEL,
+    model: action === 'voice' ? MODEL_VOICE : MODEL_GENERATE,
     max_tokens: 8192,
     stream: true,
     messages: [{ role: 'user', content: userContent }],
