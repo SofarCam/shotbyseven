@@ -8,16 +8,20 @@ const STUDIO_RATE = 60
 const MIN_HOURS = 2
 
 const sessionTypes = [
-  { id: 'portrait',   label: 'Portrait / Headshots', minPrice: 100, icon: '🎭' },
-  { id: 'couples',    label: 'Couples / Engagement',  minPrice: 100, icon: '💍' },
-  { id: 'graduation', label: 'Graduation',            minPrice: 250, icon: '🎓' },
-  { id: 'maternity',  label: 'Maternity / Family',    minPrice: 250, icon: '🌿' },
-  { id: 'fashion',    label: 'Fashion / Editorial',   minPrice: 100, icon: '✨' },
-  { id: 'sports',     label: 'Sports / Action',       minPrice: 100, icon: '⚡' },
-  { id: 'event',      label: 'Birthday / Event',      minPrice: 100, icon: '🎪' },
+  { id: '777',        label: 'The 777 Package',       minPrice: 777, icon: '✦', fixed: true, minHours: 1.5 },
+  { id: 'mini',       label: 'Mini Session',          minPrice: 75,  icon: '⚡', minHours: 1 },
+  { id: 'headshots',  label: 'Professional Headshots', minPrice: 150, icon: '🎯', minHours: 1 },
+  { id: 'branding',   label: 'Personal Branding',     minPrice: 350, icon: '✨', minHours: 2 },
+  { id: 'portrait',   label: 'Portrait / Lifestyle',  minPrice: 100, icon: '🎭', minHours: 2 },
+  { id: 'couples',    label: 'Couples / Engagement',  minPrice: 100, icon: '💍', minHours: 2 },
+  { id: 'graduation', label: 'Graduation',            minPrice: 250, icon: '🎓', minHours: 2 },
+  { id: 'maternity',  label: 'Maternity / Family',    minPrice: 250, icon: '🌿', minHours: 2 },
+  { id: 'fashion',    label: 'Fashion / Editorial',   minPrice: 100, icon: '🎬', minHours: 2 },
+  { id: 'sports',     label: 'Sports / Action',       minPrice: 100, icon: '🏃', minHours: 2 },
+  { id: 'event',      label: 'Birthday / Event',      minPrice: 100, icon: '🎪', minHours: 2 },
 ]
 
-const durations = [2, 2.5, 3, 4, 5, 6]
+const durations = [1, 1.5, 2, 2.5, 3, 4, 5, 6]
 
 export default function PricingCalculator({ onBookNow }) {
   const [sessionType, setSessionType] = useState(null)
@@ -26,12 +30,13 @@ export default function PricingCalculator({ onBookNow }) {
   const [returning, setReturning] = useState(false)
 
   const selected = sessionTypes.find(t => t.id === sessionType)
-  const effectiveDuration = Math.max(MIN_HOURS, duration)
+  const effectiveDuration = Math.max(selected?.minHours ?? MIN_HOURS, duration)
 
+  const isFixed = selected?.fixed
   const hourlyTotal = effectiveDuration * HOURLY_RATE
-  const sessionSubtotal = selected ? Math.max(hourlyTotal, selected.minPrice) : 0
-  const minApplied = selected && sessionSubtotal > hourlyTotal
-  const studioAdd = studio ? effectiveDuration * STUDIO_RATE : 0
+  const sessionSubtotal = isFixed ? selected.minPrice : (selected ? Math.max(hourlyTotal, selected.minPrice) : 0)
+  const minApplied = !isFixed && selected && sessionSubtotal > hourlyTotal
+  const studioAdd = (!isFixed && studio) ? effectiveDuration * STUDIO_RATE : 0
   const subtotal = sessionSubtotal + studioAdd
   const price = selected ? (returning ? Math.round(subtotal * 0.5) : subtotal) : null
 
@@ -93,14 +98,15 @@ export default function PricingCalculator({ onBookNow }) {
             </div>
           </div>
 
-          {/* Duration */}
+          {/* Duration — hidden for fixed packages */}
+          {!isFixed && (
           <div>
             <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-4">
               Duration
-              <span className="text-gold/50 ml-2">(2hr min)</span>
+              <span className="text-gold/50 ml-2">({selected?.minHours ?? 2}hr min)</span>
             </p>
             <div className="flex flex-wrap gap-2">
-              {durations.map(d => (
+              {durations.filter(d => d >= (selected?.minHours ?? MIN_HOURS)).map(d => (
                 <button
                   key={d}
                   onClick={() => setDuration(d)}
@@ -115,11 +121,25 @@ export default function PricingCalculator({ onBookNow }) {
               ))}
             </div>
           </div>
+          )}
+
+          {/* The 777 — fixed package summary */}
+          {isFixed && (
+            <div className="border border-gold/20 bg-gold/5 p-5">
+              <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold mb-3">What&apos;s included</p>
+              <ul className="space-y-1.5">
+                {['Pre-shoot alignment consultation (15 min)', '90-min session — studio or outdoor', '77 images for review', '7 fully retouched selects', 'One month of AI-generated social content', '7-day delivery guarantee'].map(item => (
+                  <li key={item} className="text-cream/50 text-xs flex gap-2"><span className="text-gold">—</span>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Add-ons */}
           <div>
             <p className="font-heading text-[10px] tracking-[0.25em] uppercase text-cream/30 mb-4">Add-ons</p>
             <div className="space-y-3">
+              {!isFixed && (
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
                   onClick={() => setStudio(!studio)}
@@ -134,6 +154,7 @@ export default function PricingCalculator({ onBookNow }) {
                   <p className="text-cream/30 text-xs mt-0.5">+$60/hr · Professional studio space</p>
                 </div>
               </label>
+              )}
 
               <label className="flex items-center gap-3 cursor-pointer group">
                 <div
