@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { HiCheckCircle, HiClock, HiMail, HiPhone, HiExternalLink, HiDocumentText, HiPhotograph, HiLockClosed } from 'react-icons/hi'
+import { getDepositUrl } from '../utils/stripe'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
-const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
 
 const STATUS_STEPS = [
   { key: 'submitted', label: 'Request Received' },
@@ -267,19 +267,15 @@ export default function ClientPortal() {
               <span className="font-heading text-[10px] tracking-[0.15em] uppercase text-gold border border-gold/30 px-4 py-2">
                 Paid ✓
               </span>
-            ) : STRIPE_DEPOSIT_URL ? (
+            ) : (
               <a
-                href={STRIPE_DEPOSIT_URL}
+                href={getDepositUrl(depositAmount)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-heading text-[10px] tracking-[0.15em] uppercase text-ink bg-gold px-4 py-2 hover:bg-gold/90 transition-colors"
               >
                 Pay ${depositAmount} →
               </a>
-            ) : (
-              <span className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/20 border border-cream/10 px-4 py-2">
-                Pending
-              </span>
             )}
           </div>
         </div>

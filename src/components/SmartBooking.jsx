@@ -5,10 +5,10 @@ import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
 import { trackEvent, trackBooking } from '../utils/analytics'
+import { getDepositUrl } from '../utils/stripe'
 import BookingCalendar from './BookingCalendar'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
-const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
@@ -165,9 +165,7 @@ export default function SmartBooking() {
     // Generate unique 9-char booking ID
     const bookingId = (Date.now().toString(36) + Math.random().toString(36).substring(2, 6)).toUpperCase().substring(0, 9)
     const portalUrl = `${window.location.origin}/portal/${bookingId}`
-    const stripeUrl = STRIPE_DEPOSIT_URL
-      ? `${STRIPE_DEPOSIT_URL}?client_reference_id=${bookingId}&prefilled_email=${encodeURIComponent(formData.email)}`
-      : null
+    const stripeUrl = `${getDepositUrl(depositAmount)}?client_reference_id=${bookingId}&prefilled_email=${encodeURIComponent(formData.email)}`
 
     const selectedType = sessionTypes.find(t => t.id === formData.sessionType)
     const selectedLocation = charlotteLocations.find(l => l.id === formData.location)

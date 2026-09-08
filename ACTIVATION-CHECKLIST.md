@@ -57,11 +57,21 @@ Follow `CONTENT-PIPELINE-SETUP.md` — short version:
 
 ---
 
-## 5. Stripe — the real revenue gap (needs a decision)
-Finding from this session: the connected Stripe account ("New business", live mode) has **$0, no charges, no payment links, no products.** Deposits are NOT flowing through it. Decide:
-- **Is this the right account?** If deposits should go elsewhere, point `VITE_STRIPE_DEPOSIT_URL` at that account's payment link.
-- **If this IS the account**: create a **Payment Link** in Stripe for the deposit (e.g. a $50/$100 deposit product), then set `VITE_STRIPE_DEPOSIT_URL` in Vercel to that link. Until this exists, the booking form's "pay deposit" step has nothing real behind it and no income is tracked.
-- Once live: I can reconnect to Stripe and pull real revenue, reconcile deposits against bookings (the `client_reference_id` on each payment is the site's `bookingId`), and track progress vs. the $5k target.
+## 5. Stripe — resolved: deposits now go to the real account
+
+Correction to an earlier finding in this checklist: the Stripe account connected to Claude's tools ("New business", `acct_1U5wLvPsMx8xz3Ni`) was never the live business account — it was empty because it's the wrong one. The real account is **shotbyseven** (`acct_1T44Z3FPsZacyI0u`), which already had active Payment Links:
+
+| Link | Price | Used for |
+|---|---|---|
+| SofarSeven — Session Deposit | $50 | Sessions under $300 |
+| ShotBySeven Booking deposit | $100 | Sessions $300+ |
+| SofarSeven Studio — Hourly Rental | $60 | Not wired into the site — studio rental is billed directly through NoDa Art House's own booking page instead |
+
+**Bug found and fixed**: `SmartBooking.jsx` and `ClientPortal.jsx` computed whether a client owed a $50 or $100 deposit, but both only had a single `VITE_STRIPE_DEPOSIT_URL` env var to send them to — so whichever one link was configured, half of bookings were being sent to pay the wrong amount. Replaced with `src/utils/stripe.js`, which picks the correct real Payment Link based on the computed deposit amount. The `VITE_STRIPE_DEPOSIT_URL` env var is no longer used — nothing to set for deposits anymore.
+
+**Still open**: the Gift Cards page (`/gift`) needs its own Payment Link — none of the three above allow a custom amount. Create one in Stripe (Payment Links → New → customer chooses the price, $50 minimum) → set `VITE_STRIPE_GIFT_CARD_URL` in Vercel → redeploy.
+
+Once the Claude Stripe connector is repointed at the real `shotbyseven` account, I can pull actual revenue, reconcile deposits against bookings (`client_reference_id` = the site's `bookingId`), and track progress vs. the $5k target.
 
 ---
 
