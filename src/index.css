@@ -18,7 +18,8 @@
   --color-warm-black: #1C1915;
 }
 
-html { scroll-behavior: smooth; }
+/* Lenis drives smooth scrolling (see SmoothScroll.jsx); native smooth-scroll
+   would fight it, so it's intentionally omitted here. */
 
 body {
   margin: 0;

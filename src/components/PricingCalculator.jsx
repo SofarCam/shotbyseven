@@ -1,5 +1,13 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { scrollToSection } from '../utils/scroll'
+import { trackEvent } from '../utils/analytics'
+
+// $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
+// Studio (NoDa Art House) adds $70/hr on top. Loyalty = 50% off after 3 sessions.
+const HOURLY_RATE = 50
+const STUDIO_RATE = 70
+const MIN_HOURS = 2
 
 // $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
 // Studio (NoDa Art House) adds $60/hr on top. Loyalty = 50% off after 3 sessions.
@@ -21,7 +29,7 @@ const sessionTypes = [
   { id: 'event',      label: 'Birthday / Event',      minPrice: 100, icon: '🎪', minHours: 2 },
 ]
 
-const durations = [1, 1.5, 2, 2.5, 3, 4, 5, 6]
+const durations = [2, 2.5, 3, 4, 5, 6]
 
 export default function PricingCalculator({ onBookNow }) {
   const [sessionType, setSessionType] = useState(null)
@@ -44,9 +52,9 @@ export default function PricingCalculator({ onBookNow }) {
   const remaining = price ? price - deposit : null
 
   const handleBookNow = () => {
+    trackEvent('pricing_book_now', { session_type: sessionType, price })
     if (onBookNow && sessionType) onBookNow(sessionType)
-    const el = document.getElementById('smart-booking')
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
+    scrollToSection('smart-booking')
   }
 
   return (

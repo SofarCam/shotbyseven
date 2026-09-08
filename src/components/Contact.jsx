@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import { HiMail, HiLocationMarker } from 'react-icons/hi'
 import { FaInstagram } from 'react-icons/fa'
 import { sendContactEmail } from '../utils/emailService'
+import { trackLead } from '../utils/analytics'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const logToLeadsCRM = async (data) => {
@@ -35,6 +36,7 @@ export default function Contact() {
 
     try {
       await sendContactEmail(formData)
+      trackLead({ preferred_contact: formData.preferredContact })
       logToLeadsCRM({
         type: 'LEAD',
         name: formData.name,
@@ -89,7 +91,7 @@ export default function Contact() {
               <div>
                 <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Studio Location</p>
                 <p className="text-cream font-medium">NoDa Art House — Charlotte, NC</p>
-                <p className="text-cream/20 text-xs">Studio rental $60/hr · Not included in session pricing</p>
+                <p className="text-cream/20 text-xs">Studio rental $70/hr · Not included in session pricing</p>
               </div>
             </div>
             <a href="https://instagram.com/shotbyseven777" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
