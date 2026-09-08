@@ -25,6 +25,7 @@ import Contact from './components/Contact'
 import Footer from './components/Footer'
 import ChatBot from './components/ChatBot'
 import { GemTracker } from './components/HiddenGems'
+import SevenFrequency from './components/SevenFrequency'
 
 // Lazy-loaded routes — only downloaded when visited
 const ManageInner   = lazy(() => import('./components/ImageManager'))
@@ -36,6 +37,8 @@ const BlogPost      = lazy(() => import('./components/BlogPost'))
 const StudioPage    = lazy(() => import('./components/StudioPage'))
 const ThankYou      = lazy(() => import('./components/ThankYou'))
 const ContentEngine = lazy(() => import('./components/ContentEngine'))
+const GiftCard     = lazy(() => import('./components/GiftCard'))
+const Branding     = lazy(() => import('./components/Branding'))
 
 // Minimal fallback that matches the site's dark background
 function PageLoader() {
@@ -77,6 +80,8 @@ function HomePage() {
             <InstagramStrip />
             <Marquee />
             <Services onServiceSelect={handleServiceSelect} />
+            <SectionDivider />
+            <SevenFrequency />
             <SectionDivider />
             <PricingCalculator onBookNow={handleServiceSelect} />
             <SectionDivider />
@@ -156,6 +161,14 @@ function App() {
             </PasswordGate>
           </Suspense>
         }
+      />
+      <Route
+        path="/gift"
+        element={<Suspense fallback={<PageLoader />}><GiftCard /></Suspense>}
+      />
+      <Route
+        path="/branding"
+        element={<Suspense fallback={<PageLoader />}><Branding /></Suspense>}
       />
     </Routes>
   )

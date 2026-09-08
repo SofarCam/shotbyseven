@@ -12,9 +12,9 @@ const SHOOT_TYPES = [
 ]
 
 const DURATIONS = [
-  { id: '1hr', label: '1 Hour', price: '$70' },
-  { id: '2hrs', label: '2 Hours', price: '$140' },
-  { id: '3hrs', label: '3 Hours', price: '$210' },
+  { id: '1hr', label: '1 Hour', price: '$60' },
+  { id: '2hrs', label: '2 Hours', price: '$120' },
+  { id: '3hrs', label: '3 Hours', price: '$180' },
   { id: '4-6hrs', label: '4–6 Hours', price: 'Custom quote' },
 ]
 

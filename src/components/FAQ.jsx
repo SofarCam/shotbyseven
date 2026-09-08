@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: 'How much do you charge?',
-    a: 'Everything is $50/hr with a 2-hour minimum, so most sessions start at $100. Graduation and maternity/family start at $250. Studio rental at NoDa Art House is $70/hr (not included), and travel within 100 miles is a $50 flat fee. Weddings and corporate events are custom quotes — just reach out. Use the Pricing Calculator on this page for an instant quote.',
+    a: 'Mini sessions start at $75 (1hr). Professional headshots start at $150 (1hr). Most portrait and lifestyle sessions are $50/hr with a 2-hour minimum ($100+). Graduation and maternity/family start at $250. The 777 Package is $777 flat — the all-in signature experience. Studio rental at NoDa Art House is $60/hr (not included), and travel within 100 miles is a $50 flat fee. Use the Pricing Calculator on this page for an instant quote.',
   },
   {
     q: 'How long until I get my photos?',
@@ -42,6 +42,26 @@ const faqs = [
   {
     q: 'How do I book Studio A at NoDa Art House?',
     a: 'Use the Book Studio form at shotbyseven.com/studio. Seven (my AI assistant) will check availability for your dates and send you the direct NoDa Art House booking link. Studio rental is $70/hr, billed separately from session fees.',
+  },
+  {
+    q: 'What is The 777 Package?',
+    a: 'The 777 is the signature full-frequency experience — $777 flat. It includes a 15-min pre-shoot alignment consultation, a 90-minute session (studio or outdoor), 77 images delivered for review, 7 fully retouched selects, a full month of AI-generated voice-matched social content, and 7-day delivery. It\'s designed for coaches, creators, and entrepreneurs who want photos that match their energy. Book it through the Smart Booking form and select "The 777 Package."',
+  },
+  {
+    q: 'Do you offer mini sessions?',
+    a: 'Yes — mini sessions are 1-hour focused shoots starting at $75. They\'re great for updated headshots, seasonal portraits, or trying a shoot before committing to a full session. Book through the Smart Booking form and select "Mini Session."',
+  },
+  {
+    q: 'Do you do headshots?',
+    a: 'Yes. Professional headshots start at $150 for a 1-hour session — 1–2 outfits, multiple selects, studio or outdoor. Delivered within 24 hours. Great for LinkedIn, press, corporate bios, and business profiles. Charlotte professionals book this mid-week to fill the gap in their calendar.',
+  },
+  {
+    q: 'What is Personal Branding photography?',
+    a: 'Personal branding sessions are quarterly or bi-annual shoots that build a library of on-brand lifestyle images for your social media, website, and email list — not just one round of photos, but a consistent visual presence. Starting at $350 for a 2-hour session. Pairs with the Content Engine tool to generate a full month of voice-matched captions and content from every shoot. Perfect for coaches, healers, real estate agents, fitness trainers, and entrepreneurs who know their image is their brand.',
+  },
+  {
+    q: 'Do you sell gift cards?',
+    a: 'Yes — gift cards are available in any amount starting at $75, redeemable for any session type with no expiration date. Visit shotbyseven.com/gift to purchase.',
   },
   {
     q: 'Do you offer a loyalty discount?',

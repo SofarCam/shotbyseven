@@ -2,53 +2,9 @@ import { useState, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import {
   HiClipboard, HiCheck, HiRefresh, HiSave, HiLightningBolt, HiCamera,
-  HiDownload, HiTrash, HiClock, HiChevronDown, HiCalendar, HiPaperAirplane,
 } from 'react-icons/hi'
 
 const LS_VOICE_KEY = 'sbs_voice_profile'
-const LS_HISTORY_KEY = 'sbs_content_history'
-
-// Trigger a client-side download of text as a file
-function downloadText(filename, text) {
-  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
-}
-
-function slugify(s) {
-  return (s || 'content').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'content'
-}
-
-function formatDate(iso) {
-  try {
-    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-  } catch { return '' }
-}
-
-// Strip a leading "1." / "Caption 3:" style marker from a caption block
-function cleanCaption(s) {
-  return s.replace(/^\s*(?:caption\s*)?\d+\s*[.):-]\s*/i, '').trim()
-}
-
-// Split a "CAPTIONS" section (or any pasted block) into individual captions.
-// Tries numbered markers first, falls back to blank-line separation.
-function splitCaptions(text) {
-  if (!text) return []
-  // Drop a leading "N. CAPTIONS" or "CAPTIONS" header line
-  const t = text.replace(/^\s*\d*\.?\s*captions\b.*$/im, '').trim()
-  if (!t) return []
-  // Prefer splitting on numbered caption markers at line starts (2+ needed)
-  const byNum = t.split(/\n(?=\s*(?:caption\s*)?\d+\s*[.):-]\s)/i).map((s) => s.trim()).filter(Boolean)
-  if (byNum.length >= 2) return byNum.map(cleanCaption).filter((s) => s.length > 15)
-  // Fallback: split on blank lines
-  return t.split(/\n\s*\n+/).map((s) => s.trim()).filter((s) => s.length > 25).map(cleanCaption)
-}
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 
@@ -157,163 +113,17 @@ export default function ContentEngine() {
   const [voiceSaved, setVoiceSaved] = useState(false)
   const [posts, setPosts] = useState('')
   const [intake, setIntake] = useState({
-    subject: '', purpose: '', vibe: '', story: '', imageCount: '', goal: '', trends: '',
+    subject: '', purpose: '', vibe: '', story: '', imageCount: '', goal: '',
   })
   const [voiceOutput, setVoiceOutput] = useState('')
   const [contentOutput, setContentOutput] = useState('')
   const [loading, setLoading] = useState(null) // null | 'voice' | 'content'
   const [error, setError] = useState('')
-  const [history, setHistory] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(LS_HISTORY_KEY) || '[]') } catch { return [] }
-  })
-  const [expandedId, setExpandedId] = useState(null)
   const voiceScrollRef = useRef(null)
   const contentScrollRef = useRef(null)
 
-  const saveToHistory = useCallback((output) => {
-    if (!output?.trim()) return
-    const entry = {
-      id: Date.now().toString(36),
-      date: new Date().toISOString(),
-      subject: intake.subject?.trim() || 'Untitled shoot',
-      goal: intake.goal?.trim() || '',
-      output,
-    }
-    setHistory((prev) => {
-      const next = [entry, ...prev].slice(0, 30) // keep last 30
-      try { localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(next)) } catch { /* storage full/unavailable */ }
-      return next
-    })
-  }, [intake])
-
-  const deleteHistoryEntry = useCallback((id) => {
-    setHistory((prev) => {
-      const next = prev.filter((h) => h.id !== id)
-      try { localStorage.setItem(LS_HISTORY_KEY, JSON.stringify(next)) } catch { /* ignore */ }
-      return next
-    })
-  }, [])
-
-  // ── Scheduler (Postiz) ────────────────────────────────────────
-  const [channels, setChannels] = useState([])
-  const [channelsLoading, setChannelsLoading] = useState(false)
-  const [channelsError, setChannelsError] = useState('')
-  const [selectedChannels, setSelectedChannels] = useState([])
-  const [scheduleCaption, setScheduleCaption] = useState('')
-  const [scheduleImages, setScheduleImages] = useState('')
-  const [scheduleDate, setScheduleDate] = useState('')
-  const [scheduling, setScheduling] = useState(false)
-  const [scheduleMsg, setScheduleMsg] = useState(null) // { type: 'ok' | 'err', text }
-
-  // Batch scheduling
-  const [batchPosts, setBatchPosts] = useState([]) // string[]
-  const [batchStart, setBatchStart] = useState('')
-  const [batchEveryDays, setBatchEveryDays] = useState(2)
-  const [batchRunning, setBatchRunning] = useState(false)
-  const [batchResult, setBatchResult] = useState(null) // { done, total, fails: [] }
-
-  const loadChannels = useCallback(async () => {
-    setChannelsLoading(true); setChannelsError('')
-    try {
-      const res = await fetch('/api/postiz')
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
-      setChannels(data.channels || [])
-      if (!data.channels?.length) setChannelsError('No channels connected in Postiz yet. Connect one in Postiz first.')
-    } catch (e) {
-      setChannelsError(e.message)
-    } finally {
-      setChannelsLoading(false)
-    }
-  }, [])
-
-  const toggleChannel = (id) =>
-    setSelectedChannels((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id])
-
-  const sendToScheduler = useCallback((text) => {
-    setScheduleCaption(text)
-    setScheduleMsg(null)
-    setTab('schedule')
-    if (channels.length === 0 && !channelsLoading) loadChannels()
-  }, [channels.length, channelsLoading, loadChannels])
-
-  const handleSchedule = async () => {
-    setScheduleMsg(null)
-    if (!scheduleCaption.trim()) { setScheduleMsg({ type: 'err', text: 'Add caption text first.' }); return }
-    if (selectedChannels.length === 0) { setScheduleMsg({ type: 'err', text: 'Pick at least one channel.' }); return }
-    if (!scheduleDate) { setScheduleMsg({ type: 'err', text: 'Pick a date and time.' }); return }
-    const when = new Date(scheduleDate)
-    if (isNaN(when.getTime()) || when.getTime() < Date.now()) {
-      setScheduleMsg({ type: 'err', text: 'Pick a valid future date/time.' }); return
-    }
-    const imageUrls = scheduleImages.split(/[\n,]/).map((s) => s.trim()).filter(Boolean)
-    setScheduling(true)
-    try {
-      const res = await fetch('/api/postiz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'schedule', content: scheduleCaption, channelIds: selectedChannels, date: when.toISOString(), imageUrls }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
-      setScheduleMsg({ type: 'ok', text: 'Scheduled ✓ — it\'s queued in Postiz.' })
-      setScheduleCaption('')
-      setScheduleImages('')
-    } catch (e) {
-      setScheduleMsg({ type: 'err', text: e.message })
-    } finally {
-      setScheduling(false)
-    }
-  }
-
-  const loadCaptionsForBatch = () => {
-    // Pull from the current caption box, else the last generation's captions section
-    const source = scheduleCaption.trim()
-      || (parseSections(contentOutput).find((s) => s.key === 'captions')?.content || '')
-    const posts = splitCaptions(source)
-    setBatchPosts(posts)
-    setBatchResult(null)
-  }
-
-  const updateBatchPost = (i, val) => setBatchPosts((prev) => prev.map((p, idx) => idx === i ? val : p))
-  const removeBatchPost = (i) => setBatchPosts((prev) => prev.filter((_, idx) => idx !== i))
-
-  const handleBatchSchedule = async () => {
-    setBatchResult(null)
-    const posts = batchPosts.map((p) => p.trim()).filter(Boolean)
-    if (posts.length === 0) { setScheduleMsg({ type: 'err', text: 'No posts to queue — load captions first.' }); return }
-    if (selectedChannels.length === 0) { setScheduleMsg({ type: 'err', text: 'Pick at least one channel.' }); return }
-    if (!batchStart) { setScheduleMsg({ type: 'err', text: 'Pick a start date/time for the batch.' }); return }
-    const start = new Date(batchStart)
-    if (isNaN(start.getTime()) || start.getTime() < Date.now()) {
-      setScheduleMsg({ type: 'err', text: 'Batch start must be a valid future date/time.' }); return
-    }
-    setScheduleMsg(null)
-    setBatchRunning(true)
-    const gap = Math.max(1, Number(batchEveryDays) || 1)
-    const fails = []
-    let done = 0
-    for (let i = 0; i < posts.length; i++) {
-      const when = new Date(start.getTime() + i * gap * 86400000)
-      try {
-        const res = await fetch('/api/postiz', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'schedule', content: posts[i], channelIds: selectedChannels, date: when.toISOString(), imageUrls: [] }),
-        })
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
-        done++
-      } catch (e) {
-        fails.push({ index: i + 1, error: e.message })
-      }
-      setBatchResult({ done, total: posts.length, fails: [...fails] })
-    }
-    setBatchRunning(false)
-  }
-
   const persistVoice = useCallback((text) => {
-    try { localStorage.setItem(LS_VOICE_KEY, text) } catch { /* storage unavailable */ }
+    try { localStorage.setItem(LS_VOICE_KEY, text) } catch {}
     setVoiceSaved(true)
     setVoiceEdited(false)
     setTimeout(() => setVoiceSaved(false), 2500)
@@ -351,11 +161,10 @@ export default function ContentEngine() {
     setError('')
     setContentOutput('')
     try {
-      const final = await streamClaude('generate', { voiceProfile, intake }, (chunk) => {
+      await streamClaude('generate', { voiceProfile, intake }, (chunk) => {
         setContentOutput(chunk)
         if (contentScrollRef.current) contentScrollRef.current.scrollTop = contentScrollRef.current.scrollHeight
       })
-      saveToHistory(final)
     } catch (e) {
       setError(e.message)
     } finally {
@@ -385,8 +194,6 @@ export default function ContentEngine() {
           {[
             { id: 'voice', label: '01  Voice Profile', Icon: HiCamera },
             { id: 'generate', label: '02  Generate', Icon: HiLightningBolt },
-            { id: 'history', label: `03  History${history.length ? ` (${history.length})` : ''}`, Icon: HiClock },
-            { id: 'schedule', label: '04  Schedule', Icon: HiCalendar },
           ].map(({ id, label, Icon }) => (
             <button
               key={id}
@@ -582,16 +389,6 @@ export default function ContentEngine() {
               </Field>
             </div>
 
-            <Field label="Trending hooks / keywords" hint="Optional — paste angles or keywords from vidIQ research to ride current trends">
-              <textarea
-                value={intake.trends}
-                onChange={setIntakeField('trends')}
-                rows={2}
-                placeholder="e.g. 'POV: your photographer said trust me', 'Charlotte fall mini sessions', 'unposed candid trend'"
-                className={areaCls}
-              />
-            </Field>
-
             <button
               onClick={handleGenerateContent}
               disabled={loading === 'content' || !voiceProfile.trim()}
@@ -611,18 +408,7 @@ export default function ContentEngine() {
                   <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">
                     {loading === 'content' ? 'Writing your content...' : 'Your Content Month'}
                   </h2>
-                  {contentOutput && !loading && (
-                    <div className="flex items-center gap-4">
-                      <button
-                        onClick={() => downloadText(`shotbyseven-content-${slugify(intake.subject)}.md`, contentOutput)}
-                        className="flex items-center gap-1.5 font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30 hover:text-gold transition-colors"
-                      >
-                        <HiDownload className="w-3 h-3" /> Download
-                      </button>
-                      <CopyBtn text={contentOutput} label="Copy All" />
-                    </div>
-                  )}
-                  {contentOutput && loading === 'content' && <CopyBtn text={contentOutput} label="Copy All" />}
+                  {contentOutput && <CopyBtn text={contentOutput} label="Copy All" />}
                 </div>
 
                 {contentSections.length > 0 ? (
@@ -630,15 +416,7 @@ export default function ContentEngine() {
                     <div key={s.key} className="border border-cream/10">
                       <div className="flex items-center justify-between px-4 py-2.5 border-b border-cream/8 bg-cream/2">
                         <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">{s.title}</span>
-                        <div className="flex items-center gap-4">
-                          <button
-                            onClick={() => sendToScheduler(s.content)}
-                            className="flex items-center gap-1.5 font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30 hover:text-gold transition-colors"
-                          >
-                            <HiPaperAirplane className="w-3 h-3 rotate-90" /> Scheduler
-                          </button>
-                          <CopyBtn text={s.content} />
-                        </div>
+                        <CopyBtn text={s.content} />
                       </div>
                       <div className="p-4 font-body text-sm text-cream/75 whitespace-pre-wrap leading-relaxed max-h-[480px] overflow-y-auto">
                         {s.content}
@@ -656,261 +434,6 @@ export default function ContentEngine() {
                 )}
               </div>
             )}
-          </motion.div>
-        )}
-
-        {/* ── HISTORY TAB ── */}
-        {tab === 'history' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-3">
-            {history.length === 0 ? (
-              <div className="border border-cream/10 p-8 text-center">
-                <HiClock className="w-6 h-6 text-cream/20 mx-auto mb-3" />
-                <p className="text-cream/40 text-sm font-body">No saved content yet.</p>
-                <p className="text-cream/25 text-[11px] font-body mt-1">
-                  Every month you generate in Step 02 is saved here automatically.
-                </p>
-              </div>
-            ) : (
-              history.map((h) => {
-                const open = expandedId === h.id
-                return (
-                  <div key={h.id} className="border border-cream/10">
-                    <div className="flex items-center justify-between px-4 py-3 gap-3">
-                      <button
-                        onClick={() => setExpandedId(open ? null : h.id)}
-                        className="flex items-center gap-3 min-w-0 text-left group flex-1"
-                      >
-                        <HiChevronDown className={`w-4 h-4 text-cream/30 flex-shrink-0 transition-transform ${open ? 'rotate-180' : ''}`} />
-                        <span className="min-w-0">
-                          <span className="block font-body text-sm text-cream/80 truncate group-hover:text-cream transition-colors">
-                            {h.subject}
-                          </span>
-                          <span className="block text-cream/25 text-[11px] font-heading tracking-wider uppercase">
-                            {formatDate(h.date)}{h.goal ? ` · ${h.goal}` : ''}
-                          </span>
-                        </span>
-                      </button>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <CopyBtn text={h.output} />
-                        <button
-                          onClick={() => downloadText(`shotbyseven-content-${slugify(h.subject)}.md`, h.output)}
-                          className="text-cream/30 hover:text-gold transition-colors"
-                          aria-label="Download"
-                        >
-                          <HiDownload className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => deleteHistoryEntry(h.id)}
-                          className="text-cream/30 hover:text-red-400/80 transition-colors"
-                          aria-label="Delete"
-                        >
-                          <HiTrash className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                    {open && (
-                      <div className="border-t border-cream/8 p-4 font-body text-sm text-cream/70 whitespace-pre-wrap leading-relaxed max-h-[560px] overflow-y-auto">
-                        {h.output}
-                      </div>
-                    )}
-                  </div>
-                )
-              })
-            )}
-          </motion.div>
-        )}
-
-        {/* ── SCHEDULE TAB ── */}
-        {tab === 'schedule' && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
-            <p className="text-cream/30 text-sm font-body">
-              Schedule a caption straight to your social channels via Postiz. Generate content in Step 02, hit
-              <span className="text-cream/50"> Scheduler</span> on any section, then set the channel and time.
-            </p>
-
-            {/* Channels */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">Channels</h2>
-                <button
-                  onClick={loadChannels}
-                  disabled={channelsLoading}
-                  className="flex items-center gap-1.5 font-heading text-[10px] tracking-[0.15em] uppercase text-gold hover:text-gold/70 transition-colors disabled:opacity-40"
-                >
-                  <HiRefresh className={`w-3 h-3 ${channelsLoading ? 'animate-spin' : ''}`} />
-                  {channels.length ? 'Reload' : 'Load channels'}
-                </button>
-              </div>
-              {channelsError && (
-                <p className="text-red-400/70 text-[11px] font-body mb-3">{channelsError}</p>
-              )}
-              {channels.length > 0 ? (
-                <div className="flex flex-wrap gap-2">
-                  {channels.map((c) => (
-                    <button
-                      key={c.id}
-                      onClick={() => toggleChannel(c.id)}
-                      className={`px-4 py-2 border font-heading text-[10px] tracking-[0.15em] uppercase transition-all ${
-                        selectedChannels.includes(c.id)
-                          ? 'border-gold bg-gold/10 text-cream'
-                          : 'border-cream/10 text-cream/50 hover:border-cream/30'
-                      }`}
-                    >
-                      {c.name}{c.provider ? ` · ${c.provider}` : ''}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                !channelsError && !channelsLoading && (
-                  <p className="text-cream/25 text-[11px] font-body">Load your connected Postiz channels to pick where this posts.</p>
-                )
-              )}
-            </div>
-
-            {/* Caption */}
-            <Field label="Caption" hint="Trim the section down to the single caption you want to publish">
-              <textarea
-                value={scheduleCaption}
-                onChange={(e) => setScheduleCaption(e.target.value)}
-                rows={7}
-                placeholder="Your caption text…"
-                className={areaCls}
-              />
-            </Field>
-
-            {/* Image URLs */}
-            <Field label="Image URLs" hint="One per line — Instagram & TikTok require at least one image. Paste your gallery / Cloudinary links.">
-              <textarea
-                value={scheduleImages}
-                onChange={(e) => setScheduleImages(e.target.value)}
-                rows={3}
-                placeholder={"https://res.cloudinary.com/…/photo1.jpg\nhttps://res.cloudinary.com/…/photo2.jpg"}
-                className={areaCls}
-              />
-            </Field>
-
-            {/* Date */}
-            <Field label="Publish at">
-              <input
-                type="datetime-local"
-                value={scheduleDate}
-                onChange={(e) => setScheduleDate(e.target.value)}
-                className={`${inputCls} [color-scheme:dark]`}
-              />
-            </Field>
-
-            {scheduleMsg && (
-              <div className={`border px-4 py-3 ${scheduleMsg.type === 'ok' ? 'border-gold/25 bg-gold/5' : 'border-red-500/25 bg-red-500/5'}`}>
-                <p className={`text-xs font-heading tracking-wider ${scheduleMsg.type === 'ok' ? 'text-gold' : 'text-red-400/80'}`}>
-                  {scheduleMsg.text}
-                </p>
-              </div>
-            )}
-
-            <button
-              onClick={handleSchedule}
-              disabled={scheduling}
-              className="w-full font-heading text-xs tracking-[0.25em] uppercase text-ink bg-gold py-4 hover:bg-gold/90 transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
-            >
-              {scheduling ? (
-                <><HiRefresh className="w-4 h-4 animate-spin" /> Scheduling…</>
-              ) : (
-                <><HiPaperAirplane className="w-4 h-4 rotate-90" /> Schedule Post</>
-              )}
-            </button>
-
-            {/* ── Batch: schedule a whole month ── */}
-            <div className="border-t border-cream/8 pt-8 mt-4 space-y-5">
-              <div>
-                <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60 mb-1">
-                  Batch — Queue a Whole Month
-                </h2>
-                <p className="text-cream/25 text-[11px] font-body">
-                  Splits a generated CAPTIONS block into individual posts and spaces them out across your calendar. Uses the channels selected above.
-                </p>
-              </div>
-
-              <button
-                onClick={loadCaptionsForBatch}
-                className="font-heading text-[10px] tracking-[0.15em] uppercase text-gold hover:text-gold/70 transition-colors flex items-center gap-1.5"
-              >
-                <HiLightningBolt className="w-3 h-3" /> Split captions into posts
-              </button>
-
-              {batchPosts.length > 0 && (
-                <>
-                  <div className="space-y-2">
-                    {batchPosts.map((p, i) => (
-                      <div key={i} className="flex gap-2 items-start">
-                        <span className="font-heading text-[10px] text-gold/50 mt-3 w-5 flex-shrink-0">{i + 1}</span>
-                        <textarea
-                          value={p}
-                          onChange={(e) => updateBatchPost(i, e.target.value)}
-                          rows={2}
-                          className={`${areaCls} text-xs`}
-                        />
-                        <button
-                          onClick={() => removeBatchPost(i)}
-                          className="text-cream/30 hover:text-red-400/80 transition-colors mt-3 flex-shrink-0"
-                          aria-label="Remove"
-                        >
-                          <HiTrash className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <Field label="Start date / time">
-                      <input
-                        type="datetime-local"
-                        value={batchStart}
-                        onChange={(e) => setBatchStart(e.target.value)}
-                        className={`${inputCls} [color-scheme:dark]`}
-                      />
-                    </Field>
-                    <Field label="Space posts every">
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          min="1"
-                          value={batchEveryDays}
-                          onChange={(e) => setBatchEveryDays(e.target.value)}
-                          className={`${inputCls} w-20`}
-                        />
-                        <span className="text-cream/40 text-sm font-body">days</span>
-                      </div>
-                    </Field>
-                  </div>
-
-                  {batchResult && (
-                    <div className={`border px-4 py-3 ${batchResult.fails.length ? 'border-red-500/25 bg-red-500/5' : 'border-gold/25 bg-gold/5'}`}>
-                      <p className={`text-xs font-heading tracking-wider ${batchResult.fails.length ? 'text-red-400/80' : 'text-gold'}`}>
-                        {batchResult.done}/{batchResult.total} scheduled{batchResult.fails.length ? ` · ${batchResult.fails.length} failed` : ' ✓'}
-                      </p>
-                      {batchResult.fails.slice(0, 3).map((f) => (
-                        <p key={f.index} className="text-red-400/60 text-[11px] font-body mt-1">#{f.index}: {f.error}</p>
-                      ))}
-                    </div>
-                  )}
-
-                  <button
-                    onClick={handleBatchSchedule}
-                    disabled={batchRunning}
-                    className="w-full font-heading text-xs tracking-[0.25em] uppercase text-ink bg-gold/90 py-4 hover:bg-gold transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
-                  >
-                    {batchRunning ? (
-                      <><HiRefresh className="w-4 h-4 animate-spin" /> Queuing {batchResult ? `${batchResult.done}/${batchResult.total}` : ''}…</>
-                    ) : (
-                      <><HiCalendar className="w-4 h-4" /> Queue {batchPosts.length} Posts</>
-                    )}
-                  </button>
-                  <p className="text-cream/20 text-[10px] font-body text-center">
-                    Note: batch posts go out as text — add images per-post in Postiz for Instagram/TikTok.
-                  </p>
-                </>
-              )}
-            </div>
           </motion.div>
         )}
 

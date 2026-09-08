@@ -21,16 +21,20 @@ const INFO = {
   portalUrl: '/portal',
   stripeUrl: 'https://buy.stripe.com/00w00ja802Rl5g74ar8og00',
   services: {
-    portrait:   { name: 'Portrait / Headshots',   basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Headshots, personal branding, couples, family, lifestyle' },
-    couples:    { name: 'Couples / Engagement',    basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Romantic couples sessions and engagement shoots' },
-    graduation: { name: 'Graduation',              basePrice: 250, extraPerHr: 50, minHrs: 2, description: 'Cap & gown portraits and creative graduation shoots' },
-    maternity:  { name: 'Maternity / Family',      basePrice: 250, extraPerHr: 50, minHrs: 2, description: 'Maternity and family sessions — timeless, emotional, beautiful' },
-    events:     { name: 'Birthday / Event',        basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Birthdays, parties & simple events — weddings and corporate are custom quotes' },
-    fashion:    { name: 'Fashion / Editorial',     basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Editorial, fashion, artistic concepts at NoDa Art House' },
-    sports:     { name: 'Sports / Action',         basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Sports, action, fitness, and lifestyle shoots' },
+    package777:  { name: 'The 777 Package',         basePrice: 777, fixed: true, description: 'The all-in signature experience: alignment consultation, 90-min session, 77 images, 7 retouched selects, 1 month of AI-generated content, 7-day delivery' },
+    mini:        { name: 'Mini Session',             basePrice: 75,  extraPerHr: 50, minHrs: 1, description: '1-hour focused session — great for updated headshots or seasonal portraits' },
+    headshots:   { name: 'Professional Headshots',  basePrice: 150, extraPerHr: 50, minHrs: 1, description: 'LinkedIn, corporate, and press-ready headshots delivered within 24 hours' },
+    branding:    { name: 'Personal Branding',        basePrice: 350, extraPerHr: 50, minHrs: 2, description: 'Quarterly content sessions for coaches, creators, and entrepreneurs — paired with AI-generated captions' },
+    portrait:    { name: 'Portrait / Lifestyle',     basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Couples, families, maternity, and lifestyle portraits' },
+    couples:     { name: 'Couples / Engagement',     basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Romantic couples sessions and engagement shoots' },
+    graduation:  { name: 'Graduation',               basePrice: 250, extraPerHr: 50, minHrs: 2, description: 'Cap & gown portraits and creative graduation shoots' },
+    maternity:   { name: 'Maternity / Family',       basePrice: 250, extraPerHr: 50, minHrs: 2, description: 'Maternity and family sessions — timeless, emotional, beautiful' },
+    events:      { name: 'Birthday / Event',         basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Birthdays, parties & simple events — weddings and corporate are custom quotes' },
+    fashion:     { name: 'Fashion / Editorial',      basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Editorial, fashion, artistic concepts at NoDa Art House' },
+    sports:      { name: 'Sports / Action',          basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Sports, action, fitness, and lifestyle shoots' },
   },
   hourlyRate: 50, // $50/hr, 2-hour minimum
-  studioFee: 70, // per hour extra for Studio A
+  studioFee: 60, // per hour extra for Studio A
   depositMin: 50,
   turnaround: '7 business days',
   loyalty: '3+ sessions = 50% off your next booking',
@@ -58,7 +62,12 @@ function detectIntent(msg) {
   if (msg.match(/cancel|refund|reschedule|policy|policies/)) return 'policy'
   if (msg.match(/wedding|bride|groom|ceremony|reception|marry/)) return 'wedding'
   if (msg.match(/proposal|propose|engaged|engagement ring/)) return 'proposal'
-  if (msg.match(/portrait|headshot|branding|linkedin|professional photo/)) return 'portrait'
+  if (msg.match(/777|seven seventy|signature package|all.in package/)) return '777package'
+  if (msg.match(/mini session|quick session|1.?hour|one hour session/)) return 'mini'
+  if (msg.match(/headshot|linkedin|professional photo|corporate photo|press photo/)) return 'headshots'
+  if (msg.match(/personal brand|branding session|brand photo|content shoot|quarterly|content creator photo/)) return 'personalbranding'
+  if (msg.match(/gift card|give.*session|gift.*photo|buy.*gift/)) return 'giftcard'
+  if (msg.match(/portrait|lifestyle photo/)) return 'portrait'
   if (msg.match(/couple|partner|boyfriend|girlfriend|anniversary/)) return 'couples'
   if (msg.match(/grad|graduation|cap and gown|cap & gown|senior year|senior photo/)) return 'graduation'
   if (msg.match(/matern|pregnan|baby|bump|family|kids|children/)) return 'maternity'
@@ -82,7 +91,7 @@ function detectIntent(msg) {
 
 function getServiceSummary() {
   return Object.values(INFO.services)
-    .map(s => `• **${s.name}** — from $${s.basePrice}`)
+    .map(s => `• **${s.name}** — ${s.fixed ? `$${s.basePrice} flat` : `from $${s.basePrice}`}`)
     .join('\n')
 }
 
@@ -165,10 +174,54 @@ function getBotResponse(input) {
         quickReplies: BOOKING_REPLIES,
       }
 
+    case '777package': {
+      const s = INFO.services.package777
+      return {
+        text: `**The 777 Package — $${s.basePrice} flat** ✦\n\nThe signature all-in experience:\n• 15-min alignment consultation\n• 90-min session (studio or outdoor)\n• 77 images delivered for review\n• 7 fully retouched selects\n• 1 month of AI-generated social content\n• 7-day delivery guarantee\n\n${s.description}\n\nReady to book your 777?`,
+        quickReplies: BOOKING_REPLIES,
+      }
+    }
+
+    case 'mini': {
+      const s = INFO.services.mini
+      return {
+        text: `**${s.name}** — from $${s.basePrice}\n📋 ${s.description}\n⏱ ${s.minHrs} hour · no overtime\n\nGreat for updated headshots, seasonal portraits, or testing a shoot before committing to a full session. Quick and focused.`,
+        quickReplies: BOOKING_REPLIES,
+      }
+    }
+
+    case 'headshots': {
+      const s = INFO.services.headshots
+      return {
+        text: `**${s.name}** — from $${s.basePrice}\n📋 ${s.description}\n⏱ ${s.minHrs} hour · 24hr turnaround\n\n1–2 outfits, multiple selects, studio or outdoor. Perfect for LinkedIn, press kits, corporate bios, and business profiles.`,
+        quickReplies: BOOKING_REPLIES,
+      }
+    }
+
+    case 'personalbranding': {
+      const s = INFO.services.branding
+      return {
+        text: `**${s.name}** — from $${s.basePrice}\n📋 ${s.description}\n⏱ Min ${s.minHrs}hrs · quarterly rhythm recommended\n\nBuild a library of on-brand images that fill months of content — not just one round of shots. Pairs with the Content Engine to generate a full month of captions from your photos.\n\nPerfect for coaches, healers, entrepreneurs, and creators.`,
+        quickReplies: [
+          { label: 'See Full Details', value: 'open-branding' },
+          { label: 'Book a Session', value: 'scroll-smart-booking' },
+        ],
+      }
+    }
+
+    case 'giftcard':
+      return {
+        text: `**Gift Cards** 🎁\n\nGive the gift of a shoot! Gift cards are available in any amount starting at $75 — no expiration date, redeemable for any session type.\n\nHead to the gift card page to purchase:`,
+        quickReplies: [
+          { label: 'Buy a Gift Card →', value: 'open-gift' },
+          { label: 'See Services', value: 'services' },
+        ],
+      }
+
     case 'portrait': {
       const s = INFO.services.portrait
       return {
-        text: `**${s.name}** — from $${s.basePrice}\n📋 ${s.description}\n⏱ Min ${s.minHrs}hr · +$${s.extraPerHr}/hr after\n\nPerfect for headshots, LinkedIn, branding, or a personal shoot. Ready to book?`,
+        text: `**${s.name}** — from $${s.basePrice}\n📋 ${s.description}\n⏱ Min ${s.minHrs}hrs · +$${s.extraPerHr}/hr after\n\nPerfect for couples, families, or a personal lifestyle shoot. Ready to book?`,
         quickReplies: BOOKING_REPLIES,
       }
     }
@@ -390,6 +443,16 @@ export default function ChatBot() {
     // Handle stripe open
     if (userMsg === 'open-stripe') {
       window.open(INFO.stripeUrl, '_blank')
+      return
+    }
+
+    // Handle internal route opens
+    if (userMsg === 'open-branding') {
+      window.location.href = '/branding'
+      return
+    }
+    if (userMsg === 'open-gift') {
+      window.location.href = '/gift'
       return
     }
 
