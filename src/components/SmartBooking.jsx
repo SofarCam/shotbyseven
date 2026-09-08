@@ -46,7 +46,7 @@ const charlotteLocations = [
   { id: 'noda', label: 'NoDa Arts District' },
   { id: 'freedom', label: 'Freedom Park' },
   { id: 'romare', label: 'Romare Bearden Park' },
-  { id: 'studio', label: 'Studio A — NoDa Art House (+$70/hr)' },
+  { id: 'studio', label: 'Studio A — NoDa Art House (+$60/hr)' },
 ]
 
 export default function SmartBooking() {
@@ -430,7 +430,7 @@ export default function SmartBooking() {
                     >
                       View NoDa's Live Calendar →
                     </a>
-                    <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $70/hr · Open 7 days</p>
+                    <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $60/hr · Open 7 days</p>
                   </motion.div>
 
                   {/* Manual date + time entry for studio */}

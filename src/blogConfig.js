@@ -41,11 +41,11 @@ export const blogPosts = [
       {
         type: 'tip',
         label: 'Studio & Travel',
-        content: `Want the NoDa Art House studio? Add $70/hr for the space on top of the session rate. Need me outside Charlotte? Travel within 100 miles is a flat $50. Everything's stated up front.`,
+        content: `Want the NoDa Art House studio? Add $60/hr for the space on top of the session rate. Need me outside Charlotte? Travel within 100 miles is a flat $50. Everything's stated up front.`,
       },
       {
         type: 'p',
-        content: `So what actually moves the price? Three things: hours (it's $50/hr, so a 3-hour shoot is $150), whether you add the studio ($70/hr), and travel. That's it. Anyone charging dramatically less is usually cutting editing time or the number of delivered frames — know what you're getting.`,
+        content: `So what actually moves the price? Three things: hours (it's $50/hr, so a 3-hour shoot is $150), whether you add the studio ($60/hr), and travel. That's it. Anyone charging dramatically less is usually cutting editing time or the number of delivered frames — know what you're getting.`,
       },
       {
         type: 'p',

@@ -25,7 +25,7 @@ export default function StudioPage() {
             Book the Studio
           </h1>
           <p className="text-cream/30 text-sm max-w-sm mx-auto mb-6">
-            $70/hr · Charlotte, NC · Max 20 people<br />
+            $60/hr · Charlotte, NC · Max 20 people<br />
             Seven checks availability and responds within 5 minutes.
           </p>
 
@@ -37,7 +37,7 @@ export default function StudioPage() {
             <span className="text-cream/10">·</span>
             <span>White cyclorama available</span>
             <span className="text-cream/10">·</span>
-            <span>$70/hr · Billed separately</span>
+            <span>$60/hr · Billed separately</span>
           </div>
         </div>
 
@@ -48,7 +48,7 @@ export default function StudioPage() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="max-w-lg mx-auto px-6"
         >
-          <SmartIntakeForm selectedPackage={{ id: 'studio', label: 'Studio A — NoDa Art House', price: '$70/hr' }} />
+          <SmartIntakeForm selectedPackage={{ id: 'studio', label: 'Studio A — NoDa Art House', price: '$60/hr' }} />
         </motion.div>
 
         {/* Bottom note */}

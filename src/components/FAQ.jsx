@@ -41,7 +41,7 @@ const faqs = [
   },
   {
     q: 'How do I book Studio A at NoDa Art House?',
-    a: 'Use the Book Studio form at shotbyseven.com/studio. Seven (my AI assistant) will check availability for your dates and send you the direct NoDa Art House booking link. Studio rental is $70/hr, billed separately from session fees.',
+    a: 'Use the Book Studio form at shotbyseven.com/studio. Seven (my AI assistant) will check availability for your dates and send you the direct NoDa Art House booking link. Studio rental is $60/hr, billed separately from session fees.',
   },
   {
     q: 'What is The 777 Package?',
