@@ -45,6 +45,7 @@ Rules:
 - Stay in voice. No generic "AI influencer" language.
 - Vary the openers — no two captions should start the same way.
 - Where a booking CTA fits naturally, include one. Don't force it everywhere.
+- If trending hooks/keywords are provided, work 2–3 of them into hooks or reel concepts naturally — never keyword-stuff.
 - Output clean and ready to copy. No commentary.`
 }
 
@@ -56,6 +57,7 @@ function formatIntake(intake) {
     ['Any story behind it', intake.story],
     ['Number of usable images', intake.imageCount],
     ['Goal for these posts', intake.goal],
+    ['Trending hooks / keywords to lean into', intake.trends],
   ]
   return fields
     .filter(([, v]) => v?.toString().trim())
