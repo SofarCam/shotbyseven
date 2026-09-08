@@ -88,6 +88,8 @@ export default function FeaturedStrip() {
               <button
                 key={i}
                 onClick={() => goTo(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                aria-current={i === current}
                 className="relative h-[3px] rounded-full overflow-hidden transition-all duration-500"
                 style={{ width: i === current ? 40 : 12 }}
               >
@@ -108,17 +110,19 @@ export default function FeaturedStrip() {
       </div>
 
       {/* Side navigation arrows */}
-      <div className="absolute inset-y-0 left-0 z-20 flex items-center pl-4 opacity-0 hover:opacity-100 transition-opacity">
+      <div className="absolute inset-y-0 left-0 z-20 flex items-center pl-4 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <button
           onClick={() => setCurrent((prev) => (prev - 1 + featured.length) % featured.length)}
+          aria-label="Previous slide"
           className="w-12 h-12 border border-cream/10 bg-ink/40 backdrop-blur flex items-center justify-center text-cream/40 hover:text-gold hover:border-gold/30 transition-colors"
         >
           ‹
         </button>
       </div>
-      <div className="absolute inset-y-0 right-0 z-20 flex items-center pr-4 opacity-0 hover:opacity-100 transition-opacity">
+      <div className="absolute inset-y-0 right-0 z-20 flex items-center pr-4 opacity-0 hover:opacity-100 focus-within:opacity-100 transition-opacity">
         <button
           onClick={() => setCurrent((prev) => (prev + 1) % featured.length)}
+          aria-label="Next slide"
           className="w-12 h-12 border border-cream/10 bg-ink/40 backdrop-blur flex items-center justify-center text-cream/40 hover:text-gold hover:border-gold/30 transition-colors"
         >
           ›

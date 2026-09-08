@@ -186,13 +186,6 @@ export function GemTracker() {
     e.preventDefault()
     if (!email) return
 
-    // Save locally as backup
-    try {
-      const subscribers = JSON.parse(localStorage.getItem('shotbyseven_subscribers') || '[]')
-      subscribers.push({ email, source: 'hidden_gems', date: new Date().toISOString() })
-      localStorage.setItem('shotbyseven_subscribers', JSON.stringify(subscribers))
-    } catch { /* ignore */ }
-
     // Send to Cam via EmailJS
     if (PUBLIC_KEY && SERVICE_ID && CONTACT_TEMPLATE) {
       try {
@@ -334,8 +327,12 @@ export function GemTracker() {
               </p>
 
               <form onSubmit={handleEmailSubmit} className="space-y-4">
+                <label htmlFor="gems-email" className="sr-only">Email address</label>
                 <input
+                  id="gems-email"
                   type="email"
+                  name="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -350,6 +347,10 @@ export function GemTracker() {
                 >
                   Join the Inner Circle
                 </motion.button>
+                <p className="text-cream/15 text-[11px] text-center">
+                  By joining you agree to receive occasional emails from Shot by Seven. See our{' '}
+                  <a href="/privacy" className="underline hover:text-gold/60">Privacy Policy</a>.
+                </p>
               </form>
 
               <button

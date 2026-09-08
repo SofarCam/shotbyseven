@@ -193,9 +193,13 @@ export default function Gallery() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-[100] bg-ink/98 flex items-center justify-center p-4"
             onClick={closeLightbox}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image preview"
           >
             <button
               onClick={closeLightbox}
+              aria-label="Close preview"
               className="absolute top-6 right-6 text-cream/40 hover:text-gold transition-colors z-10"
             >
               <HiX size={28} />
@@ -204,6 +208,7 @@ export default function Gallery() {
             {lightboxShoot.images.length > 1 && (
               <button
                 onClick={(e) => { e.stopPropagation(); prevImg() }}
+                aria-label="Previous image"
                 className="absolute left-6 text-cream/30 hover:text-gold transition-colors z-10"
               >
                 <HiChevronLeft size={36} />
@@ -225,6 +230,7 @@ export default function Gallery() {
             {lightboxShoot.images.length > 1 && (
               <button
                 onClick={(e) => { e.stopPropagation(); next() }}
+                aria-label="Next image"
                 className="absolute right-6 text-cream/30 hover:text-gold transition-colors z-10"
               >
                 <HiChevronRight size={36} />
@@ -239,6 +245,8 @@ export default function Gallery() {
                     <button
                       key={i}
                       onClick={(e) => { e.stopPropagation(); setLightboxShoot(prev => ({ ...prev, index: i })) }}
+                      aria-label={`Go to image ${i + 1}`}
+                      aria-current={i === lightboxShoot.index}
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         i === lightboxShoot.index ? 'bg-gold scale-125' : 'bg-cream/20 hover:bg-cream/40'
                       }`}
