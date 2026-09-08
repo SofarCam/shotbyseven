@@ -235,11 +235,14 @@ export default function ContractSign() {
         >
           {/* Name */}
           <div>
-            <label className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
+            <label htmlFor="contract-name" className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
               Full Name
             </label>
             <input
+              id="contract-name"
               type="text"
+              name="name"
+              autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your legal name"
@@ -250,11 +253,14 @@ export default function ContractSign() {
 
           {/* Email */}
           <div>
-            <label className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
+            <label htmlFor="contract-email" className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
               Email
             </label>
             <input
+              id="contract-email"
               type="email"
+              name="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Where to send your copy"
@@ -301,13 +307,17 @@ export default function ContractSign() {
             </div>
           </div>
 
-          {/* Agreement Checkbox */}
+          {/* Agreement Checkbox — real input for keyboard/screen-reader operability, styled to match */}
           <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="peer sr-only"
+            />
             <div
-              className={`mt-0.5 w-4 h-4 shrink-0 border transition-colors duration-200 flex items-center justify-center ${
-                agreed ? 'border-gold bg-gold/20' : 'border-cream/20 group-hover:border-cream/40'
-              }`}
-              onClick={() => setAgreed(!agreed)}
+              aria-hidden="true"
+              className="mt-0.5 w-4 h-4 shrink-0 border transition-colors duration-200 flex items-center justify-center border-cream/20 group-hover:border-cream/40 peer-checked:border-gold peer-checked:bg-gold/20 peer-focus-visible:ring-2 peer-focus-visible:ring-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-ink"
             >
               {agreed && <span className="text-gold text-xs">✓</span>}
             </div>

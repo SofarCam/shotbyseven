@@ -488,6 +488,7 @@ export default function ChatBot() {
       {/* Chat Toggle Button */}
       <motion.button
         onClick={handleOpen}
+        aria-label={isOpen ? 'Close chat' : 'Chat with Seven'}
         className="fixed bottom-6 right-6 z-[90] w-14 h-14 bg-gold text-ink rounded-full flex items-center justify-center shadow-lg shadow-gold/20 hover:bg-gold-light transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
