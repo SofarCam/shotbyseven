@@ -47,6 +47,12 @@ export default function Footer() {
               Client Portal
             </Link>
             <Link
+              to="/branding"
+              className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
+            >
+              Branding
+            </Link>
+            <Link
               to="/gift"
               className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
             >
