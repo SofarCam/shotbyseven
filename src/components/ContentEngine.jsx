@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import {
   HiClipboard, HiCheck, HiRefresh, HiSave, HiLightningBolt, HiCamera,
   HiDownload, HiTrash, HiClock, HiChevronDown, HiCalendar, HiPaperAirplane,
+  HiSearch, HiTag, HiChartBar, HiArrowRight,
 } from 'react-icons/hi'
 
 const LS_VOICE_KEY = 'sbs_voice_profile'
@@ -85,14 +86,9 @@ const inputCls =
   'w-full bg-transparent border border-cream/15 focus:border-gold/50 px-4 py-3 text-cream text-sm font-body outline-none transition-colors placeholder-cream/15'
 const areaCls = `${inputCls} resize-none leading-relaxed`
 
-// Parse the full generated output into labeled sections for per-section copy buttons
-function parseSections(text) {
-  const markers = [
-    { key: 'captions', title: 'Captions', search: '1. CAPTIONS' },
-    { key: 'carousels', title: 'Carousel Concepts', search: '2. CAROUSEL CONCEPTS' },
-    { key: 'reels', title: 'Reel Hooks', search: '3. REEL HOOKS' },
-    { key: 'email', title: 'Email', search: '4. EMAIL' },
-  ]
+// Split text into labeled sections by locating marker strings in order — used
+// for both the CAPTIONS/CAROUSEL/... generate output and the Learn output.
+function parseByMarkers(text, markers, minLen = 20) {
   const upper = text.toUpperCase()
   const results = []
   for (let i = 0; i < markers.length; i++) {
@@ -104,9 +100,61 @@ function parseSections(text) {
       if (next !== -1) { end = next; break }
     }
     const content = text.slice(start, end).trim()
-    if (content.length > 40) results.push({ key: markers[i].key, title: markers[i].title, content })
+    if (content.length > minLen) results.push({ key: markers[i].key, title: markers[i].title, content })
   }
   return results
+}
+
+const CONTENT_MARKERS = [
+  { key: 'captions', title: 'Captions', search: '1. CAPTIONS' },
+  { key: 'carousels', title: 'Carousel Concepts', search: '2. CAROUSEL CONCEPTS' },
+  { key: 'reels', title: 'Reel Hooks', search: '3. REEL HOOKS' },
+  { key: 'email', title: 'Email', search: '4. EMAIL' },
+]
+function parseSections(text) {
+  return parseByMarkers(text, CONTENT_MARKERS, 40)
+}
+
+const LEARN_MARKERS = [
+  { key: 'patterns', title: 'Patterns', search: 'PATTERNS' },
+  { key: 'stop', title: 'Stop Doing', search: 'STOP DOING' },
+  { key: 'nextIdeas', title: "Next Week's Idea Bank", search: "NEXT WEEK'S IDEA BANK" },
+]
+function parseLearnSections(text) {
+  return parseByMarkers(text, LEARN_MARKERS, 10)
+}
+
+// Parse "### N \n IDEA: ... \n SCORE: ... \n FORMAT: ... \n WHY: ..." blocks
+// produced by the Mine and Learn prompts into a ranked idea list.
+function parseIdeaBank(text) {
+  if (!text) return []
+  const blocks = text.split(/\n(?=###\s*\d+)/).filter((b) => /###\s*\d+/.test(b))
+  return blocks
+    .map((b) => ({
+      idea: /IDEA:\s*(.+)/i.exec(b)?.[1]?.trim() || '',
+      score: /SCORE:\s*(\d+)/i.exec(b)?.[1] || '',
+      format: /FORMAT:\s*(\w+)/i.exec(b)?.[1] || '',
+      why: /WHY:\s*(.+)/i.exec(b)?.[1]?.trim() || '',
+    }))
+    .filter((x) => x.idea)
+}
+
+// Parse "### N \n HOOK: ... \n WHY: ... \n FORMAT: ..." blocks from the Angle prompt
+function parseHooks(text) {
+  if (!text) return []
+  const blocks = text.split(/\n(?=###\s*\d+)/).filter((b) => /###\s*\d+/.test(b))
+  return blocks
+    .map((b) => ({
+      hook: /HOOK:\s*(.+)/i.exec(b)?.[1]?.trim() || '',
+      why: /WHY:\s*(.+)/i.exec(b)?.[1]?.trim() || '',
+      format: /FORMAT:\s*(\w+)/i.exec(b)?.[1] || '',
+    }))
+    .filter((x) => x.hook)
+}
+
+function parseAngleRecommendation(text) {
+  const m = /###\s*RECOMMENDATION\s*\n([\s\S]+)/i.exec(text)
+  return m ? m[1].trim() : ''
 }
 
 // Stream from /api/content-engine, call onChunk(accumulatedText) on each delta
@@ -149,7 +197,23 @@ async function streamClaude(action, body, onChunk) {
 // ─── Main Component ────────────────────────────────────────────────────────────
 
 export default function ContentEngine() {
-  const [tab, setTab] = useState('voice')
+  const [tab, setTab] = useState('mine')
+
+  // ── Mine (idea bank) ──────────────────────────────────────────
+  const [rawMaterial, setRawMaterial] = useState('')
+  const [mineOutput, setMineOutput] = useState('')
+  const mineScrollRef = useRef(null)
+
+  // ── Angle (hooks) ─────────────────────────────────────────────
+  const [ideaInput, setIdeaInput] = useState('')
+  const [angleOutput, setAngleOutput] = useState('')
+  const angleScrollRef = useRef(null)
+
+  // ── Learn (performance feedback) ─────────────────────────────
+  const [topPosts, setTopPosts] = useState('')
+  const [bottomPosts, setBottomPosts] = useState('')
+  const [learnOutput, setLearnOutput] = useState('')
+  const learnScrollRef = useRef(null)
   const [voiceProfile, setVoiceProfile] = useState(() => {
     try { return localStorage.getItem(LS_VOICE_KEY) || '' } catch { return '' }
   })
@@ -344,7 +408,7 @@ export default function ContentEngine() {
 
   const handleGenerateContent = async () => {
     if (!voiceProfile.trim()) {
-      setError('Complete Step 01 first — add your voice profile.')
+      setError('Complete the Voice Profile step first.')
       return
     }
     setLoading('content')
@@ -363,9 +427,88 @@ export default function ContentEngine() {
     }
   }
 
+  const handleMine = async () => {
+    if (!rawMaterial.trim()) return
+    setLoading('mine')
+    setError('')
+    setMineOutput('')
+    try {
+      await streamClaude('mine', { raw: rawMaterial, voiceProfile }, (chunk) => {
+        setMineOutput(chunk)
+        if (mineScrollRef.current) mineScrollRef.current.scrollTop = mineScrollRef.current.scrollHeight
+      })
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const sendIdeaToAngle = (ideaText) => {
+    setIdeaInput(ideaText)
+    setAngleOutput('')
+    setError('')
+    setTab('angle')
+  }
+
+  const handleAngle = async () => {
+    if (!ideaInput.trim()) return
+    setLoading('angle')
+    setError('')
+    setAngleOutput('')
+    try {
+      await streamClaude('angle', { idea: ideaInput, voiceProfile }, (chunk) => {
+        setAngleOutput(chunk)
+        if (angleScrollRef.current) angleScrollRef.current.scrollTop = angleScrollRef.current.scrollHeight
+      })
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const sendHookToWrite = (hookText) => {
+    setIntake((prev) => ({
+      ...prev,
+      subject: prev.subject || ideaInput.slice(0, 80),
+      story: hookText + (prev.story ? '\n\n' + prev.story : ''),
+    }))
+    setError('')
+    setTab('generate')
+  }
+
+  const handleLearn = async () => {
+    if (!topPosts.trim() || !bottomPosts.trim()) return
+    setLoading('learn')
+    setError('')
+    setLearnOutput('')
+    try {
+      await streamClaude('learn', { topPosts, bottomPosts, voiceProfile }, (chunk) => {
+        setLearnOutput(chunk)
+        if (learnScrollRef.current) learnScrollRef.current.scrollTop = learnScrollRef.current.scrollHeight
+      })
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const sendIdeaFromLearn = (ideaText) => {
+    setIdeaInput(ideaText)
+    setAngleOutput('')
+    setError('')
+    setTab('angle')
+  }
+
   const setIntakeField = (field) => (e) => setIntake((prev) => ({ ...prev, [field]: e.target.value }))
 
   const contentSections = !loading && contentOutput ? parseSections(contentOutput) : []
+  const mineIdeas = !loading && mineOutput ? parseIdeaBank(mineOutput) : []
+  const angleHooks = !loading && angleOutput ? parseHooks(angleOutput) : []
+  const angleRecommendation = !loading && angleOutput ? parseAngleRecommendation(angleOutput) : ''
+  const learnSections = !loading && learnOutput ? parseLearnSections(learnOutput) : []
 
   return (
     <section className="min-h-screen bg-ink">
@@ -381,21 +524,24 @@ export default function ContentEngine() {
         </div>
 
         {/* Tab switcher */}
-        <div className="flex mb-10 border border-cream/10 w-fit">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap border border-cream/10 w-full sm:w-fit mb-10">
           {[
-            { id: 'voice', label: '01  Voice Profile', Icon: HiCamera },
-            { id: 'generate', label: '02  Generate', Icon: HiLightningBolt },
-            { id: 'history', label: `03  History${history.length ? ` (${history.length})` : ''}`, Icon: HiClock },
-            { id: 'schedule', label: '04  Schedule', Icon: HiCalendar },
+            { id: 'mine', label: '01  Mine', Icon: HiSearch },
+            { id: 'angle', label: '02  Angle', Icon: HiTag },
+            { id: 'voice', label: '03  Voice Profile', Icon: HiCamera },
+            { id: 'generate', label: '04  Write', Icon: HiLightningBolt },
+            { id: 'history', label: `05  History${history.length ? ` (${history.length})` : ''}`, Icon: HiClock },
+            { id: 'schedule', label: '06  Schedule', Icon: HiCalendar },
+            { id: 'learn', label: '07  Learn', Icon: HiChartBar },
           ].map(({ id, label, Icon }) => (
             <button
               key={id}
               onClick={() => { setTab(id); setError('') }}
-              className={`flex items-center gap-2 font-heading text-[10px] tracking-[0.2em] uppercase px-6 py-3 transition-colors ${
+              className={`flex items-center justify-center sm:justify-start gap-2 font-heading text-[10px] tracking-[0.2em] uppercase px-4 sm:px-6 py-3 transition-colors ${
                 tab === id ? 'bg-gold text-ink' : 'text-cream/40 hover:text-cream'
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className="w-3.5 h-3.5 flex-shrink-0" />
               {label}
             </button>
           ))}
@@ -409,6 +555,159 @@ export default function ContentEngine() {
             className="mb-6 border border-red-500/25 bg-red-500/5 px-4 py-3"
           >
             <p className="text-red-400/80 text-xs font-heading tracking-wider">{error}</p>
+          </motion.div>
+        )}
+
+        {/* ── MINE TAB ── */}
+        {tab === 'mine' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <p className="text-cream/30 text-sm font-body">
+              Turn scattered raw material into a ranked idea bank. Paste past post ideas, saved comments, DMs, and questions your audience keeps asking — Claude scores each by hook strength and sorts the strongest first.
+            </p>
+            <textarea
+              value={rawMaterial}
+              onChange={(e) => setRawMaterial(e.target.value)}
+              rows={9}
+              placeholder={'Last 30 post ideas, top comments, 5 things people keep asking...\n\ne.g. "How much do you charge?" comes up constantly\ne.g. Client asked if I do mini sessions for grads'}
+              className={areaCls}
+            />
+            <button
+              onClick={handleMine}
+              disabled={loading === 'mine' || !rawMaterial.trim()}
+              className="font-heading text-xs tracking-[0.25em] uppercase text-ink bg-gold px-8 py-3 hover:bg-gold/90 transition-colors disabled:opacity-30 flex items-center gap-2"
+            >
+              {loading === 'mine' ? (
+                <><HiRefresh className="w-4 h-4 animate-spin" /> Mining ideas...</>
+              ) : (
+                <><HiSearch className="w-4 h-4" /> Build Idea Bank</>
+              )}
+            </button>
+
+            {(loading === 'mine' || mineOutput) && (
+              <div className="pt-2 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">
+                    {loading === 'mine' ? 'Mining...' : `Idea Bank ${mineIdeas.length ? `(${mineIdeas.length})` : ''}`}
+                  </h2>
+                  {mineOutput && <CopyBtn text={mineOutput} label="Copy All" />}
+                </div>
+
+                {mineIdeas.length > 0 ? (
+                  <div className="space-y-2">
+                    {mineIdeas.map((it, i) => (
+                      <div key={i} className="border border-cream/10 p-4 flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className="font-heading text-[10px] tracking-[0.15em] uppercase text-gold bg-gold/10 px-2 py-0.5">
+                              {it.score}/10
+                            </span>
+                            {it.format && (
+                              <span className="font-heading text-[9px] tracking-[0.15em] uppercase text-cream/30">
+                                {it.format}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-cream/80 text-sm font-body leading-relaxed">{it.idea}</p>
+                          {it.why && <p className="text-cream/25 text-[11px] font-body mt-1">{it.why}</p>}
+                        </div>
+                        <button
+                          onClick={() => sendIdeaToAngle(it.idea)}
+                          className="flex items-center gap-1 font-heading text-[9px] tracking-[0.15em] uppercase text-gold/70 hover:text-gold transition-colors flex-shrink-0 whitespace-nowrap"
+                        >
+                          Angle It <HiArrowRight className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div
+                    ref={mineScrollRef}
+                    className="border border-cream/10 p-4 max-h-[500px] overflow-y-auto font-body text-sm text-cream/75 whitespace-pre-wrap leading-relaxed"
+                  >
+                    {mineOutput}
+                    {loading === 'mine' && <span className="text-gold animate-pulse">▍</span>}
+                  </div>
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ── ANGLE TAB ── */}
+        {tab === 'angle' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <p className="text-cream/30 text-sm font-body">
+              Pick the hook before you write. Drop in one idea — from the idea bank or typed fresh — and get 5 different opening lines, each with a format recommendation and a reason it works.
+            </p>
+            <textarea
+              value={ideaInput}
+              onChange={(e) => setIdeaInput(e.target.value)}
+              rows={3}
+              placeholder='e.g. "Client asked if I do mini sessions for grads — turn this into a post about the Mini Session package"'
+              className={areaCls}
+            />
+            <button
+              onClick={handleAngle}
+              disabled={loading === 'angle' || !ideaInput.trim()}
+              className="font-heading text-xs tracking-[0.25em] uppercase text-ink bg-gold px-8 py-3 hover:bg-gold/90 transition-colors disabled:opacity-30 flex items-center gap-2"
+            >
+              {loading === 'angle' ? (
+                <><HiRefresh className="w-4 h-4 animate-spin" /> Finding angles...</>
+              ) : (
+                <><HiTag className="w-4 h-4" /> Generate 5 Hooks</>
+              )}
+            </button>
+
+            {(loading === 'angle' || angleOutput) && (
+              <div className="pt-2 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">
+                    {loading === 'angle' ? 'Finding angles...' : `Hooks ${angleHooks.length ? `(${angleHooks.length})` : ''}`}
+                  </h2>
+                  {angleOutput && <CopyBtn text={angleOutput} label="Copy All" />}
+                </div>
+
+                {angleHooks.length > 0 ? (
+                  <div className="space-y-2">
+                    {angleHooks.map((h, i) => (
+                      <div key={i} className="border border-cream/10 p-4 flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            {h.format && (
+                              <span className="font-heading text-[9px] tracking-[0.15em] uppercase text-gold/60">
+                                {h.format}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-cream/80 text-sm font-body leading-relaxed">&ldquo;{h.hook}&rdquo;</p>
+                          {h.why && <p className="text-cream/25 text-[11px] font-body mt-1">{h.why}</p>}
+                        </div>
+                        <button
+                          onClick={() => sendHookToWrite(h.hook)}
+                          className="flex items-center gap-1 font-heading text-[9px] tracking-[0.15em] uppercase text-gold/70 hover:text-gold transition-colors flex-shrink-0 whitespace-nowrap"
+                        >
+                          Write It <HiArrowRight className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    {angleRecommendation && (
+                      <div className="border border-gold/20 bg-gold/5 p-4">
+                        <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold mb-1">Recommendation</p>
+                        <p className="text-cream/60 text-sm font-body">{angleRecommendation}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    ref={angleScrollRef}
+                    className="border border-cream/10 p-4 max-h-[500px] overflow-y-auto font-body text-sm text-cream/75 whitespace-pre-wrap leading-relaxed"
+                  >
+                    {angleOutput}
+                    {loading === 'angle' && <span className="text-gold animate-pulse">▍</span>}
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -510,7 +809,7 @@ export default function ContentEngine() {
                 <p className="text-sm font-body text-cream/60">
                   {voiceProfile
                     ? 'Voice profile active — content will match your style.'
-                    : 'No voice profile set. Complete Step 01 first for on-brand results.'}
+                    : 'No voice profile set. Complete the Voice Profile step first for on-brand results.'}
                 </p>
                 {voiceProfile && (
                   <p className="text-cream/25 text-[11px] font-body mt-1 truncate">
@@ -667,7 +966,7 @@ export default function ContentEngine() {
                 <HiClock className="w-6 h-6 text-cream/20 mx-auto mb-3" />
                 <p className="text-cream/40 text-sm font-body">No saved content yet.</p>
                 <p className="text-cream/25 text-[11px] font-body mt-1">
-                  Every month you generate in Step 02 is saved here automatically.
+                  Every month you generate in Write is saved here automatically.
                 </p>
               </div>
             ) : (
@@ -724,7 +1023,7 @@ export default function ContentEngine() {
         {tab === 'schedule' && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
             <p className="text-cream/30 text-sm font-body">
-              Schedule a caption straight to your social channels via Postiz. Generate content in Step 02, hit
+              Schedule a caption straight to your social channels via Postiz. Generate content in Write, hit
               <span className="text-cream/50"> Scheduler</span> on any section, then set the channel and time.
             </p>
 
@@ -911,6 +1210,109 @@ export default function ContentEngine() {
                 </>
               )}
             </div>
+          </motion.div>
+        )}
+
+        {/* ── LEARN TAB ── */}
+        {tab === 'learn' && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+            <p className="text-cream/30 text-sm font-body">
+              Close the loop. Paste your top and bottom performers with their numbers — Claude finds the patterns, tells you what to stop doing, and builds next week&apos;s ranked idea bank around what actually worked.
+            </p>
+
+            <Field label="Top 5 posts this month" hint="Post topic/caption + views, saves, shares — one per line">
+              <textarea
+                value={topPosts}
+                onChange={(e) => setTopPosts(e.target.value)}
+                rows={6}
+                placeholder={'1. "Golden hour session BTS" reel — 45k views, 890 saves, 210 shares\n2. "How much do I charge?" caption — 12k views, 340 saves'}
+                className={areaCls}
+              />
+            </Field>
+
+            <Field label="Bottom 5 posts this month" hint="Same format — the ones that flopped">
+              <textarea
+                value={bottomPosts}
+                onChange={(e) => setBottomPosts(e.target.value)}
+                rows={6}
+                placeholder={'1. "New gear unboxing" reel — 800 views, 12 saves\n2. Generic quote graphic — 650 views, 4 saves'}
+                className={areaCls}
+              />
+            </Field>
+
+            <button
+              onClick={handleLearn}
+              disabled={loading === 'learn' || !topPosts.trim() || !bottomPosts.trim()}
+              className="w-full font-heading text-xs tracking-[0.25em] uppercase text-ink bg-gold py-4 hover:bg-gold/90 transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
+            >
+              {loading === 'learn' ? (
+                <><HiRefresh className="w-4 h-4 animate-spin" /> Finding patterns...</>
+              ) : (
+                <><HiChartBar className="w-4 h-4" /> Analyze & Build Next Week&apos;s Bank →</>
+              )}
+            </button>
+
+            {(loading === 'learn' || learnOutput) && (
+              <div className="pt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-heading text-xs tracking-[0.2em] uppercase text-cream/60">
+                    {loading === 'learn' ? 'Analyzing...' : 'Results'}
+                  </h2>
+                  {learnOutput && <CopyBtn text={learnOutput} label="Copy All" />}
+                </div>
+
+                {learnSections.length > 0 ? (
+                  learnSections.map((s) => (
+                    <div key={s.key} className="border border-cream/10">
+                      <div className="flex items-center justify-between px-4 py-2.5 border-b border-cream/8 bg-cream/2">
+                        <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">{s.title}</span>
+                        <CopyBtn text={s.content} />
+                      </div>
+                      <div className="p-4">
+                        {s.key === 'nextIdeas' && parseIdeaBank(s.content).length > 0 ? (
+                          <div className="space-y-2">
+                            {parseIdeaBank(s.content).map((it, i) => (
+                              <div key={i} className="border border-cream/10 p-3 flex items-start justify-between gap-3">
+                                <div className="min-w-0">
+                                  <div className="flex items-center gap-2 mb-1">
+                                    <span className="font-heading text-[9px] tracking-[0.15em] uppercase text-gold bg-gold/10 px-1.5 py-0.5">
+                                      {it.score}/10
+                                    </span>
+                                    {it.format && (
+                                      <span className="font-heading text-[9px] tracking-[0.15em] uppercase text-cream/30">
+                                        {it.format}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <p className="text-cream/80 text-sm font-body leading-relaxed">{it.idea}</p>
+                                  {it.why && <p className="text-cream/25 text-[11px] font-body mt-1">{it.why}</p>}
+                                </div>
+                                <button
+                                  onClick={() => sendIdeaFromLearn(it.idea)}
+                                  className="flex items-center gap-1 font-heading text-[9px] tracking-[0.15em] uppercase text-gold/70 hover:text-gold transition-colors flex-shrink-0 whitespace-nowrap"
+                                >
+                                  Angle It <HiArrowRight className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="font-body text-sm text-cream/75 whitespace-pre-wrap leading-relaxed">{s.content}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div
+                    ref={learnScrollRef}
+                    className="border border-cream/10 p-4 max-h-[600px] overflow-y-auto font-body text-sm text-cream/75 whitespace-pre-wrap leading-relaxed"
+                  >
+                    {learnOutput}
+                    {loading === 'learn' && <span className="text-gold animate-pulse">▍</span>}
+                  </div>
+                )}
+              </div>
+            )}
           </motion.div>
         )}
 
