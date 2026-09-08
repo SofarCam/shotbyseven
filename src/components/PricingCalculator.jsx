@@ -4,12 +4,6 @@ import { scrollToSection } from '../utils/scroll'
 import { trackEvent } from '../utils/analytics'
 
 // $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
-// Studio (NoDa Art House) adds $70/hr on top. Loyalty = 50% off after 3 sessions.
-const HOURLY_RATE = 50
-const STUDIO_RATE = 70
-const MIN_HOURS = 2
-
-// $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
 // Studio (NoDa Art House) adds $60/hr on top. Loyalty = 50% off after 3 sessions.
 const HOURLY_RATE = 50
 const STUDIO_RATE = 60
