@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { HiCamera, HiStar, HiFilm, HiGlobe, HiRefresh, HiLightningBolt, HiIdentification, HiBriefcase, HiGift, HiSparkles } from 'react-icons/hi'
 import { GemMarker } from './HiddenGems'
 
@@ -37,6 +37,7 @@ const services = [
     description: 'Quarterly content sessions for coaches, creators, and entrepreneurs who need a library of on-brand images — paired with AI-generated captions and a month of social content.',
     price: 'Starting at $350',
     badge: 'New',
+    link: '/branding',
   },
   {
     id: 'portrait',
@@ -78,10 +79,15 @@ const services = [
 export default function Services({ onServiceSelect }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const navigate = useNavigate()
 
-  const handleCardClick = (serviceId) => {
+  const handleCardClick = (service) => {
+    if (service.link) {
+      navigate(service.link)
+      return
+    }
     if (onServiceSelect) {
-      onServiceSelect(serviceId)
+      onServiceSelect(service.id)
     }
   }
 
@@ -112,7 +118,7 @@ export default function Services({ onServiceSelect }) {
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.1 * i, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
                 whileHover={{ y: -6 }}
-                onClick={() => handleCardClick(service.id)}
+                onClick={() => handleCardClick(service)}
                 className={'group p-8 transition-all duration-500 cursor-pointer relative ' + (service.featured ? 'border border-gold/40 bg-gradient-to-br from-gold/8 to-transparent hover:border-gold/60' : 'border border-cream/5 hover:border-gold/30 golden-gradient')}
               >
                 {service.badge && (
@@ -128,7 +134,7 @@ export default function Services({ onServiceSelect }) {
                     {service.price}
                   </span>
                   <span className="font-heading text-[10px] tracking-[0.15em] uppercase text-gold/60 group-hover:text-gold transition-colors">
-                    Book Now →
+                    {service.link ? 'Learn More →' : 'Book Now →'}
                   </span>
                 </div>
               </motion.div>

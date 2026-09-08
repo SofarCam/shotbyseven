@@ -34,6 +34,7 @@ const StudioPage    = lazy(() => import('./components/StudioPage'))
 const ThankYou      = lazy(() => import('./components/ThankYou'))
 const ContentEngine = lazy(() => import('./components/ContentEngine'))
 const GiftCard     = lazy(() => import('./components/GiftCard'))
+const Branding     = lazy(() => import('./components/Branding'))
 
 // Minimal fallback that matches the site's dark background
 function PageLoader() {
@@ -159,6 +160,10 @@ function App() {
       <Route
         path="/gift"
         element={<Suspense fallback={<PageLoader />}><GiftCard /></Suspense>}
+      />
+      <Route
+        path="/branding"
+        element={<Suspense fallback={<PageLoader />}><Branding /></Suspense>}
       />
     </Routes>
   )
