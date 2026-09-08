@@ -61,6 +61,25 @@ export default function Footer() {
           </div>
         </div>
 
+        {/* Legal row */}
+        <div className="border-t border-cream/5 pt-6 pb-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <Link to="/privacy" className="text-cream/20 hover:text-gold text-[10px] font-heading tracking-widest uppercase transition-colors">
+            Privacy Policy
+          </Link>
+          <Link to="/terms" className="text-cream/20 hover:text-gold text-[10px] font-heading tracking-widest uppercase transition-colors">
+            Terms of Service
+          </Link>
+          <Link to="/accessibility" className="text-cream/20 hover:text-gold text-[10px] font-heading tracking-widest uppercase transition-colors">
+            Accessibility
+          </Link>
+          <button
+            onClick={() => window.__openCookiePreferences?.()}
+            className="text-cream/20 hover:text-gold text-[10px] font-heading tracking-widest uppercase transition-colors"
+          >
+            Cookie Preferences
+          </button>
+        </div>
+
         {/* Bottom row */}
         <div className="border-t border-cream/5 pt-6 flex items-center justify-between">
           <p className="text-cream/15 text-xs font-body">
