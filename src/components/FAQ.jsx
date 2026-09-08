@@ -13,7 +13,7 @@ const faqs = [
   },
   {
     q: 'How much do you charge?',
-    a: 'Everything is $50/hr with a 2-hour minimum, so most sessions start at $100. Graduation and maternity/family start at $250. Studio rental at NoDa Art House is $60/hr (not included), and travel within 100 miles is a $50 flat fee. Weddings and corporate events are custom quotes — just reach out. Use the Pricing Calculator on this page for an instant quote.',
+    a: 'Everything is $50/hr with a 2-hour minimum, so most sessions start at $100. Graduation and maternity/family start at $250. Studio rental at NoDa Art House is $70/hr (not included), and travel within 100 miles is a $50 flat fee. Weddings and corporate events are custom quotes — just reach out. Use the Pricing Calculator on this page for an instant quote.',
   },
   {
     q: 'How long until I get my photos?',
@@ -41,7 +41,7 @@ const faqs = [
   },
   {
     q: 'How do I book Studio A at NoDa Art House?',
-    a: 'Use the Book Studio form at shotbyseven.com/studio. Seven (my AI assistant) will check availability for your dates and send you the direct NoDa Art House booking link. Studio rental is $60/hr, billed separately from session fees.',
+    a: 'Use the Book Studio form at shotbyseven.com/studio. Seven (my AI assistant) will check availability for your dates and send you the direct NoDa Art House booking link. Studio rental is $70/hr, billed separately from session fees.',
   },
   {
     q: 'Do you offer a loyalty discount?',

@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { scrollToSection } from '../utils/scroll'
+import { trackEvent } from '../utils/analytics'
 
 // $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
-// Studio (NoDa Art House) adds $60/hr on top. Loyalty = 50% off after 3 sessions.
+// Studio (NoDa Art House) adds $70/hr on top. Loyalty = 50% off after 3 sessions.
 const HOURLY_RATE = 50
-const STUDIO_RATE = 60
+const STUDIO_RATE = 70
 const MIN_HOURS = 2
 
 const sessionTypes = [
@@ -40,6 +41,7 @@ export default function PricingCalculator({ onBookNow }) {
   const remaining = price ? price - deposit : null
 
   const handleBookNow = () => {
+    trackEvent('pricing_book_now', { session_type: sessionType, price })
     if (onBookNow && sessionType) onBookNow(sessionType)
     scrollToSection('smart-booking')
   }
@@ -131,7 +133,7 @@ export default function PricingCalculator({ onBookNow }) {
                 </div>
                 <div onClick={() => setStudio(!studio)}>
                   <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/70">Studio A — NoDa Art House</p>
-                  <p className="text-cream/30 text-xs mt-0.5">+$60/hr · Professional studio space</p>
+                  <p className="text-cream/30 text-xs mt-0.5">+$70/hr · Professional studio space</p>
                 </div>
               </label>
 

@@ -9,6 +9,70 @@
 
 export const blogPosts = [
   {
+    slug: 'how-much-photographer-cost-charlotte',
+    title: 'How Much Does a Photographer Cost in Charlotte? (2026 Guide)',
+    date: '2026-06-26',
+    category: 'Pricing',
+    readTime: '5 min read',
+    cover: '/photos/webp/edit_10_websize.webp',
+    excerpt: `Straight answer, no "it depends" runaround. Here's what photography actually costs in Charlotte in 2026 — what you're paying for, and how to tell a fair price from a bad one.`,
+    seoTitle: 'How Much Does a Photographer Cost in Charlotte NC? 2026 Pricing Guide | Shot by Seven',
+    seoDescription: 'What does a photographer cost in Charlotte NC? Real 2026 pricing — $50/hr with a 2-hour minimum, so most sessions start at $100. Full breakdown of what drives the price.',
+    cta: { headline: 'Get an instant quote for your session.', sub: 'Use the pricing calculator on the homepage, or tell me your vision and I\'ll send exact numbers within 24 hours.', label: 'Get My Quote →' },
+    body: [
+      {
+        type: 'p',
+        content: `If you've searched "photographer cost Charlotte" you've probably noticed something annoying: almost nobody lists prices. You get "inquire for pricing," a contact form, and a three-day wait to find out if it's even in your budget. I think that's backwards. So here's the real breakdown.`,
+      },
+      {
+        type: 'p',
+        content: `My pricing is simple: $50/hr with a two-hour minimum. That means most sessions start at $100 — portraits, headshots, couples, birthdays, fashion, sports. Graduation and maternity/family sessions start at $250 because they run longer and take more planning. No package puzzles, no upsell maze.`,
+      },
+      {
+        type: 'tip',
+        label: 'Portraits & Headshots',
+        content: `From $100 (2 hours at $50/hr). That covers studio or outdoor, professional editing, and a full online gallery of high-res selects you can download and print from. This is the most common booking I do — branding, LinkedIn, acting, personal.`,
+      },
+      {
+        type: 'tip',
+        label: 'Graduation, Maternity & Family',
+        content: `From $250. These get a formal-plus-personal wardrobe approach for grads, and a relaxed, direction-led flow for maternity and family. Longer session, more setups, more delivered images.`,
+      },
+      {
+        type: 'tip',
+        label: 'Studio & Travel',
+        content: `Want the NoDa Art House studio? Add $70/hr for the space on top of the session rate. Need me outside Charlotte? Travel within 100 miles is a flat $50. Everything's stated up front.`,
+      },
+      {
+        type: 'p',
+        content: `So what actually moves the price? Three things: hours (it's $50/hr, so a 3-hour shoot is $150), whether you add the studio ($70/hr), and travel. That's it. Anyone charging dramatically less is usually cutting editing time or the number of delivered frames — know what you're getting.`,
+      },
+      {
+        type: 'p',
+        content: `Here's the part most pricing guides skip: the cheapest photographer is rarely the cheapest outcome. A bargain session that gives you eight flat, lightly-edited images you don't love means you re-book in three months. Book the right thing once.`,
+      },
+      {
+        type: 'tip',
+        label: 'How to budget',
+        content: `Decide what the photos are for before you shop on price. A single updated LinkedIn headshot is a two-hour, $100 job. A maternity milestone you'll print and frame is worth the longer session. Match the time to the use.`,
+      },
+      {
+        type: 'p',
+        content: `Every session includes professional editing, an online gallery you can download from and order prints through, and a booking locked with a deposit ($50, or $100 for sessions $300+) so your date is actually yours. Returning clients with 3+ sessions get 50% off. No surprise add-ons at delivery.`,
+      },
+      {
+        type: 'p',
+        content: `Want exact numbers for your specific shoot? The pricing calculator on my homepage gives you an instant quote — pick your session type, hours, and studio add-on and it does the math live. Or just message me your vision and I'll come back with a real number within 24 hours. No "inquire for pricing" runaround.`,
+      },
+    ],
+    gallery: [
+      '/photos/webp/edit_12_websize.webp',
+      '/photos/webp/edit_19_websize.webp',
+      '/photos/webp/edit_22_websize.webp',
+    ],
+    tags: ['Pricing', 'Charlotte', 'Headshots', 'Portraits', 'Booking'],
+  },
+  {
     slug: 'best-photo-spots-charlotte-nc',
     title: 'The Best Portrait Locations in Charlotte (That Nobody Talks About)',
     date: '2026-03-14',

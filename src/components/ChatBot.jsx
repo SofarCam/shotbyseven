@@ -30,7 +30,7 @@ const INFO = {
     sports:     { name: 'Sports / Action',         basePrice: 100, extraPerHr: 50, minHrs: 2, description: 'Sports, action, fitness, and lifestyle shoots' },
   },
   hourlyRate: 50, // $50/hr, 2-hour minimum
-  studioFee: 60, // per hour extra for Studio A
+  studioFee: 70, // per hour extra for Studio A
   depositMin: 50,
   turnaround: '7 business days',
   loyalty: '3+ sessions = 50% off your next booking',

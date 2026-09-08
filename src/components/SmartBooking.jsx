@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
+import { trackEvent, trackBooking } from '../utils/analytics'
 import BookingCalendar from './BookingCalendar'
 
 const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
@@ -24,7 +25,7 @@ const logToCRM = async (data) => {
 }
 
 // $50/hr, 2-hour minimum. Graduation & Maternity carry a $250 package minimum.
-// Studio (NoDa Art House) adds $60/hr. minPrice = the floor for a 2hr booking.
+// Studio (NoDa Art House) adds $70/hr. minPrice = the floor for a 2hr booking.
 const sessionTypes = [
   { id: 'portrait', label: 'Portrait/Headshots', minPrice: 100, minDuration: 2 },
   { id: 'couples', label: 'Couples/Engagement', minPrice: 100, minDuration: 2 },
@@ -41,7 +42,7 @@ const charlotteLocations = [
   { id: 'noda', label: 'NoDa Arts District' },
   { id: 'freedom', label: 'Freedom Park' },
   { id: 'romare', label: 'Romare Bearden Park' },
-  { id: 'studio', label: 'Studio A — NoDa Art House (+$60/hr)' },
+  { id: 'studio', label: 'Studio A — NoDa Art House (+$70/hr)' },
 ]
 
 export default function SmartBooking() {
@@ -140,7 +141,7 @@ export default function SmartBooking() {
     const hours = Math.max(2, formData.duration)
     let price = Math.max(hours * 50, type.minPrice)
     if (formData.location === 'studio') {
-      price += hours * 60
+      price += hours * 70
     }
     return price
   }
@@ -205,6 +206,13 @@ export default function SmartBooking() {
 
     try {
       await sendBookingEmail(enrichedFormData, packageInfo)
+      // Track the conversion (GA4 + FB Pixel) — the key revenue event
+      trackBooking({
+        value: finalPrice,
+        session_type: selectedType ? selectedType.label : formData.sessionType,
+        deposit: depositAmount,
+        booking_id: bookingId,
+      })
       // Log to Google Sheets CRM (fire-and-forget, non-blocking)
       logToCRM({
         name: formData.name,
@@ -358,7 +366,13 @@ export default function SmartBooking() {
 
                   <button
                     type="button"
-                    onClick={() => setStep(2)}
+                    onClick={() => {
+                      trackEvent('booking_step_1_complete', {
+                        session_type: formData.sessionType,
+                        location: formData.location,
+                      })
+                      setStep(2)
+                    }}
                     disabled={!formData.location || !formData.headcount}
                     className="w-full font-heading text-xs tracking-[0.2em] uppercase text-ink bg-gold px-8 py-4 hover:bg-gold-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
@@ -399,7 +413,7 @@ export default function SmartBooking() {
                     >
                       View NoDa's Live Calendar →
                     </a>
-                    <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $60/hr · Open 7 days</p>
+                    <p className="text-cream/25 text-[10px] font-body mt-3">Opens in a new tab · $70/hr · Open 7 days</p>
                   </motion.div>
 
                   {/* Manual date + time entry for studio */}

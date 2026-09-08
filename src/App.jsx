@@ -1,5 +1,6 @@
 import { useState, useCallback, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
+import useAnalytics from './hooks/useAnalytics'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
@@ -8,6 +9,7 @@ import SmoothScroll from './components/SmoothScroll'
 import { scrollToSection } from './utils/scroll'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import UrgencyBanner from './components/UrgencyBanner'
 import Marquee from './components/Marquee'
 import FeaturedStrip from './components/FeaturedStrip'
 import SectionDivider from './components/SectionDivider'
@@ -65,6 +67,7 @@ function HomePage() {
           <Navbar />
           <main>
             <Hero />
+            <UrgencyBanner />
             <Marquee />
             <FeaturedStrip />
             <SectionDivider />
@@ -106,6 +109,8 @@ function ManagePage() {
 }
 
 function App() {
+  useAnalytics()
+
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
