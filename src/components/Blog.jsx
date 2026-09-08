@@ -27,18 +27,10 @@ function BlogEmailCapture() {
     if (!isValid || loading) return
     setLoading(true)
     try {
-      await fetch('https://api.resend.com/emails', {
+      await fetch('/api/subscribe', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_RESEND_API_KEY || ''}`,
-        },
-        body: JSON.stringify({
-          from: 'Shot by Seven <onboarding@resend.dev>',
-          to: ['shotbyseven777@gmail.com'],
-          subject: `📸 New blog subscriber: ${email}`,
-          html: `<p>New subscriber from the Shot by Seven blog.</p><p><strong>${email}</strong></p>`,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       }).catch(() => {})
       setSubmitted(true)
     } finally {
@@ -70,8 +62,12 @@ function BlogEmailCapture() {
         Location guides, session prep, behind the scenes. No spam — just what's worth reading.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <label htmlFor="blog-subscribe-email" className="sr-only">Email address</label>
         <input
+          id="blog-subscribe-email"
           type="email"
+          name="email"
+          autoComplete="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="your@email.com"
@@ -86,6 +82,10 @@ function BlogEmailCapture() {
           {loading ? 'Sending...' : 'Subscribe'}
         </button>
       </form>
+      <p className="text-cream/20 text-[11px] font-body mt-4">
+        By subscribing you agree to receive occasional emails from Shot by Seven. See our{' '}
+        <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>. Unsubscribe anytime.
+      </p>
     </motion.div>
   )
 }

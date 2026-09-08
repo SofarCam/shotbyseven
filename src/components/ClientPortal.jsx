@@ -2,7 +2,6 @@ import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { HiCheckCircle, HiClock, HiMail, HiPhone, HiExternalLink, HiDocumentText, HiPhotograph, HiLockClosed } from 'react-icons/hi'
 
-const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
 
 const STATUS_STEPS = [
@@ -80,9 +79,12 @@ function LoginForm({ onLogin, loading, error }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/40 mb-2">Email Address</label>
+            <label htmlFor="portal-email" className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/40 mb-2">Email Address</label>
             <input
+              id="portal-email"
               type="email"
+              name="email"
+              autoComplete="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
@@ -91,9 +93,12 @@ function LoginForm({ onLogin, loading, error }) {
             />
           </div>
           <div>
-            <label className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/40 mb-2">Booking ID</label>
+            <label htmlFor="portal-booking-id" className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/40 mb-2">Booking ID</label>
             <input
+              id="portal-booking-id"
               type="text"
+              name="bookingId"
+              autoComplete="off"
               value={bookingId}
               onChange={e => setBookingId(e.target.value)}
               required
@@ -136,30 +141,16 @@ export default function ClientPortal() {
     setLoading(true)
     setError('')
     try {
-      if (CRM_URL) {
-        const res = await fetch(`${CRM_URL}?action=portal&email=${encodeURIComponent(email)}&bookingId=${encodeURIComponent(bookingId)}`)
-        const data = await res.json()
-        if (data && data.found) {
-          setBooking(data)
-          setView('dashboard')
-          return
-        }
+      const res = await fetch(`/api/crm?action=portal&email=${encodeURIComponent(email)}&bookingId=${encodeURIComponent(bookingId)}`)
+      const data = await res.json()
+      if (data && data.found) {
+        setBooking(data)
+        setView('dashboard')
+      } else if (data && data.error === 'crm_not_configured') {
+        setError('The client portal isn\'t available right now. Email shotbyseven777@gmail.com for your booking status.')
+      } else {
+        setError('No booking found with that email and booking ID. Double-check your confirmation email, or contact us directly.')
       }
-      // Fallback: show a pending status if CRM doesn't support portal lookup yet
-      setBooking({
-        name: email.split('@')[0],
-        email,
-        bookingId,
-        status: 'submitted',
-        sessionType: 'Photography Session',
-        depositAmount: null,
-        depositPaid: false,
-        contractUrl: null,
-        galleryUrl: null,
-        shootDate: null,
-        totalAmount: null,
-      })
-      setView('dashboard')
     } catch (e) {
       setError('Could not look up your booking. Please check your details and try again.')
     } finally {

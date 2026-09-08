@@ -5,7 +5,6 @@ const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || ''
 const BOOKING_TEMPLATE = import.meta.env.VITE_EMAILJS_BOOKING_TEMPLATE || ''
 const CONTACT_TEMPLATE = import.meta.env.VITE_EMAILJS_CONTACT_TEMPLATE || ''
 const CONTRACT_TEMPLATE = import.meta.env.VITE_EMAILJS_CONTRACT_TEMPLATE || ''
-const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL || ''
 
 // Initialize EmailJS
 if (PUBLIC_KEY) {
@@ -92,9 +91,9 @@ export async function sendContractEmail({ clientName, clientEmail, bookingId, si
 }
 
 export function logContractToCRM(data) {
-  if (!CRM_URL) return
-  fetch(CRM_URL, {
+  fetch('/api/crm', {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   }).catch((e) => console.warn('Contract CRM log failed (non-blocking):', e))
 }

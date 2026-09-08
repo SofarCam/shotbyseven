@@ -1,22 +1,21 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { GemMarker } from './HiddenGems'
 import { HiLocationMarker, HiCalendar, HiClock, HiUser, HiCamera, HiCheckCircle, HiMail, HiGift } from 'react-icons/hi'
 import { sendBookingEmail } from '../utils/emailService'
 import { trackEvent, trackBooking } from '../utils/analytics'
 import BookingCalendar from './BookingCalendar'
 
-const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const STRIPE_DEPOSIT_URL = import.meta.env.VITE_STRIPE_DEPOSIT_URL
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
 
 const logToCRM = async (data) => {
-  if (!CRM_URL) return
   try {
-    await fetch(CRM_URL, {
+    await fetch('/api/crm', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
   } catch (e) {
@@ -90,10 +89,10 @@ export default function SmartBooking() {
   const [uploadError, setUploadError] = useState('')
 
   const checkLoyalty = async (email) => {
-    if (!CRM_URL || !email || !email.includes('@')) return
+    if (!email || !email.includes('@')) return
     setLookupLoading(true)
     try {
-      const res = await fetch(`${CRM_URL}?action=lookup&email=${encodeURIComponent(email)}`)
+      const res = await fetch(`/api/crm?action=lookup&email=${encodeURIComponent(email)}`)
       const data = await res.json()
       setPreviousBookings(data.count || 0)
     } catch (e) {
@@ -435,12 +434,14 @@ export default function SmartBooking() {
 
                   {/* Manual date + time entry for studio */}
                   <div>
-                    <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-cream/30 mb-3">
+                    <label htmlFor="studio-date-0" className="block font-heading text-[9px] tracking-[0.2em] uppercase text-cream/30 mb-3">
                       Your preferred date &amp; time
-                    </p>
+                    </label>
                     <div className="grid sm:grid-cols-2 gap-3">
                       <input
+                        id="studio-date-0"
                         type="date"
+                        autoComplete="off"
                         value={formData.theirDates[0]}
                         onChange={(e) => {
                           const newDates = formData.theirDates.slice()
@@ -450,7 +451,9 @@ export default function SmartBooking() {
                         min={new Date(Date.now() + 86400000).toISOString().split('T')[0]}
                         className="w-full bg-transparent border border-cream/10 px-4 py-3 text-cream/70 focus:border-gold outline-none text-sm"
                       />
+                      <label htmlFor="studio-time-0" className="sr-only">Preferred time</label>
                       <select
+                        id="studio-time-0"
                         value={formData.theirTimes[0]}
                         onChange={(e) => {
                           const newTimes = formData.theirTimes.slice()
@@ -498,6 +501,8 @@ export default function SmartBooking() {
                   <div key={i} className="grid sm:grid-cols-2 gap-3 mb-3">
                     <input
                       type="date"
+                      aria-label={`Backup date ${i}`}
+                      autoComplete="off"
                       value={formData.theirDates[i]}
                       onChange={(e) => {
                         const newDates = formData.theirDates.slice()
@@ -508,6 +513,7 @@ export default function SmartBooking() {
                       className="w-full bg-transparent border border-cream/10 px-4 py-2 text-cream/50 focus:border-gold outline-none text-sm"
                     />
                     <select
+                      aria-label={`Backup time ${i}`}
                       value={formData.theirTimes[i]}
                       onChange={(e) => {
                         const newTimes = formData.theirTimes.slice()
@@ -588,8 +594,8 @@ export default function SmartBooking() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-cream/60 text-sm mb-2"><HiUser className="inline mr-1" />Name *</label>
-                  <input type="text" value={formData.name}
+                  <label htmlFor="booking-name" className="block text-cream/60 text-sm mb-2"><HiUser className="inline mr-1" />Name *</label>
+                  <input id="booking-name" type="text" name="name" autoComplete="name" value={formData.name}
                     onChange={(e) => setFormData(Object.assign({}, formData, { name: e.target.value }))}
                     required
                     className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
@@ -597,8 +603,8 @@ export default function SmartBooking() {
                   />
                 </div>
                 <div>
-                  <label className="block text-cream/60 text-sm mb-2">Phone</label>
-                  <input type="tel" value={formData.phone}
+                  <label htmlFor="booking-phone" className="block text-cream/60 text-sm mb-2">Phone</label>
+                  <input id="booking-phone" type="tel" name="phone" autoComplete="tel" value={formData.phone}
                     onChange={(e) => setFormData(Object.assign({}, formData, { phone: e.target.value }))}
                     className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
                     placeholder="(555) 555-5555"
@@ -607,8 +613,8 @@ export default function SmartBooking() {
               </div>
 
               <div>
-                <label className="block text-cream/60 text-sm mb-2"><HiMail className="inline mr-1" />Email *</label>
-                <input type="email" value={formData.email}
+                <label htmlFor="booking-email" className="block text-cream/60 text-sm mb-2"><HiMail className="inline mr-1" />Email *</label>
+                <input id="booking-email" type="email" name="email" autoComplete="email" value={formData.email}
                   onChange={(e) => setFormData(Object.assign({}, formData, { email: e.target.value }))}
                   onBlur={(e) => checkLoyalty(e.target.value)}
                   required
@@ -618,8 +624,8 @@ export default function SmartBooking() {
               </div>
 
               <div>
-                <label className="block text-cream/60 text-sm mb-2">Your vision for the shoot</label>
-                <textarea value={formData.vision}
+                <label htmlFor="booking-vision" className="block text-cream/60 text-sm mb-2">Your vision for the shoot</label>
+                <textarea id="booking-vision" value={formData.vision}
                   onChange={(e) => setFormData(Object.assign({}, formData, { vision: e.target.value }))}
                   rows={3}
                   className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none resize-none"
@@ -629,7 +635,7 @@ export default function SmartBooking() {
 
               {/* Photo Upload */}
               <div>
-                <label className="block text-cream/60 text-sm mb-3">Inspiration / Reference Photos <span className="text-cream/30">(optional, max 3)</span></label>
+                <label htmlFor="photo-upload-input" className="block text-cream/60 text-sm mb-3">Inspiration / Reference Photos <span className="text-cream/30">(optional, max 3)</span></label>
                 {CLOUDINARY_CLOUD_NAME ? (
                   <div
                     onDragOver={(e) => e.preventDefault()}
@@ -653,7 +659,7 @@ export default function SmartBooking() {
                     <p className="text-cream/40 text-xs font-body">Photo upload coming soon — paste inspo links in your vision above, or email references to <span className="text-gold">shotbyseven777@gmail.com</span></p>
                   </div>
                 )}
-                <input type="file" id="photo-upload-input" multiple accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { handlePhotoUpload(e.target.files); e.target.value = '' }} />
+                <input type="file" id="photo-upload-input" multiple accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => { handlePhotoUpload(e.target.files); e.target.value = '' }} />
                 {uploadedPhotos.length > 0 && (
                   <div className="flex gap-2 mt-3 flex-wrap">
                     {uploadedPhotos.map((photo, idx) => (
@@ -674,13 +680,17 @@ export default function SmartBooking() {
               </div>
 
               <div>
-                <label className="block text-cream/60 text-sm mb-2">Budget range</label>
-                <input type="text" value={formData.budget}
+                <label htmlFor="booking-budget" className="block text-cream/60 text-sm mb-2">Budget range</label>
+                <input id="booking-budget" type="text" autoComplete="off" value={formData.budget}
                   onChange={(e) => setFormData(Object.assign({}, formData, { budget: e.target.value }))}
                   className="w-full bg-transparent border border-cream/20 px-4 py-3 text-cream focus:border-gold outline-none"
                   placeholder="e.g. $200-$400"
                 />
               </div>
+
+              <p className="text-cream/20 text-xs font-body">
+                By submitting, you agree to our <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>.
+              </p>
 
               {sendError && (
                 <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-red-400/80 text-xs font-heading tracking-wider text-center">
