@@ -56,12 +56,13 @@ export default function useAnalytics() {
   }, [])
 
   useEffect(() => {
-    if (window.gtag) {
+    const consent = getConsent()
+    if (consent?.analytics && window.gtag) {
       window.gtag('event', 'page_view', {
         page_path: location.pathname + location.search,
         page_title: document.title,
       })
     }
-    if (window.fbq) window.fbq('track', 'PageView')
+    if (consent?.marketing && window.fbq) window.fbq('track', 'PageView')
   }, [location])
 }

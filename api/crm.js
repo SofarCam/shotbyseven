@@ -13,11 +13,29 @@
 
 const CRM_URL = process.env.VITE_CRM_WEBHOOK_URL || process.env.CRM_WEBHOOK_URL
 
+// Only the site itself may call this proxy — blocks the trivial "curl it from
+// anywhere" replay that made the original client-side webhook URL abusable.
+const ALLOWED_ORIGINS = ['https://shotbyseven.com', 'https://www.shotbyseven.com']
+
+function isAllowedOrigin(req) {
+  const origin = req.headers.origin || ''
+  if (ALLOWED_ORIGINS.includes(origin)) return true
+  // Vercel preview deployments (shotbyseven-*.vercel.app) — same repo, no external risk
+  if (/^https:\/\/shotbyseven-[a-z0-9-]+\.vercel\.app$/.test(origin)) return true
+  return false
+}
+
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*')
+  const origin = req.headers.origin || ''
+  const allowed = isAllowedOrigin(req)
+  res.setHeader('Access-Control-Allow-Origin', allowed ? origin : 'null')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
   if (req.method === 'OPTIONS') return res.status(200).end()
+
+  if (!allowed) {
+    return res.status(403).json({ ok: false, error: 'forbidden' })
+  }
 
   if (!CRM_URL) {
     return res.status(200).json({ ok: false, error: 'crm_not_configured' })

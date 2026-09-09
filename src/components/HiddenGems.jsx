@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { HiX } from 'react-icons/hi'
 import { getHiddenGems } from '../imageConfig'
 import emailjs from '@emailjs/browser'
@@ -349,7 +350,7 @@ export function GemTracker() {
                 </motion.button>
                 <p className="text-cream/15 text-[11px] text-center">
                   By joining you agree to receive occasional emails from Shot by Seven. See our{' '}
-                  <a href="/privacy" className="underline hover:text-gold/60">Privacy Policy</a>.
+                  <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>.
                 </p>
               </form>
 

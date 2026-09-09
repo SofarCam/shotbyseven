@@ -17,8 +17,8 @@ export default function CookieConsent() {
 
   const openPreferences = () => {
     const existing = getConsent()
-    setAnalytics(existing?.analytics ?? true)
-    setMarketing(existing?.marketing ?? true)
+    setAnalytics(existing?.analytics ?? false)
+    setMarketing(existing?.marketing ?? false)
     setManaging(true)
     setVisible(true)
   }
