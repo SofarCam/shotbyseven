@@ -269,7 +269,7 @@ export default function ClientPortal() {
               </span>
             ) : (
               <a
-                href={getDepositUrl(depositAmount)}
+                href={`${getDepositUrl(depositAmount)}?client_reference_id=${booking.bookingId}&prefilled_email=${encodeURIComponent(booking.email)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-heading text-[10px] tracking-[0.15em] uppercase text-ink bg-gold px-4 py-2 hover:bg-gold/90 transition-colors"

@@ -71,7 +71,15 @@ Correction to an earlier finding in this checklist: the Stripe account connected
 
 **Still open**: the Gift Cards page (`/gift`) needs its own Payment Link — none of the three above allow a custom amount. Create one in Stripe (Payment Links → New → customer chooses the price, $50 minimum) → set `VITE_STRIPE_GIFT_CARD_URL` in Vercel → redeploy.
 
-Once the Claude Stripe connector is repointed at the real `shotbyseven` account, I can pull actual revenue, reconcile deposits against bookings (`client_reference_id` = the site's `bookingId`), and track progress vs. the $5k target.
+The Claude Stripe connector is now repointed at the real `shotbyseven` account (`acct_1T44Z3FPsZacyI0u`) — confirmed by listing its webhook endpoints directly.
+
+**Second bug found and fixed**: `ClientPortal.jsx`'s repeat-payment button (`Pay $X →`, shown to a client who logs back into their portal to pay a deposit) called `getDepositUrl(depositAmount)` with no `client_reference_id` — so the resulting Stripe Checkout Session couldn't be matched back to a booking at all, unlike the initial `SmartBooking.jsx` flow which already appended it correctly. Fixed to match: `client_reference_id` and `prefilled_email` now flow through both paths, using `booking.bookingId` / `booking.email`.
+
+**Webhook re-created on the correct account**: the previous `api/stripe-webhook.js` endpoint (`we_1UCtcJPsMx8xz3NiNoBrNodJ`) was registered on the wrong Stripe account (`acct_1U5wLvPsMx8xz3Ni`) and could never have fired on a real payment. A new endpoint (`we_1UDzuHFPsZacyI0uOfPmFFmw`) now exists on `acct_1T44Z3FPsZacyI0u`, listening for `checkout.session.completed`, pointed at `https://shotbyseven.com/api/stripe-webhook`.
+
+**Action needed**: update `STRIPE_WEBHOOK_SECRET` in Vercel to the new endpoint's signing secret (the old value is for the dead endpoint and will fail signature verification). Get it from Stripe Dashboard → Developers → Webhooks → this endpoint, or ask Claude — it was generated in this session and is not saved anywhere else.
+
+Once that env var is updated and redeployed, I can pull actual revenue, reconcile deposits against bookings (`client_reference_id` = the site's `bookingId`), and track progress vs. the $5k target.
 
 ---
 
