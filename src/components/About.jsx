@@ -54,7 +54,7 @@ export default function About() {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.6 }}
               src={getAboutImage()}
-              alt="Photographer at work"
+              alt="Cameron Currence, Shot by Seven's Charlotte NC photographer, on location"
               className="w-full h-full object-cover object-top"
             />
           </div>

@@ -3,7 +3,13 @@ import LegalLayout, { LegalSection } from './LegalLayout'
 
 export default function TermsOfService() {
   return (
-    <LegalLayout eyebrow="Shot by Seven" title="Terms of Service" lastUpdated="September 8, 2026">
+    <LegalLayout
+      eyebrow="Shot by Seven"
+      title="Terms of Service"
+      lastUpdated="September 8, 2026"
+      path="/terms"
+      description="Shot by Seven's terms of service — booking, deposits, cancellations, image usage rights, and website use terms."
+    >
 
       <LegalSection heading="Agreement to terms">
         <p>

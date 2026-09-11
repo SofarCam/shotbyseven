@@ -1,6 +1,7 @@
-import { useState, useCallback, lazy, Suspense } from 'react'
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import useAnalytics from './hooks/useAnalytics'
+import useSEO from './hooks/useSEO'
 import CookieConsent from './components/CookieConsent'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
@@ -50,11 +51,26 @@ function PageLoader() {
 }
 
 function HomePage() {
+  useSEO({
+    title: 'Shot by Seven | Charlotte NC Photographer',
+    description: 'Shot by Seven — Charlotte, NC photographer specializing in portraits, fashion, studio, outdoor, maternity, graduation, and event photography. Book your session today.',
+    path: '/',
+  })
   const [introComplete, setIntroComplete] = useState(false)
 
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true)
   }, [])
+
+  // Scroll to an in-page section when arriving via a cross-page hash link
+  // (e.g. /gift -> /#gallery) — React Router doesn't do this automatically,
+  // and the target sections don't exist in the DOM until the intro finishes.
+  useEffect(() => {
+    if (!introComplete || !window.location.hash) return
+    const id = window.location.hash.slice(1)
+    const el = document.getElementById(id)
+    if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }))
+  }, [introComplete])
 
   const handleServiceSelect = useCallback((serviceId) => {
     void serviceId

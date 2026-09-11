@@ -3,7 +3,7 @@ import { readdir, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import path from 'path'
 
-const INPUT_DIR = './public/photos'
+const INPUT_DIR = './originals'
 const OUTPUT_DIR = './public/photos/webp'
 const QUALITY = 82
 

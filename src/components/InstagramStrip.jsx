@@ -51,7 +51,7 @@ export default function InstagramStrip() {
             >
               <img
                 src={src}
-                alt="Recent Instagram post from Shot by Seven"
+                alt={`Recent Instagram post ${i + 1} from Shot by Seven, Charlotte NC photographer`}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 loading="lazy"
               />

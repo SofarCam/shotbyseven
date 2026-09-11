@@ -77,9 +77,6 @@ export default function SmartBooking() {
     vision: '',
     budget: '',
   })
-  const [submitted, setSubmitted] = useState(false)
-  const [submittedBookingId, setSubmittedBookingId] = useState('')
-  const [submittedStripeUrl, setSubmittedStripeUrl] = useState('')
   const [sending, setSending] = useState(false)
   const [sendError, setSendError] = useState('')
   const [previousBookings, setPreviousBookings] = useState(null) // null = not looked up yet

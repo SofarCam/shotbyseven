@@ -1,11 +1,19 @@
 import { motion } from 'framer-motion'
+import useSEO from '../../hooks/useSEO'
 import Navbar from '../Navbar'
 import Footer from '../Footer'
 import CustomCursor from '../CustomCursor'
 import FilmGrain from '../FilmGrain'
 import ScrollProgress from '../ScrollProgress'
 
-export default function LegalLayout({ title, eyebrow, lastUpdated, children }) {
+export default function LegalLayout({ title, eyebrow, lastUpdated, path, description, children }) {
+  useSEO({
+    title: `${title} | Shot by Seven`,
+    description,
+    path,
+    breadcrumbs: [{ name: 'Home', path: '/' }, { name: title, path }],
+  })
+
   return (
     <>
       <CustomCursor />

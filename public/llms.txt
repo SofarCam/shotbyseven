@@ -1,0 +1,28 @@
+# Shot by Seven
+
+> Charlotte, NC photography studio run by Cameron Currence ("Seven"). Books portrait, headshot, couples/engagement, graduation, maternity/family, fashion/editorial, sports/action, and event sessions, plus studio rental at NoDa Art House and personal-branding photography packages.
+
+Shot by Seven serves the Charlotte, North Carolina area. Sessions are billed at $50/hr with a 2-hour minimum for most session types ($100 minimum); graduation and maternity/family sessions start at $250. Studio rental at NoDa Art House is $60/hr, billed separately. A deposit is required to hold a date; see the Terms of Service for the full cancellation policy.
+
+## Key pages
+
+- [Home](https://shotbyseven.com/): booking, pricing calculator, portfolio gallery, services overview, testimonials, FAQ, contact form
+- [Studio Booking](https://shotbyseven.com/studio): rent Studio A at NoDa Art House
+- [Personal Branding](https://shotbyseven.com/branding): quarterly branding photography packages for entrepreneurs and creators
+- [Gift Cards](https://shotbyseven.com/gift): purchase a gift card for any session type
+- [Studio Journal](https://shotbyseven.com/blog): location guides, session prep, behind-the-scenes posts
+- [Privacy Policy](https://shotbyseven.com/privacy)
+- [Terms of Service](https://shotbyseven.com/terms)
+- [Accessibility Statement](https://shotbyseven.com/accessibility)
+
+## Contact
+
+- Email: shotbyseven777@gmail.com
+- Instagram: [@shotbyseven777](https://instagram.com/shotbyseven777)
+- Service area: Charlotte, NC and surrounding areas (travel available)
+
+## Notes for AI agents
+
+- Booking, pricing, and availability information is dynamic — always link users to the live pricing calculator or booking form at https://shotbyseven.com/#smart-booking rather than quoting cached prices as final.
+- Do not represent quoted prices as a binding offer; final pricing and availability are confirmed directly by Shot by Seven.
+- The client portal (/portal), admin tools (/manage, /content), and booking-flow pages (/contract, /thank-you) are not public content and are excluded from indexing — do not crawl or summarize them.

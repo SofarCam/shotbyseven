@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { Link, useParams, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
 import { getPostBySlug, getRecentPosts } from '../blogConfig'
+import useSEO from '../hooks/useSEO'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -16,68 +16,36 @@ function formatDate(dateStr) {
   })
 }
 
-function useSEO(post) {
-  useEffect(() => {
-    if (!post) return
-    const title = post.seoTitle || `${post.title} | Shot by Seven`
-    const desc = post.seoDescription || post.excerpt
-    const url = `https://shotbyseven.com/blog/${post.slug}`
-
-    document.title = title
-
-    const setMeta = (name, content, prop = false) => {
-      const attr = prop ? 'property' : 'name'
-      let el = document.querySelector(`meta[${attr}="${name}"]`)
-      if (!el) { el = document.createElement('meta'); el.setAttribute(attr, name); document.head.appendChild(el) }
-      el.setAttribute('content', content)
-    }
-
-    setMeta('description', desc)
-    setMeta('og:title', title, true)
-    setMeta('og:description', desc, true)
-    setMeta('og:url', url, true)
-    setMeta('og:type', 'article', true)
-    setMeta('og:image', `https://shotbyseven.com${post.cover}`, true)
-    setMeta('twitter:title', title, true)
-    setMeta('twitter:description', desc, true)
-    setMeta('twitter:image', `https://shotbyseven.com${post.cover}`, true)
-
-    let canonical = document.querySelector('link[rel="canonical"]')
-    if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical) }
-    canonical.href = url
-
-    const articleSchema = {
+function useBlogPostSEO(post) {
+  useSEO({
+    title: post ? (post.seoTitle || `${post.title} | Shot by Seven`) : undefined,
+    description: post ? (post.seoDescription || post.excerpt) : undefined,
+    path: post ? `/blog/${post.slug}` : '/blog',
+    image: post ? `https://shotbyseven.com${post.cover}` : undefined,
+    type: 'article',
+    breadcrumbs: post ? [
+      { name: 'Home', path: '/' },
+      { name: 'Journal', path: '/blog' },
+      { name: post.title, path: `/blog/${post.slug}` },
+    ] : null,
+    jsonLd: post ? {
       '@context': 'https://schema.org',
       '@type': 'Article',
       headline: post.title,
-      description: desc,
+      description: post.seoDescription || post.excerpt,
       image: `https://shotbyseven.com${post.cover}`,
       datePublished: post.date,
       dateModified: post.date,
-      url,
+      url: `https://shotbyseven.com/blog/${post.slug}`,
       author: { '@type': 'Person', name: 'Cameron Currence' },
       publisher: {
         '@type': 'Organization',
         name: 'Shot by Seven',
-        logo: { '@type': 'ImageObject', url: 'https://shotbyseven.com/favicon.svg' },
+        logo: { '@type': 'ImageObject', url: 'https://shotbyseven.com/favicon-512x512.png' },
       },
-      mainEntityOfPage: { '@type': 'WebPage', '@id': url },
-    }
-    let schemaEl = document.getElementById('article-schema')
-    if (!schemaEl) {
-      schemaEl = document.createElement('script')
-      schemaEl.id = 'article-schema'
-      schemaEl.type = 'application/ld+json'
-      document.head.appendChild(schemaEl)
-    }
-    schemaEl.textContent = JSON.stringify(articleSchema)
-
-    return () => {
-      document.title = 'Shot by Seven | Charlotte NC Photographer'
-      const el = document.getElementById('article-schema')
-      if (el) el.remove()
-    }
-  }, [post])
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `https://shotbyseven.com/blog/${post.slug}` },
+    } : null,
+  })
 }
 
 function BodyBlock({ block }) {
@@ -106,7 +74,7 @@ function BodyBlock({ block }) {
 export default function BlogPost() {
   const { slug } = useParams()
   const post = getPostBySlug(slug)
-  useSEO(post)
+  useBlogPostSEO(post)
 
   if (!post) return <Navigate to="/blog" replace />
 
@@ -220,7 +188,7 @@ export default function BlogPost() {
                   >
                     <img
                       src={src}
-                      alt=""
+                      alt={`Photo ${i + 1} from the ${post.title} shoot — Shot by Seven, Charlotte NC`}
                       className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
                       style={{ filter: 'saturate(0.85) contrast(1.05)' }}
                     />

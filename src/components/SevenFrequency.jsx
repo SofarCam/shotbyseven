@@ -20,7 +20,7 @@ const pillars = [
   },
 ]
 
-export default function SevenFrequency({ onBook }) {
+export default function SevenFrequency() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-80px' })
 

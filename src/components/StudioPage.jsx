@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import useSEO from '../hooks/useSEO'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -8,6 +9,13 @@ import ScrollProgress from './ScrollProgress'
 import SmartIntakeForm from './SmartIntakeForm'
 
 export default function StudioPage() {
+  useSEO({
+    title: 'Book Studio A at NoDa Art House | Shot by Seven',
+    description: 'Rent Studio A at NoDa Art House in Charlotte, NC — $60/hr, max 20 people. Check availability and book instantly.',
+    path: '/studio',
+    breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Studio', path: '/studio' }],
+  })
+
   return (
     <>
       <CustomCursor />

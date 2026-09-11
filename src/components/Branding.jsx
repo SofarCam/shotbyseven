@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
 import { HiCamera, HiLightningBolt, HiRefresh, HiSparkles, HiArrowRight } from 'react-icons/hi'
+import useSEO from '../hooks/useSEO'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -106,6 +107,13 @@ function Section({ children, className = '' }) {
 }
 
 export default function Branding() {
+  useSEO({
+    title: 'Personal Branding Photography | Shot by Seven',
+    description: 'Personal branding photography sessions for Charlotte coaches, entrepreneurs, healers, and creators — build a library of on-brand images from $350.',
+    path: '/branding',
+    breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Branding', path: '/branding' }],
+  })
+
   return (
     <>
       <CustomCursor />

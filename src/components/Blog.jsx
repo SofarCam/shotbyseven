@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import { blogPosts } from '../blogConfig'
+import useSEO from '../hooks/useSEO'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -93,6 +94,12 @@ function BlogEmailCapture() {
 export default function Blog() {
   const sorted = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
   const [featured, ...rest] = sorted
+  useSEO({
+    title: 'Studio Journal | Shot by Seven',
+    description: 'Location guides, session prep tips, and behind-the-scenes stories from Shot by Seven, a Charlotte NC photography studio.',
+    path: '/blog',
+    breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Journal', path: '/blog' }],
+  })
 
   return (
     <>

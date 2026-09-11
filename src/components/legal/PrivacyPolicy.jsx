@@ -3,7 +3,13 @@ import LegalLayout, { LegalSection } from './LegalLayout'
 
 export default function PrivacyPolicy() {
   return (
-    <LegalLayout eyebrow="Shot by Seven" title="Privacy Policy" lastUpdated="September 8, 2026">
+    <LegalLayout
+      eyebrow="Shot by Seven"
+      title="Privacy Policy"
+      lastUpdated="September 8, 2026"
+      path="/privacy"
+      description="How Shot by Seven collects, uses, and protects your information — booking forms, cookies, third-party services, and your privacy rights."
+    >
 
       <LegalSection heading="Who we are">
         <p>

@@ -2,7 +2,13 @@ import LegalLayout, { LegalSection } from './LegalLayout'
 
 export default function AccessibilityStatement() {
   return (
-    <LegalLayout eyebrow="Shot by Seven" title="Accessibility Statement" lastUpdated="September 8, 2026">
+    <LegalLayout
+      eyebrow="Shot by Seven"
+      title="Accessibility Statement"
+      lastUpdated="September 8, 2026"
+      path="/accessibility"
+      description="Shot by Seven's accessibility commitment — our WCAG 2.2 AA target, what's been implemented, and how to report an accessibility issue."
+    >
 
       <LegalSection heading="Our commitment">
         <p>
