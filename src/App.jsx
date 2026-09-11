@@ -1,6 +1,9 @@
-import { useState, useCallback, lazy, Suspense } from 'react'
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import useAnalytics from './hooks/useAnalytics'
+import useSEO from './hooks/useSEO'
+import CookieConsent from './components/CookieConsent'
+import MobileBookingBar from './components/MobileBookingBar'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
@@ -39,6 +42,10 @@ const ThankYou      = lazy(() => import('./components/ThankYou'))
 const ContentEngine = lazy(() => import('./components/ContentEngine'))
 const GiftCard     = lazy(() => import('./components/GiftCard'))
 const Branding     = lazy(() => import('./components/Branding'))
+const PrivacyPolicy = lazy(() => import('./components/legal/PrivacyPolicy'))
+const TermsOfService = lazy(() => import('./components/legal/TermsOfService'))
+const AccessibilityStatement = lazy(() => import('./components/legal/AccessibilityStatement'))
+const NotFound = lazy(() => import('./components/NotFound'))
 
 // Minimal fallback that matches the site's dark background
 function PageLoader() {
@@ -46,11 +53,26 @@ function PageLoader() {
 }
 
 function HomePage() {
+  useSEO({
+    title: 'Shot by Seven | Charlotte NC Photographer',
+    description: 'Shot by Seven — Charlotte, NC photographer specializing in portraits, fashion, studio, outdoor, maternity, graduation, and event photography. Book your session today.',
+    path: '/',
+  })
   const [introComplete, setIntroComplete] = useState(false)
 
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true)
   }, [])
+
+  // Scroll to an in-page section when arriving via a cross-page hash link
+  // (e.g. /gift -> /#gallery) — React Router doesn't do this automatically,
+  // and the target sections don't exist in the DOM until the intro finishes.
+  useEffect(() => {
+    if (!introComplete || !window.location.hash) return
+    const id = window.location.hash.slice(1)
+    const el = document.getElementById(id)
+    if (el) requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth' }))
+  }, [introComplete])
 
   const handleServiceSelect = useCallback((serviceId) => {
     void serviceId
@@ -117,6 +139,7 @@ function App() {
   useAnalytics()
 
   return (
+    <>
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/manage" element={<ManagePage />} />
@@ -170,7 +193,26 @@ function App() {
         path="/branding"
         element={<Suspense fallback={<PageLoader />}><Branding /></Suspense>}
       />
+      <Route
+        path="/privacy"
+        element={<Suspense fallback={<PageLoader />}><PrivacyPolicy /></Suspense>}
+      />
+      <Route
+        path="/terms"
+        element={<Suspense fallback={<PageLoader />}><TermsOfService /></Suspense>}
+      />
+      <Route
+        path="/accessibility"
+        element={<Suspense fallback={<PageLoader />}><AccessibilityStatement /></Suspense>}
+      />
+      <Route
+        path="*"
+        element={<Suspense fallback={<PageLoader />}><NotFound /></Suspense>}
+      />
     </Routes>
+    <MobileBookingBar />
+    <CookieConsent />
+    </>
   )
 }
 

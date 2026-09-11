@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { getConsent, CONSENT_CHANGED_EVENT } from '../utils/consent'
 
 const GA_ID = import.meta.env.VITE_GA4_ID
 const FB_PIXEL_ID = import.meta.env.VITE_FB_PIXEL_ID
@@ -35,21 +36,33 @@ function loadFbPixel() {
   window.fbq('init', FB_PIXEL_ID)
 }
 
+// Loads whichever trackers the current consent state actually allows.
+// Called on mount and again whenever consent changes (banner accept/reject,
+// or the preferences panel) — no page reload required either way.
+function applyConsent() {
+  const consent = getConsent()
+  if (!consent) return // no choice made yet — nothing non-essential loads
+  if (consent.analytics) loadGA4()
+  if (consent.marketing) loadFbPixel()
+}
+
 export default function useAnalytics() {
   const location = useLocation()
 
   useEffect(() => {
-    loadGA4()
-    loadFbPixel()
+    applyConsent()
+    window.addEventListener(CONSENT_CHANGED_EVENT, applyConsent)
+    return () => window.removeEventListener(CONSENT_CHANGED_EVENT, applyConsent)
   }, [])
 
   useEffect(() => {
-    if (window.gtag) {
+    const consent = getConsent()
+    if (consent?.analytics && window.gtag) {
       window.gtag('event', 'page_view', {
         page_path: location.pathname + location.search,
         page_title: document.title,
       })
     }
-    if (window.fbq) window.fbq('track', 'PageView')
+    if (consent?.marketing && window.fbq) window.fbq('track', 'PageView')
   }, [location])
 }

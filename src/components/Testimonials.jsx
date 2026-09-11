@@ -145,6 +145,7 @@ export default function Testimonials() {
           <div className="flex items-center justify-center gap-4 mt-12">
             <button
               onClick={prev}
+              aria-label="Previous testimonial"
               className="w-12 h-12 border border-cream/10 flex items-center justify-center hover:border-gold/30 text-cream/30 hover:text-gold transition-colors"
             >
               <HiChevronLeft size={20} />
@@ -154,6 +155,8 @@ export default function Testimonials() {
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
+                  aria-label={`Go to testimonial ${i + 1}`}
+                  aria-current={i === current}
                   className={`h-[2px] rounded-full transition-all duration-300 ${
                     i === current ? 'bg-gold w-8' : 'bg-cream/10 w-2'
                   }`}
@@ -162,6 +165,7 @@ export default function Testimonials() {
             </div>
             <button
               onClick={next}
+              aria-label="Next testimonial"
               className="w-12 h-12 border border-cream/10 flex items-center justify-center hover:border-gold/30 text-cream/30 hover:text-gold transition-colors"
             >
               <HiChevronRight size={20} />

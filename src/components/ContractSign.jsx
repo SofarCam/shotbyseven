@@ -4,6 +4,24 @@ import { motion } from 'framer-motion'
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi'
 import { sendContractEmail, logContractToCRM } from '../utils/emailService'
 
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
+
+async function uploadSignature(dataUrl) {
+  if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) return null
+  const fd = new FormData()
+  fd.append('file', dataUrl)
+  fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET)
+  try {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: 'POST', body: fd })
+    if (!res.ok) return null
+    const data = await res.json()
+    return data.secure_url || null
+  } catch {
+    return null
+  }
+}
+
 const CONTRACT_SECTIONS = [
   {
     title: 'Parties & Scope of Services',
@@ -127,6 +145,7 @@ export default function ContractSign() {
     setError('')
 
     const signatureBase64 = canvasRef.current.toDataURL('image/png')
+    const signatureUrl = await uploadSignature(signatureBase64)
 
     try {
       await sendContractEmail({
@@ -134,7 +153,7 @@ export default function ContractSign() {
         clientEmail: email,
         bookingId: bookingId || 'N/A',
         signedDate: today,
-        signatureImage: signatureBase64,
+        signatureUrl,
       })
 
       logContractToCRM({
@@ -143,10 +162,11 @@ export default function ContractSign() {
         email,
         bookingId: bookingId || 'N/A',
         signedDate: today,
+        signatureUrl: signatureUrl || 'UPLOAD_FAILED',
       })
 
       setSubmitted(true)
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Please email shotbyseven777@gmail.com directly.')
     } finally {
       setSending(false)
@@ -235,11 +255,14 @@ export default function ContractSign() {
         >
           {/* Name */}
           <div>
-            <label className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
+            <label htmlFor="contract-name" className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
               Full Name
             </label>
             <input
+              id="contract-name"
               type="text"
+              name="name"
+              autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your legal name"
@@ -250,11 +273,14 @@ export default function ContractSign() {
 
           {/* Email */}
           <div>
-            <label className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
+            <label htmlFor="contract-email" className="block font-heading text-[10px] tracking-[0.2em] uppercase text-cream/50 mb-2">
               Email
             </label>
             <input
+              id="contract-email"
               type="email"
+              name="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Where to send your copy"
@@ -301,13 +327,17 @@ export default function ContractSign() {
             </div>
           </div>
 
-          {/* Agreement Checkbox */}
+          {/* Agreement Checkbox — real input for keyboard/screen-reader operability, styled to match */}
           <label className="flex items-start gap-3 cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={agreed}
+              onChange={(e) => setAgreed(e.target.checked)}
+              className="peer sr-only"
+            />
             <div
-              className={`mt-0.5 w-4 h-4 shrink-0 border transition-colors duration-200 flex items-center justify-center ${
-                agreed ? 'border-gold bg-gold/20' : 'border-cream/20 group-hover:border-cream/40'
-              }`}
-              onClick={() => setAgreed(!agreed)}
+              aria-hidden="true"
+              className="mt-0.5 w-4 h-4 shrink-0 border transition-colors duration-200 flex items-center justify-center border-cream/20 group-hover:border-cream/40 peer-checked:border-gold peer-checked:bg-gold/20 peer-focus-visible:ring-2 peer-focus-visible:ring-gold peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-ink"
             >
               {agreed && <span className="text-gold text-xs">✓</span>}
             </div>

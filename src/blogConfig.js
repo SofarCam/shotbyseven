@@ -235,6 +235,7 @@ export const blogPosts = [
     title: 'Petal & Shadow — Studio Diaries',
     date: '2026-02-14',
     category: 'Studio',
+    caseStudy: true,
     readTime: '3 min read',
     cover: '/photos/webp/DM0A9139_websize.webp',
     excerpt: `Valentine's week. Studio A at NoDa Art House. One model, a floor covered in roses, and two hours to make something cinematic.`,
@@ -277,6 +278,7 @@ export const blogPosts = [
     title: 'Court Couture — Where Sports Meets Fashion',
     date: '2026-01-28',
     category: 'Fashion',
+    caseStudy: true,
     readTime: '4 min read',
     cover: '/photos/webp/edit_28_websize.webp',
     excerpt: `A jersey, a yellow backdrop, and a vision for something that lives at the intersection of streetwear and editorial. Here's how the Court Couture shoot came together.`,
@@ -319,6 +321,7 @@ export const blogPosts = [
     title: 'Walk the Stage — Graduation Season Behind the Lens',
     date: '2026-01-10',
     category: 'Graduation',
+    caseStudy: true,
     readTime: '3 min read',
     cover: '/photos/webp/DM0A6636_websize.webp',
     excerpt: `Graduation season is one of my favorite times of year. Here's why these sessions mean something different — and how I approach them to make the photos actually last.`,
@@ -365,4 +368,10 @@ export function getRecentPosts(count = 3) {
   return [...blogPosts]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
     .slice(0, count)
+}
+
+export function getCaseStudies() {
+  return [...blogPosts]
+    .filter(p => p.caseStudy)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
 }

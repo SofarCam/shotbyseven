@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { sendBookingEmail } from '../utils/emailService'
 
 const SHOOT_TYPES = [
@@ -134,7 +135,7 @@ export default function SmartIntakeForm({ selectedPackage }) {
         <div className="font-display text-6xl text-gold mb-6">&#10003;</div>
         <h3 className="font-display text-2xl font-bold text-cream mb-3">Inquiry Sent</h3>
         <p className="text-cream/40 text-sm mb-2">
-          Seven will review your request and respond to <span className="text-cream/60">{form.email}</span> within 5 minutes.
+          Seven will review your request and respond to <span className="text-cream/60">{form.email}</span> within 24 hours.
         </p>
         <p className="text-cream/25 text-xs mb-8">
           Studio rental at NoDa Art House is $60/hr, billed separately from session pricing.
@@ -305,6 +306,8 @@ export default function SmartIntakeForm({ selectedPackage }) {
                 </div>
                 <input
                   type="date"
+                  aria-label={`${i === 0 ? '1st' : i === 1 ? '2nd' : '3rd'} choice date`}
+                  autoComplete="off"
                   value={d.date}
                   onChange={(e) => setDate(i, 'date', e.target.value)}
                   min={new Date().toISOString().split('T')[0]}
@@ -395,9 +398,12 @@ export default function SmartIntakeForm({ selectedPackage }) {
 
               {/* Name */}
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Your name</label>
+                <label htmlFor="intake-name" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Your name</label>
                 <input
+                  id="intake-name"
                   type="text"
+                  name="name"
+                  autoComplete="name"
                   value={form.name}
                   onChange={(e) => set('name', e.target.value)}
                   required
@@ -408,11 +414,14 @@ export default function SmartIntakeForm({ selectedPackage }) {
 
               {/* Email */}
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+                <label htmlFor="intake-email" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
                   Your email — Seven will respond here
                 </label>
                 <input
+                  id="intake-email"
                   type="email"
+                  name="email"
+                  autoComplete="email"
                   value={form.email}
                   onChange={(e) => set('email', e.target.value)}
                   required
@@ -423,10 +432,11 @@ export default function SmartIntakeForm({ selectedPackage }) {
 
               {/* Special requests */}
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+                <label htmlFor="intake-requests" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
                   Special requests <span className="text-cream/20 normal-case tracking-normal">(optional)</span>
                 </label>
                 <textarea
+                  id="intake-requests"
                   value={form.specialRequests}
                   onChange={(e) => set('specialRequests', e.target.value)}
                   rows={3}
@@ -436,7 +446,8 @@ export default function SmartIntakeForm({ selectedPackage }) {
               </div>
 
               <p className="text-cream/15 text-xs">
-                Seven will check NoDa Art House availability and respond within 5 minutes. Studio rental ($60/hr) is billed separately from Cam's session pricing.
+                Seven will check NoDa Art House availability and respond within 24 hours. Studio rental ($60/hr) is billed separately from Cam's session pricing.
+                By submitting, you agree to our <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>.
               </p>
 
               {sendError && (

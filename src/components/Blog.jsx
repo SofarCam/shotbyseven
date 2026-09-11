@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import { blogPosts } from '../blogConfig'
+import { blogPosts, getCaseStudies } from '../blogConfig'
+import useSEO from '../hooks/useSEO'
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -27,18 +28,10 @@ function BlogEmailCapture() {
     if (!isValid || loading) return
     setLoading(true)
     try {
-      await fetch('https://api.resend.com/emails', {
+      await fetch('/api/subscribe', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_RESEND_API_KEY || ''}`,
-        },
-        body: JSON.stringify({
-          from: 'Shot by Seven <onboarding@resend.dev>',
-          to: ['shotbyseven777@gmail.com'],
-          subject: `📸 New blog subscriber: ${email}`,
-          html: `<p>New subscriber from the Shot by Seven blog.</p><p><strong>${email}</strong></p>`,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       }).catch(() => {})
       setSubmitted(true)
     } finally {
@@ -70,8 +63,12 @@ function BlogEmailCapture() {
         Location guides, session prep, behind the scenes. No spam — just what's worth reading.
       </p>
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+        <label htmlFor="blog-subscribe-email" className="sr-only">Email address</label>
         <input
+          id="blog-subscribe-email"
           type="email"
+          name="email"
+          autoComplete="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
           placeholder="your@email.com"
@@ -86,6 +83,10 @@ function BlogEmailCapture() {
           {loading ? 'Sending...' : 'Subscribe'}
         </button>
       </form>
+      <p className="text-cream/20 text-[11px] font-body mt-4">
+        By subscribing you agree to receive occasional emails from Shot by Seven. See our{' '}
+        <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>. Unsubscribe anytime.
+      </p>
     </motion.div>
   )
 }
@@ -93,6 +94,13 @@ function BlogEmailCapture() {
 export default function Blog() {
   const sorted = [...blogPosts].sort((a, b) => new Date(b.date) - new Date(a.date))
   const [featured, ...rest] = sorted
+  const caseStudies = getCaseStudies()
+  useSEO({
+    title: 'Studio Journal | Shot by Seven',
+    description: 'Location guides, session prep tips, and behind-the-scenes stories from Shot by Seven, a Charlotte NC photography studio.',
+    path: '/blog',
+    breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Journal', path: '/blog' }],
+  })
 
   return (
     <>
@@ -171,6 +179,52 @@ export default function Blog() {
               </div>
             </Link>
           </motion.div>
+
+          {/* Case studies — real sessions, start to finish */}
+          {caseStudies.length > 0 && (
+            <div className="mb-16">
+              <div className="mb-6">
+                <p className="font-heading text-[10px] tracking-[0.3em] uppercase text-gold mb-2">
+                  Case Studies
+                </p>
+                <p className="text-cream/30 text-sm font-body max-w-lg">
+                  Real sessions, start to finish — the concept, the setup, and what actually came out of it.
+                </p>
+              </div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {caseStudies.map((post, i) => (
+                  <motion.div
+                    key={post.slug}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.1 + i * 0.1 }}
+                  >
+                    <Link to={`/blog/${post.slug}`} className="group block border border-gold/20 hover:border-gold/50 transition-all duration-300 overflow-hidden">
+                      <div className="relative h-44 overflow-hidden">
+                        <img
+                          src={post.cover}
+                          alt={post.title}
+                          className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                          style={{ filter: 'saturate(0.85) contrast(1.05)' }}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-ink/70 to-transparent" />
+                        <span className="absolute top-3 left-3 font-heading text-[8px] tracking-[0.2em] uppercase bg-gold text-ink px-2.5 py-1">
+                          Case Study
+                        </span>
+                      </div>
+                      <div className="p-5">
+                        <p className="font-heading text-[9px] tracking-[0.2em] uppercase text-gold/60 mb-2">{post.category}</p>
+                        <h3 className="font-display text-lg font-bold text-cream group-hover:text-gold/90 transition-colors duration-200 leading-snug mb-1">
+                          {post.title}
+                        </h3>
+                        <p className="text-cream/30 text-xs font-body line-clamp-2">{post.excerpt}</p>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Email capture */}
           <BlogEmailCapture />

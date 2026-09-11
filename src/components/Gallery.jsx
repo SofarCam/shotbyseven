@@ -142,7 +142,7 @@ export default function Gallery() {
                   <div className="relative overflow-hidden" data-cursor="viewfinder">
                     <img
                       src={img.src}
-                      alt={`${img.category} photography`}
+                      alt={`${img.title} — ${img.category} photography session by Shot by Seven, Charlotte NC`}
                       className={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${
                         img.aspect === 'tall' ? 'h-[500px]' :
                         img.aspect === 'wide' ? 'h-[300px]' : 'h-[400px]'
@@ -181,6 +181,19 @@ export default function Gallery() {
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* CTA — link the portfolio to booking */}
+        <div className="text-center mt-16">
+          <p className="text-cream/30 text-sm font-body mb-5">
+            See a style you like? Let's shoot something like it.
+          </p>
+          <a
+            href="#smart-booking"
+            className="inline-flex items-center gap-2 font-heading text-xs tracking-[0.2em] uppercase px-8 py-4 bg-gold text-ink hover:bg-gold-light transition-colors duration-300"
+          >
+            Book a Session
+          </a>
+        </div>
       </div>
 
       {/* Lightbox with shoot slideshow */}
@@ -193,9 +206,13 @@ export default function Gallery() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-[100] bg-ink/98 flex items-center justify-center p-4"
             onClick={closeLightbox}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Image preview"
           >
             <button
               onClick={closeLightbox}
+              aria-label="Close preview"
               className="absolute top-6 right-6 text-cream/40 hover:text-gold transition-colors z-10"
             >
               <HiX size={28} />
@@ -204,6 +221,7 @@ export default function Gallery() {
             {lightboxShoot.images.length > 1 && (
               <button
                 onClick={(e) => { e.stopPropagation(); prevImg() }}
+                aria-label="Previous image"
                 className="absolute left-6 text-cream/30 hover:text-gold transition-colors z-10"
               >
                 <HiChevronLeft size={36} />
@@ -217,7 +235,7 @@ export default function Gallery() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
               src={lightboxShoot.images[lightboxShoot.index]?.src}
-              alt="Gallery preview"
+              alt={`${lightboxShoot.images[lightboxShoot.index]?.title} — ${lightboxShoot.images[lightboxShoot.index]?.category} photography, image ${lightboxShoot.index + 1} of ${lightboxShoot.images.length}`}
               className="max-h-[85vh] max-w-[85vw] object-contain"
               onClick={(e) => e.stopPropagation()}
             />
@@ -225,6 +243,7 @@ export default function Gallery() {
             {lightboxShoot.images.length > 1 && (
               <button
                 onClick={(e) => { e.stopPropagation(); next() }}
+                aria-label="Next image"
                 className="absolute right-6 text-cream/30 hover:text-gold transition-colors z-10"
               >
                 <HiChevronRight size={36} />
@@ -239,6 +258,8 @@ export default function Gallery() {
                     <button
                       key={i}
                       onClick={(e) => { e.stopPropagation(); setLightboxShoot(prev => ({ ...prev, index: i })) }}
+                      aria-label={`Go to image ${i + 1}`}
+                      aria-current={i === lightboxShoot.index}
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         i === lightboxShoot.index ? 'bg-gold scale-125' : 'bg-cream/20 hover:bg-cream/40'
                       }`}
