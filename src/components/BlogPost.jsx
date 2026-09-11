@@ -118,6 +118,14 @@ export default function BlogPost() {
                 ← Studio Journal
               </Link>
               <div className="flex items-center gap-3 mb-3">
+                {post.caseStudy && (
+                  <>
+                    <span className="font-heading text-[9px] tracking-[0.2em] uppercase bg-gold text-ink px-2 py-0.5">
+                      Case Study
+                    </span>
+                    <span className="text-cream/20">·</span>
+                  </>
+                )}
                 <span className="font-heading text-[9px] tracking-[0.2em] uppercase text-gold/70">
                   {post.category}
                 </span>
