@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom'
 import useAnalytics from './hooks/useAnalytics'
 import useSEO from './hooks/useSEO'
 import CookieConsent from './components/CookieConsent'
+import MobileBookingBar from './components/MobileBookingBar'
 import Intro from './components/Intro'
 import CustomCursor from './components/CustomCursor'
 import FilmGrain from './components/FilmGrain'
@@ -44,6 +45,7 @@ const Branding     = lazy(() => import('./components/Branding'))
 const PrivacyPolicy = lazy(() => import('./components/legal/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./components/legal/TermsOfService'))
 const AccessibilityStatement = lazy(() => import('./components/legal/AccessibilityStatement'))
+const NotFound = lazy(() => import('./components/NotFound'))
 
 // Minimal fallback that matches the site's dark background
 function PageLoader() {
@@ -203,7 +205,12 @@ function App() {
         path="/accessibility"
         element={<Suspense fallback={<PageLoader />}><AccessibilityStatement /></Suspense>}
       />
+      <Route
+        path="*"
+        element={<Suspense fallback={<PageLoader />}><NotFound /></Suspense>}
+      />
     </Routes>
+    <MobileBookingBar />
     <CookieConsent />
     </>
   )

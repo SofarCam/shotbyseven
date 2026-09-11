@@ -5,13 +5,16 @@ import Footer from '../Footer'
 import CustomCursor from '../CustomCursor'
 import FilmGrain from '../FilmGrain'
 import ScrollProgress from '../ScrollProgress'
+import Breadcrumbs from '../Breadcrumbs'
 
 export default function LegalLayout({ title, eyebrow, lastUpdated, path, description, children }) {
+  const breadcrumbs = [{ name: 'Home', path: '/' }, { name: title, path }]
+
   useSEO({
     title: `${title} | Shot by Seven`,
     description,
     path,
-    breadcrumbs: [{ name: 'Home', path: '/' }, { name: title, path }],
+    breadcrumbs,
   })
 
   return (
@@ -28,6 +31,7 @@ export default function LegalLayout({ title, eyebrow, lastUpdated, path, descrip
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto px-6 lg:px-12"
         >
+          <Breadcrumbs items={breadcrumbs} />
           <p className="font-heading text-[10px] tracking-[0.35em] uppercase text-gold/60 mb-4">{eyebrow}</p>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-cream mb-3">{title}</h1>
           {lastUpdated && (

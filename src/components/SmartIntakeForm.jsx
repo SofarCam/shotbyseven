@@ -135,7 +135,7 @@ export default function SmartIntakeForm({ selectedPackage }) {
         <div className="font-display text-6xl text-gold mb-6">&#10003;</div>
         <h3 className="font-display text-2xl font-bold text-cream mb-3">Inquiry Sent</h3>
         <p className="text-cream/40 text-sm mb-2">
-          Seven will review your request and respond to <span className="text-cream/60">{form.email}</span> within 5 minutes.
+          Seven will review your request and respond to <span className="text-cream/60">{form.email}</span> within 24 hours.
         </p>
         <p className="text-cream/25 text-xs mb-8">
           Studio rental at NoDa Art House is $60/hr, billed separately from session pricing.
@@ -446,7 +446,7 @@ export default function SmartIntakeForm({ selectedPackage }) {
               </div>
 
               <p className="text-cream/15 text-xs">
-                Seven will check NoDa Art House availability and respond within 5 minutes. Studio rental ($60/hr) is billed separately from Cam's session pricing.
+                Seven will check NoDa Art House availability and respond within 24 hours. Studio rental ($60/hr) is billed separately from Cam's session pricing.
                 By submitting, you agree to our <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>.
               </p>
 

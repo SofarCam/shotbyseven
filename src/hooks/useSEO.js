@@ -56,8 +56,9 @@ function setJsonLd(id, data) {
  * @param {Object|null} [opts.jsonLd] - Optional JSON-LD object to inject
  * @param {Array} [opts.breadcrumbs] - Optional [{name, path}] list; when given,
  *   a BreadcrumbList schema is added alongside jsonLd
+ * @param {boolean} [opts.noindex] - Set true to keep this route out of search results (e.g. a 404)
  */
-export default function useSEO({ title, description, path, image, type = 'website', jsonLd = null, breadcrumbs = null }) {
+export default function useSEO({ title, description, path, image, type = 'website', jsonLd = null, breadcrumbs = null, noindex = false }) {
   useEffect(() => {
     const url = `${SITE}${path}`
     const finalTitle = title || DEFAULT_TITLE
@@ -66,6 +67,7 @@ export default function useSEO({ title, description, path, image, type = 'websit
 
     document.title = finalTitle
     setMeta('description', finalDesc)
+    setMeta('robots', noindex ? 'noindex, nofollow' : 'index, follow')
     setMeta('og:title', finalTitle, true)
     setMeta('og:description', finalDesc, true)
     setMeta('og:url', url, true)
@@ -94,6 +96,7 @@ export default function useSEO({ title, description, path, image, type = 'websit
     return () => {
       document.title = DEFAULT_TITLE
       setMeta('description', DEFAULT_DESCRIPTION)
+      setMeta('robots', 'index, follow')
       setMeta('og:title', DEFAULT_TITLE, true)
       setMeta('og:description', DEFAULT_DESCRIPTION, true)
       setMeta('og:url', SITE, true)
@@ -107,5 +110,5 @@ export default function useSEO({ title, description, path, image, type = 'websit
       if (breadcrumbs) setJsonLd('breadcrumb-jsonld', null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, description, path])
+  }, [title, description, path, noindex])
 }

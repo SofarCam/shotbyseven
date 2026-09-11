@@ -86,7 +86,7 @@ export default function Hero() {
             </a>
           </div>
           <p className="font-heading text-[10px] tracking-[0.15em] uppercase text-cream/30">
-            $50 deposit to hold your date &nbsp;·&nbsp; Same-day confirmation
+            $50 deposit to hold your date &nbsp;·&nbsp; Confirmation within 24 hours
           </p>
         </motion.div>
       </motion.div>

@@ -2,8 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { HiGift, HiArrowLeft, HiCamera } from 'react-icons/hi'
 import useSEO from '../hooks/useSEO'
+import Breadcrumbs from './Breadcrumbs'
 
 const GIFT_CARD_URL = import.meta.env.VITE_STRIPE_GIFT_CARD_URL
+const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Gift Cards', path: '/gift' }]
 
 const amounts = [75, 150, 250, 350, 500]
 
@@ -12,7 +14,7 @@ export default function GiftCard() {
     title: 'Gift Cards | Shot by Seven',
     description: 'Give the gift of a photography session with Shot by Seven. Gift cards in any amount from $75, redeemable for any session type — no expiration.',
     path: '/gift',
-    breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Gift Cards', path: '/gift' }],
+    breadcrumbs: BREADCRUMBS,
   })
 
   const [selected, setSelected] = useState(150)
@@ -36,6 +38,8 @@ export default function GiftCard() {
         >
           <HiArrowLeft /> Back to Site
         </Link>
+
+        <Breadcrumbs items={BREADCRUMBS} />
 
         <div className="text-center mb-12">
           <HiGift className="text-gold text-4xl mx-auto mb-6" />

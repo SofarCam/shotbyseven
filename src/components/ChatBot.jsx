@@ -489,7 +489,7 @@ export default function ChatBot() {
       <motion.button
         onClick={handleOpen}
         aria-label={isOpen ? 'Close chat' : 'Chat with Seven'}
-        className="fixed bottom-6 right-6 z-[90] w-14 h-14 bg-gold text-ink rounded-full flex items-center justify-center shadow-lg shadow-gold/20 hover:bg-gold-light transition-colors"
+        className="fixed bottom-20 md:bottom-6 right-6 z-[90] w-14 h-14 bg-gold text-ink rounded-full flex items-center justify-center shadow-lg shadow-gold/20 hover:bg-gold-light transition-colors"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         style={{ cursor: 'none' }}
@@ -510,7 +510,7 @@ export default function ChatBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-24 right-6 z-[90] w-[360px] max-w-[calc(100vw-48px)] h-[520px] max-h-[75vh] bg-warm-black border border-cream/10 rounded-xl shadow-2xl shadow-ink/50 flex flex-col overflow-hidden"
+            className="fixed bottom-36 md:bottom-24 right-6 z-[90] w-[360px] max-w-[calc(100vw-48px)] h-[520px] max-h-[75vh] bg-warm-black border border-cream/10 rounded-xl shadow-2xl shadow-ink/50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="px-5 py-4 border-b border-cream/5 bg-ink/50 flex items-center gap-3">

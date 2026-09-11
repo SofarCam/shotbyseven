@@ -3,7 +3,7 @@ import { GemMarker } from './HiddenGems'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-cream/5 py-12 px-6 lg:px-12">
+    <footer className="border-t border-cream/5 pt-12 pb-24 md:pb-12 px-6 lg:px-12">
       <div className="max-w-7xl mx-auto">
         {/* Top row */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">

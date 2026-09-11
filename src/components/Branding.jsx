@@ -7,6 +7,9 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
 import FilmGrain from './FilmGrain'
+import Breadcrumbs from './Breadcrumbs'
+
+const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Branding', path: '/branding' }]
 
 const deliverables = [
   { icon: HiCamera, title: 'Full Session Coverage', desc: '2–4 hours of dedicated shooting time, multiple looks and locations, tailored to your brand palette.' },
@@ -111,7 +114,7 @@ export default function Branding() {
     title: 'Personal Branding Photography | Shot by Seven',
     description: 'Personal branding photography sessions for Charlotte coaches, entrepreneurs, healers, and creators — build a library of on-brand images from $350.',
     path: '/branding',
-    breadcrumbs: [{ name: 'Home', path: '/' }, { name: 'Branding', path: '/branding' }],
+    breadcrumbs: BREADCRUMBS,
   })
 
   return (
@@ -124,6 +127,7 @@ export default function Branding() {
 
         {/* Hero */}
         <section className="relative pt-40 pb-28 px-6 lg:px-12 max-w-6xl mx-auto">
+          <Breadcrumbs items={BREADCRUMBS} />
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
