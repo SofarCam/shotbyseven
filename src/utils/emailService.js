@@ -60,7 +60,7 @@ export async function sendContactEmail(formData) {
   return emailjs.send(SERVICE_ID, CONTACT_TEMPLATE, templateParams)
 }
 
-export async function sendContractEmail({ clientName, clientEmail, bookingId, signedDate, signatureImage }) {
+export async function sendContractEmail({ clientName, clientEmail, bookingId, signedDate, signatureUrl }) {
   if (!PUBLIC_KEY || !SERVICE_ID || !BOOKING_TEMPLATE) {
     console.warn('Contract EmailJS not configured — contract data:', { clientName, clientEmail, bookingId, signedDate })
     return { status: 200, text: 'OK (dev mode)' }
@@ -83,8 +83,8 @@ export async function sendContractEmail({ clientName, clientEmail, bookingId, si
     portal_url: '',
     stripe_url: '',
     deposit_amount: '',
-    photo_references: 'N/A',
-    photo_count: '0',
+    photo_references: signatureUrl || 'Signature capture failed — check CRM log or contact client directly',
+    photo_count: signatureUrl ? '1' : '0',
   }
 
   return emailjs.send(SERVICE_ID, BOOKING_TEMPLATE, templateParams)
