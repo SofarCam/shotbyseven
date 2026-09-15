@@ -1,21 +1,37 @@
-// /api/instagram.js — Instagram DM Lead Qualifier
-// Receives Instagram DM webhooks from Facebook
+// /api/instagram.js — Instagram DM Lead Qualifier + Comment-to-DM
+// Receives Instagram DM and comment webhooks from Facebook
 // Uses Claude API to qualify leads and auto-respond
 // Notifies Cam via Telegram for every message
 //
 // ENV VARS REQUIRED (set in Vercel dashboard):
-//   INSTAGRAM_VERIFY_TOKEN   — any secret string you choose, paste same into Facebook App webhook config
-//   INSTAGRAM_ACCESS_TOKEN   — long-lived Page Access Token from Facebook App
-//   INSTAGRAM_PAGE_ID        — your Instagram Business Account ID
-//   ANTHROPIC_API_KEY        — from openclaw config
-//   TELEGRAM_BOT_TOKEN       — from openclaw config
-//   TELEGRAM_CHAT_ID         — your Telegram user ID
+//   INSTAGRAM_VERIFY_TOKEN     — any secret string you choose, paste same into Facebook App webhook config
+//   INSTAGRAM_ACCESS_TOKEN     — long-lived Page Access Token from Facebook App
+//   INSTAGRAM_PAGE_ID          — your Instagram Business Account ID
+//   ANTHROPIC_API_KEY          — from openclaw config
+//   TELEGRAM_BOT_TOKEN         — from openclaw config
+//   TELEGRAM_CHAT_ID           — your Telegram user ID
+//
+// ENV VARS OPTIONAL:
+//   INSTAGRAM_DM_TRIGGER_KEYWORDS — comma-separated keywords that trigger an
+//                                    auto-DM when commented on a post/reel.
+//                                    Defaults to "PRICE,LINK". Requires the
+//                                    Facebook App's Instagram webhook to also
+//                                    subscribe to the "comments" field.
 
 const VERIFY_TOKEN = process.env.INSTAGRAM_VERIFY_TOKEN
 const IG_ACCESS_TOKEN = process.env.INSTAGRAM_ACCESS_TOKEN
+const IG_PAGE_ID = process.env.INSTAGRAM_PAGE_ID
 const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID
+
+const TRIGGER_KEYWORDS = (process.env.INSTAGRAM_DM_TRIGGER_KEYWORDS || 'PRICE,LINK')
+  .split(',')
+  .map((keyword) => keyword.trim().toUpperCase())
+  .filter(Boolean)
+
+const DEFAULT_COMMENT_REPLY =
+  "Hey! Thanks for asking 🙌 Send me the shoot type, date, and budget you're thinking and I'll get you booked — Seven | Shot by Seven"
 
 const SYSTEM_PROMPT = `You are Seven, the assistant for Shot by Seven — a professional photography studio in Charlotte, NC run by Cam (Cameron Currence). You respond to Instagram DMs from potential clients.
 
@@ -79,6 +95,50 @@ async function sendIGReply(recipientId, message) {
   })
 }
 
+async function sendPrivateReply(commentId, message) {
+  if (!IG_ACCESS_TOKEN) return
+  await fetch(`https://graph.facebook.com/v21.0/${commentId}/private_replies`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${IG_ACCESS_TOKEN}`,
+    },
+    body: JSON.stringify({ message }),
+  })
+}
+
+function matchedTriggerKeyword(commentText) {
+  const upperText = commentText.toUpperCase()
+  return TRIGGER_KEYWORDS.find((keyword) => upperText.includes(keyword))
+}
+
+async function handleComment(comment) {
+  const commentId = comment?.id
+  const commentText = comment?.text
+  const commenterId = comment?.from?.id
+  const commenterUsername = comment?.from?.username || 'unknown'
+
+  // Skip edits/removals, our own comments, and missing data
+  if (!commentId || !commentText) return
+  if (comment?.verb && comment.verb !== 'add') return
+  if (IG_PAGE_ID && commenterId === IG_PAGE_ID) return
+
+  const matched = matchedTriggerKeyword(commentText)
+  if (!matched) return
+
+  sendTelegram(
+    `💬 *Comment trigger matched* ("${matched}")\n\nFrom: @${commenterUsername}\n\n"${commentText}"\n\n_Sending private reply..._`
+  )
+
+  const reply = await callClaude(
+    `A potential client just commented "${commentText}" on one of our Instagram posts/reels to trigger an auto-DM. Write a short, warm private-reply message that answers what they're asking for and invites them to share shoot type, date, and budget so we can get them booked.`
+  )
+  const message = reply || DEFAULT_COMMENT_REPLY
+
+  await sendPrivateReply(commentId, message)
+  sendTelegram(`✅ *Private reply sent to @${commenterUsername}:*\n\n"${message}"`)
+}
+
 export default async function handler(req, res) {
   // Facebook webhook verification (GET)
   if (req.method === 'GET') {
@@ -122,6 +182,11 @@ export default async function handler(req, res) {
       } else {
         sendTelegram(`⚠️ *Claude failed to respond* — check ANTHROPIC_API_KEY`)
       }
+    }
+
+    for (const change of entry?.changes || []) {
+      if (change?.field !== 'comments') continue
+      await handleComment(change?.value)
     }
   }
 

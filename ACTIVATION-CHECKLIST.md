@@ -27,6 +27,8 @@ Add any that aren't already there, then **redeploy** so the build picks them up.
 | `INSTAGRAM_VERIFY_TOKEN` | `shotbyseven_verify_2026` | IG DM webhook handshake |
 | `INSTAGRAM_ACCESS_TOKEN` | Long-lived Page token (from the FB app, step 3) | IG DM send/receive |
 | `INSTAGRAM_PAGE_ID` | Your IG Business Account ID | IG DM send/receive |
+| `INSTAGRAM_DM_TRIGGER_KEYWORDS` | *(optional)* comma-separated, e.g. `PRICE,LINK`. Defaults to `PRICE,LINK` | Comment-to-DM keyword trigger |
+| `VITE_STRIPE_GIFT_CARD_URL` | `https://buy.stripe.com/bJe3cv3JC0Jd9wnfT98og04` — already exists in Stripe, just needs to be pasted in | Gift Cards page (`/gift`) checkout |
 
 > `VITE_`-prefixed vars are baked in at build time — you MUST redeploy after adding them.
 
@@ -69,7 +71,9 @@ Correction to an earlier finding in this checklist: the Stripe account connected
 
 **Bug found and fixed**: `SmartBooking.jsx` and `ClientPortal.jsx` computed whether a client owed a $50 or $100 deposit, but both only had a single `VITE_STRIPE_DEPOSIT_URL` env var to send them to — so whichever one link was configured, half of bookings were being sent to pay the wrong amount. Replaced with `src/utils/stripe.js`, which picks the correct real Payment Link based on the computed deposit amount. The `VITE_STRIPE_DEPOSIT_URL` env var is no longer used — nothing to set for deposits anymore.
 
-**Still open**: the Gift Cards page (`/gift`) needs its own Payment Link — none of the three above allow a custom amount. Create one in Stripe (Payment Links → New → customer chooses the price, $50 minimum) → set `VITE_STRIPE_GIFT_CARD_URL` in Vercel → redeploy.
+**Resolved**: the Gift Cards page (`/gift`) already has its own "customer picks the amount, $50 minimum" Payment Link in Stripe — `https://buy.stripe.com/bJe3cv3JC0Jd9wnfT98og04` (product: "Shot by Seven Gift Card"). It just needs `VITE_STRIPE_GIFT_CARD_URL` set to that URL in Vercel, then redeploy.
+
+**Cleanup flag**: there's also a second, unused gift-card product in Stripe — a fixed $70 "gift card" (no custom amount) with its own Payment Link (`https://buy.stripe.com/14AeVd7ZSajNdMDayP8og03`). It doesn't match `/gift`'s "pick your own amount" flow and nothing in the codebase references it — looks like a leftover from an earlier attempt. Worth deactivating in the Stripe dashboard (Payment Links → that link → Deactivate) once you confirm nothing external points to it.
 
 The Claude Stripe connector is now repointed at the real `shotbyseven` account (`acct_1T44Z3FPsZacyI0u`) — confirmed by listing its webhook endpoints directly.
 
