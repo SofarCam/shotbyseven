@@ -27,18 +27,10 @@ function BlogEmailCapture() {
     if (!isValid || loading) return
     setLoading(true)
     try {
-      await fetch('https://api.resend.com/emails', {
+      await fetch('/api/blog-subscribe', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_RESEND_API_KEY || ''}`,
-        },
-        body: JSON.stringify({
-          from: 'Shot by Seven <onboarding@resend.dev>',
-          to: ['shotbyseven777@gmail.com'],
-          subject: `📸 New blog subscriber: ${email}`,
-          html: `<p>New subscriber from the Shot by Seven blog.</p><p><strong>${email}</strong></p>`,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
       }).catch(() => {})
       setSubmitted(true)
     } finally {
