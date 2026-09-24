@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { HiPlus, HiMinus } from 'react-icons/hi'
+import { BUSINESS } from '../config/business'
 
 const faqs = [
   {
@@ -9,7 +10,7 @@ const faqs = [
   },
   {
     q: 'Where are you located?',
-    a: 'I\'m based in Charlotte, NC. Studio sessions are held at NoDa Art House — 3109 Cullman Ave, Charlotte, NC 28206 — in the heart of the NoDa arts district. Outdoor sessions take place at locations across Charlotte and the surrounding area. I also travel — within 100 miles is a $50 flat fee.',
+    a: `I'm based in Charlotte, NC. Studio sessions are held at NoDa Art House — ${BUSINESS.studio.address} — in the heart of the NoDa arts district. Outdoor sessions take place at locations across Charlotte and the surrounding area. I also travel — within 100 miles is a $50 flat fee.`,
   },
   {
     q: 'How much do you charge?',

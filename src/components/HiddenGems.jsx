@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { HiX } from 'react-icons/hi'
 import { getHiddenGems } from '../imageConfig'
 import emailjs from '@emailjs/browser'
+import { BUSINESS } from '../config/business'
 
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || ''
@@ -191,7 +192,7 @@ export function GemTracker() {
     if (PUBLIC_KEY && SERVICE_ID && CONTACT_TEMPLATE) {
       try {
         await emailjs.send(SERVICE_ID, CONTACT_TEMPLATE, {
-          to_email: 'shotbyseven777@gmail.com',
+          to_email: BUSINESS.email,
           from_name: 'Hidden Exhibit Finder',
           from_email: email,
           phone: 'N/A',

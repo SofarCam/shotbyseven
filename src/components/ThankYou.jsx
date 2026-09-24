@@ -13,6 +13,7 @@ import {
 import { FaInstagram } from 'react-icons/fa'
 import FilmGrain from './FilmGrain'
 import CustomCursor from './CustomCursor'
+import { BUSINESS } from '../config/business'
 
 const fade = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -235,13 +236,13 @@ export default function ThankYou() {
               <p className="font-body text-xs text-cream/30">Behind the scenes, client work, Charlotte vibes</p>
             </div>
             <a
-              href="https://instagram.com/shotbyseven777"
+              href={BUSINESS.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 px-4 py-2.5 bg-cream/5 border border-cream/15 hover:border-gold/40 hover:text-gold transition-all duration-200 text-cream/60 text-xs font-heading tracking-[0.15em] uppercase"
             >
               <FaInstagram className="w-3.5 h-3.5" />
-              @shotbyseven777
+              @{BUSINESS.instagramHandle}
             </a>
           </motion.div>
 
@@ -249,10 +250,10 @@ export default function ThankYou() {
           <motion.div {...fade(0.6)} className="text-center pt-2 pb-6">
             <p className="text-cream/25 text-xs font-body mb-1">Questions before your session?</p>
             <a
-              href="mailto:shotbyseven777@gmail.com"
+              href={`mailto:${BUSINESS.email}`}
               className="text-gold/60 hover:text-gold text-sm font-body transition-colors"
             >
-              shotbyseven777@gmail.com
+              {BUSINESS.email}
             </a>
           </motion.div>
 

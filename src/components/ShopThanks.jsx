@@ -6,6 +6,7 @@ import Navbar from './Navbar'
 import Footer from './Footer'
 import FilmGrain from './FilmGrain'
 import { trackEvent } from '../utils/analytics'
+import { BUSINESS } from '../config/business'
 
 // Stripe Payment Links redirect here after checkout with ?session_id=cs_...
 // api/download.js confirms the purchase with Stripe, then serves the file.
@@ -86,7 +87,7 @@ export default function ShopThanks() {
               </p>
               <p className="text-cream/55 font-body leading-relaxed">
                 Forward that receipt to{' '}
-                <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold/80">shotbyseven777@gmail.com</a>{' '}
+                <a href={`mailto:${BUSINESS.email}`} className="text-gold hover:text-gold/80">{BUSINESS.email}</a>{' '}
                 and you&apos;ll get your guide within 24 hours.
               </p>
             </>

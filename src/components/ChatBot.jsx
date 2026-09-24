@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiChat, HiX, HiPaperAirplane } from 'react-icons/hi'
 import { scrollToSection } from '../utils/scroll'
+import { BUSINESS } from '../config/business'
 
 // ============================================
 // SEVEN BOT — Site Guide & Booking Assistant
@@ -13,11 +14,11 @@ import { scrollToSection } from '../utils/scroll'
 const INFO = {
   name: 'Seven',
   studio: 'NoDa Art House',
-  studioAddress: '3109 Cullman Ave, Charlotte, NC 28206',
+  studioAddress: BUSINESS.studio.address,
   studioUrl: 'https://nodaarthouse.org',
-  email: 'shotbyseven777@gmail.com',
-  instagram: '@shotbyseven777',
-  instagramUrl: 'https://instagram.com/shotbyseven777',
+  email: BUSINESS.email,
+  instagram: `@${BUSINESS.instagramHandle}`,
+  instagramUrl: BUSINESS.instagramUrl,
   portalUrl: '/portal',
   stripeUrl: 'https://buy.stripe.com/00w00ja802Rl5g74ar8og00',
   services: {

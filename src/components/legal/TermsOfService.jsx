@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import LegalLayout, { LegalSection } from './LegalLayout'
+import { BUSINESS } from '../../config/business'
 
 export default function TermsOfService() {
   return (
@@ -107,7 +108,7 @@ export default function TermsOfService() {
 
       <LegalSection heading="Contact">
         <p>
-          Questions: <a href="mailto:shotbyseven777@gmail.com">shotbyseven777@gmail.com</a>. See also our{' '}
+          Questions: <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. See also our{' '}
           <Link to="/privacy">Privacy Policy</Link> and <Link to="/accessibility">Accessibility Statement</Link>.
         </p>
       </LegalSection>

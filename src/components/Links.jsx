@@ -5,6 +5,7 @@ import useSEO from '../hooks/useSEO'
 import FilmGrain from './FilmGrain'
 import { trackEvent } from '../utils/analytics'
 import { upcomingMiniDates, formatMiniDate, HOLIDAY_MINIS } from '../holidayMinis'
+import { BUSINESS } from '../config/business'
 
 const COVER = '/photos/webp/links-cover.webp'
 const COVER_BG = '/photos/webp/links-cover-bg.webp'
@@ -150,13 +151,13 @@ export default function Links() {
           transition={{ delay: 1.6, duration: 0.8 }}
         >
           <a
-            href="https://instagram.com/shotbyseven777"
+            href={BUSINESS.instagramUrl}
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Shot by Seven on Instagram"
             className="inline-flex items-center gap-2 text-cream/80 hover:text-gold transition-colors text-sm"
           >
-            <FaInstagram /> @shotbyseven777
+            <FaInstagram /> @{BUSINESS.instagramHandle}
           </a>
         </motion.div>
       </div>

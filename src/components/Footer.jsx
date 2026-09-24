@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { GemMarker } from './HiddenGems'
+import { BUSINESS } from '../config/business'
 
 export default function Footer() {
   return (
@@ -13,7 +14,7 @@ export default function Footer() {
 
           <div className="flex flex-wrap items-center justify-center gap-6">
             <a
-              href="https://instagram.com/shotbyseven777"
+              href={BUSINESS.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
@@ -21,7 +22,7 @@ export default function Footer() {
               Instagram
             </a>
             <a
-              href="https://shotbyseven777.pic-time.com/client"
+              href={BUSINESS.galleryUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
@@ -105,7 +106,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-3">
             <p className="text-cream/10 text-[10px] font-heading tracking-widest uppercase">
-              shotbyseven777@gmail.com
+              {BUSINESS.email}
             </p>
             <GemMarker gemIndex={4} />
           </div>

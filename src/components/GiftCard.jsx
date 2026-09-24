@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { HiGift, HiArrowLeft, HiCamera } from 'react-icons/hi'
 import useSEO from '../hooks/useSEO'
 import Breadcrumbs from './Breadcrumbs'
+import { BUSINESS } from '../config/business'
 
 const GIFT_CARD_URL = import.meta.env.VITE_STRIPE_GIFT_CARD_URL
 const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Gift Cards', path: '/gift' }]
@@ -122,8 +123,8 @@ export default function GiftCard() {
               <p className="text-cream/40 text-sm mb-2">Gift cards coming very soon.</p>
               <p className="text-cream/25 text-xs">
                 In the meantime, email{' '}
-                <a href="mailto:shotbyseven777@gmail.com" className="text-gold/70 hover:text-gold">
-                  shotbyseven777@gmail.com
+                <a href={`mailto:${BUSINESS.email}`} className="text-gold/70 hover:text-gold">
+                  {BUSINESS.email}
                 </a>{' '}
                 to arrange a gift session directly.
               </p>
@@ -131,7 +132,7 @@ export default function GiftCard() {
           )}
 
           <p className="text-cream/20 text-xs text-center">
-            Secure checkout via Stripe · Questions? shotbyseven777@gmail.com
+            Secure checkout via Stripe · Questions? {BUSINESS.email}
           </p>
 
           <p className="text-center text-sm">

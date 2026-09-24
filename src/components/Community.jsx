@@ -11,6 +11,7 @@ import FilmGrain from './FilmGrain'
 import Breadcrumbs from './Breadcrumbs'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead } from '../utils/analytics'
+import { BUSINESS } from '../config/business'
 
 // Instagram group chat invite link, set in Vercel. Without it, sign-ups are
 // told they'll be added by DM (their handle comes through with the form).
@@ -79,7 +80,7 @@ function JoinForm() {
       }).catch(() => {})
       setDone(true)
     } catch {
-      setError('Something went wrong. DM @shotbyseven777 on Instagram and we’ll add you.')
+      setError(`Something went wrong. DM @${BUSINESS.instagramHandle} on Instagram and we’ll add you.`)
     } finally {
       setSending(false)
     }
@@ -103,7 +104,7 @@ function JoinForm() {
           </>
         ) : (
           <p className="text-cream/60 font-body">
-            You&apos;ll get a DM from @shotbyseven777 within 24 hours adding you to the group chat.
+            You&apos;ll get a DM from @{BUSINESS.instagramHandle} within 24 hours adding you to the group chat.
           </p>
         )}
       </div>

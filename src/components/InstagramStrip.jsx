@@ -2,9 +2,10 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { FaInstagram } from 'react-icons/fa'
 import { getInstagramImages } from '../imageConfig'
+import { BUSINESS } from '../config/business'
 
-const HANDLE = '@shotbyseven777'
-const PROFILE_URL = 'https://instagram.com/shotbyseven777'
+const HANDLE = `@${BUSINESS.instagramHandle}`
+const PROFILE_URL = BUSINESS.instagramUrl
 
 export default function InstagramStrip() {
   const images = getInstagramImages()

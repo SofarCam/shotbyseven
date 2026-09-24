@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { sendBookingEmail } from '../utils/emailService'
+import { BUSINESS } from '../config/business'
 
 const SHOOT_TYPES = [
   { id: 'portrait', label: 'Portrait / Headshots', hint: 'Personal branding, LinkedIn, lifestyle' },
@@ -115,7 +116,7 @@ export default function SmartIntakeForm({ selectedPackage }) {
         await sendBookingEmail(emailData, selectedPackage || { label: 'Studio Session', price: 'TBD' })
         sent = true
       } catch {
-        setSendError('Failed to send. Email shotbyseven777@gmail.com directly.')
+        setSendError(`Failed to send. Email ${BUSINESS.email} directly.`)
         setSending(false)
         return
       }

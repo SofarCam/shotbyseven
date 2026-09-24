@@ -5,6 +5,7 @@ import { HiMail, HiLocationMarker } from 'react-icons/hi'
 import { FaInstagram } from 'react-icons/fa'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead } from '../utils/analytics'
+import { BUSINESS } from '../config/business'
 
 const logToLeadsCRM = async (data) => {
   try {
@@ -47,7 +48,7 @@ export default function Contact() {
       })
       setSubmitted(true)
     } catch (err) {
-      setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
+      setSendError(`Failed to send. Please email ${BUSINESS.email} directly.`)
     } finally {
       setSending(false)
     }
@@ -80,7 +81,7 @@ export default function Contact() {
               </div>
               <div>
                 <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Email</p>
-                <p className="text-cream font-medium">shotbyseven777@gmail.com</p>
+                <p className="text-cream font-medium">{BUSINESS.email}</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -93,13 +94,13 @@ export default function Contact() {
                 <p className="text-cream/20 text-xs">Studio rental $60/hr · Not included in session pricing</p>
               </div>
             </div>
-            <a href="https://instagram.com/shotbyseven777" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
+            <a href={BUSINESS.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 group">
               <div className="w-12 h-12 border border-cream/10 group-hover:border-gold/30 flex items-center justify-center transition-colors">
                 <FaInstagram className="text-gold" />
               </div>
               <div>
                 <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30">Instagram</p>
-                <p className="text-cream font-medium group-hover:text-gold transition-colors">@shotbyseven777</p>
+                <p className="text-cream font-medium group-hover:text-gold transition-colors">@{BUSINESS.instagramHandle}</p>
               </div>
             </a>
           </div>

@@ -11,6 +11,7 @@ import Breadcrumbs from './Breadcrumbs'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead, trackEvent } from '../utils/analytics'
 import { FREE_GUIDE, PRODUCTS } from '../shopConfig'
+import { BUSINESS } from '../config/business'
 
 const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Shop', path: '/shop' }]
 
@@ -102,7 +103,7 @@ function EmailCapture({ kind, product, idPrefix, cta, success }) {
       }).catch(() => {})
       setSubmitted(true)
     } catch {
-      setError('Something went wrong. Email shotbyseven777@gmail.com or DM @shotbyseven777.')
+      setError(`Something went wrong. Email ${BUSINESS.email} or DM @${BUSINESS.instagramHandle}.`)
     } finally {
       setSending(false)
     }

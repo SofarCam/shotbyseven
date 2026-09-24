@@ -1,4 +1,5 @@
 import emailjs from '@emailjs/browser'
+import { BUSINESS } from '../config/business'
 
 const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || ''
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || ''
@@ -19,7 +20,7 @@ export async function sendBookingEmail(formData, packageInfo) {
   }
 
   const templateParams = {
-    to_email: 'shotbyseven777@gmail.com',
+    to_email: BUSINESS.email,
     reply_to: formData.email,
     from_name: formData.name,
     from_email: formData.email,
@@ -48,7 +49,7 @@ export async function sendContactEmail(formData) {
   }
 
   const templateParams = {
-    to_email: 'shotbyseven777@gmail.com',
+    to_email: BUSINESS.email,
     from_name: formData.name,
     from_email: formData.email,
     phone: formData.phone || 'Not provided',
@@ -68,7 +69,7 @@ export async function sendContractEmail({ clientName, clientEmail, bookingId, si
 
   // Routes through booking template — no 3rd template slot needed
   const templateParams = {
-    to_email: 'shotbyseven777@gmail.com',
+    to_email: BUSINESS.email,
     reply_to: clientEmail,
     from_name: clientName,
     from_email: clientEmail,

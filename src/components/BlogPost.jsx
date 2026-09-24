@@ -7,6 +7,7 @@ import Footer from './Footer'
 import CustomCursor from './CustomCursor'
 import FilmGrain from './FilmGrain'
 import ScrollProgress from './ScrollProgress'
+import { BUSINESS } from '../config/business'
 
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleDateString('en-US', {
@@ -21,7 +22,7 @@ function useBlogPostSEO(post) {
     title: post ? (post.seoTitle || `${post.title} | Shot by Seven`) : undefined,
     description: post ? (post.seoDescription || post.excerpt) : undefined,
     path: post ? `/blog/${post.slug}` : '/blog',
-    image: post ? `https://shotbyseven.com${post.cover}` : undefined,
+    image: post ? `${BUSINESS.siteUrl}${post.cover}` : undefined,
     type: 'article',
     breadcrumbs: post ? [
       { name: 'Home', path: '/' },
@@ -33,17 +34,17 @@ function useBlogPostSEO(post) {
       '@type': 'Article',
       headline: post.title,
       description: post.seoDescription || post.excerpt,
-      image: `https://shotbyseven.com${post.cover}`,
+      image: `${BUSINESS.siteUrl}${post.cover}`,
       datePublished: post.date,
       dateModified: post.date,
-      url: `https://shotbyseven.com/blog/${post.slug}`,
+      url: `${BUSINESS.siteUrl}/blog/${post.slug}`,
       author: { '@type': 'Person', name: 'Cameron Currence' },
       publisher: {
         '@type': 'Organization',
         name: 'Shot by Seven',
-        logo: { '@type': 'ImageObject', url: 'https://shotbyseven.com/favicon-512x512.png' },
+        logo: { '@type': 'ImageObject', url: `${BUSINESS.siteUrl}/favicon-512x512.png` },
       },
-      mainEntityOfPage: { '@type': 'WebPage', '@id': `https://shotbyseven.com/blog/${post.slug}` },
+      mainEntityOfPage: { '@type': 'WebPage', '@id': `${BUSINESS.siteUrl}/blog/${post.slug}` },
     } : null,
   })
 }

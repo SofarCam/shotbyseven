@@ -10,6 +10,7 @@ import FilmGrain from './FilmGrain'
 import Breadcrumbs from './Breadcrumbs'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead } from '../utils/analytics'
+import { BUSINESS } from '../config/business'
 
 const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Creators', path: '/creators' }]
 
@@ -78,7 +79,7 @@ const addOns = [
 const faqs = [
   {
     q: 'Where do sessions happen?',
-    a: 'Studio A at NoDa Art House (3109 Cullman Ave, Charlotte) or on location around Charlotte. Studio time on regular sessions is billed separately at $60/hr.',
+    a: `Studio A at NoDa Art House (${BUSINESS.studio.street}, ${BUSINESS.studio.city}) or on location around Charlotte. Studio time on regular sessions is billed separately at $60/hr.`,
   },
   {
     q: 'What does "captions in your voice" mean?',
@@ -207,7 +208,7 @@ function RequestForm() {
       }).catch(() => {})
       setSubmitted(true)
     } catch {
-      setError('Something went wrong. DM @shotbyseven777 on Instagram or email shotbyseven777@gmail.com.')
+      setError(`Something went wrong. DM @${BUSINESS.instagramHandle} on Instagram or email ${BUSINESS.email}.`)
     } finally {
       setSending(false)
     }

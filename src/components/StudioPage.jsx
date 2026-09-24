@@ -5,7 +5,7 @@ import useSEO from '../hooks/useSEO'
 import Breadcrumbs from './Breadcrumbs'
 
 const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Studio', path: '/studio' }]
-const STUDIO_ADDRESS = '3109 Cullman Ave, Charlotte, NC 28206'
+const STUDIO_ADDRESS = BUSINESS.studio.address
 const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(STUDIO_ADDRESS)}&output=embed`
 const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(STUDIO_ADDRESS)}`
 import Navbar from './Navbar'
@@ -14,6 +14,7 @@ import CustomCursor from './CustomCursor'
 import FilmGrain from './FilmGrain'
 import ScrollProgress from './ScrollProgress'
 import SmartIntakeForm from './SmartIntakeForm'
+import { BUSINESS } from '../config/business'
 
 export default function StudioPage() {
   useSEO({

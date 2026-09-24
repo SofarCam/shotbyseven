@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { HiCheckCircle, HiClock, HiMail, HiPhone, HiExternalLink, HiDocumentText, HiPhotograph, HiLockClosed } from 'react-icons/hi'
 import { getDepositUrl } from '../utils/stripe'
+import { BUSINESS } from '../config/business'
 
 
 const STATUS_STEPS = [
@@ -124,7 +125,7 @@ function LoginForm({ onLogin, loading, error }) {
         </form>
 
         <p className="text-center text-cream/25 text-xs font-body mt-8">
-          Questions? <a href="mailto:shotbyseven777@gmail.com" className="text-gold hover:text-gold/80 transition-colors">shotbyseven777@gmail.com</a>
+          Questions? <a href={`mailto:${BUSINESS.email}`} className="text-gold hover:text-gold/80 transition-colors">{BUSINESS.email}</a>
         </p>
       </motion.div>
     </section>
@@ -147,7 +148,7 @@ export default function ClientPortal() {
         setBooking(data)
         setView('dashboard')
       } else if (data && data.error === 'crm_not_configured') {
-        setError('The client portal isn\'t available right now. Email shotbyseven777@gmail.com for your booking status.')
+        setError(`The client portal isn't available right now. Email ${BUSINESS.email} for your booking status.`)
       } else {
         setError('No booking found with that email and booking ID. Double-check your confirmation email, or contact us directly.')
       }
@@ -304,11 +305,11 @@ export default function ClientPortal() {
         <div className="border border-cream/10 p-5">
           <p className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 mb-3">Questions? Reach out directly</p>
           <div className="flex flex-col sm:flex-row gap-3">
-            <a href="mailto:shotbyseven777@gmail.com" className="flex items-center gap-2 text-gold hover:text-gold/80 transition-colors text-sm font-body">
-              <HiMail className="w-4 h-4" /> shotbyseven777@gmail.com
+            <a href={`mailto:${BUSINESS.email}`} className="flex items-center gap-2 text-gold hover:text-gold/80 transition-colors text-sm font-body">
+              <HiMail className="w-4 h-4" /> {BUSINESS.email}
             </a>
-            <a href="https://instagram.com/shotbyseven777" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-cream/40 hover:text-gold transition-colors text-sm font-body">
-              <HiExternalLink className="w-4 h-4" /> @shotbyseven777
+            <a href={BUSINESS.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-cream/40 hover:text-gold transition-colors text-sm font-body">
+              <HiExternalLink className="w-4 h-4" /> @{BUSINESS.instagramHandle}
             </a>
           </div>
         </div>

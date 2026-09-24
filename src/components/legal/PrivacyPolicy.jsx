@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import LegalLayout, { LegalSection } from './LegalLayout'
+import { BUSINESS } from '../../config/business'
 
 export default function PrivacyPolicy() {
   return (
@@ -16,7 +17,7 @@ export default function PrivacyPolicy() {
           Shot by Seven is a photography business operated by Cameron Currence, based in Charlotte, North Carolina.
           This policy explains what information we collect through <strong>shotbyseven.com</strong>, why we collect it,
           who we share it with, and the choices you have. If you have questions, email{' '}
-          <a href="mailto:shotbyseven777@gmail.com">shotbyseven777@gmail.com</a>.
+          <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>.
         </p>
       </LegalSection>
 
@@ -34,7 +35,7 @@ export default function PrivacyPolicy() {
           <li><strong>Holiday Mini request form (/holiday-minis):</strong> name, email, phone (optional), preferred date and time, party size, and any notes.</li>
           <li><strong>Model Community sign-up (/community):</strong> name, Instagram handle, email, modeling experience, your interests, and confirmation that you&apos;re 18 or older. Used to add you to the community group chat and share model calls, test shoots, and events.</li>
           <li><strong>Shop (/shop):</strong> your first name and email when you request the free guide or ask to be notified about a guide. Used to send you the guide and occasional emails about new guides and open shoot dates; you can unsubscribe anytime. Guide purchases are processed by Stripe (see &quot;Who we share information with&quot; below).</li>
-          <li><strong>Instagram Direct Messages:</strong> if you message @shotbyseven777 on Instagram, your message is processed to send you an automated, AI-assisted reply and to notify Cam.</li>
+          <li><strong>Instagram Direct Messages:</strong> if you message @{BUSINESS.instagramHandle} on Instagram, your message is processed to send you an automated, AI-assisted reply and to notify Cam.</li>
         </ul>
         <p><strong>Information collected automatically (only with your consent for analytics/marketing — see "Cookies &amp; Tracking" below):</strong></p>
         <ul>
@@ -113,7 +114,7 @@ export default function PrivacyPolicy() {
       <LegalSection heading="Your choices &amp; rights">
         <p>
           You can ask us to access, correct, or delete the personal information we hold about you at any time by emailing{' '}
-          <a href="mailto:shotbyseven777@gmail.com">shotbyseven777@gmail.com</a>. We'll respond within a reasonable time.
+          <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. We'll respond within a reasonable time.
           North Carolina does not currently have a comprehensive state consumer privacy law, but we honor reasonable
           requests regardless. If you are a resident of a state or country with specific statutory privacy rights (such
           as California's CCPA or the EU's GDPR), let us know and we will do our best to accommodate applicable
@@ -146,7 +147,7 @@ export default function PrivacyPolicy() {
 
       <LegalSection heading="Contact">
         <p>
-          Questions about this policy or your data: <a href="mailto:shotbyseven777@gmail.com">shotbyseven777@gmail.com</a>.
+          Questions about this policy or your data: <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>.
           See also our <Link to="/terms">Terms of Service</Link> and <Link to="/accessibility">Accessibility Statement</Link>.
         </p>
       </LegalSection>

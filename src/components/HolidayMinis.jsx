@@ -11,6 +11,7 @@ import Breadcrumbs from './Breadcrumbs'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead } from '../utils/analytics'
 import { HOLIDAY_MINIS, formatMiniDate, upcomingMiniDates } from '../holidayMinis'
+import { BUSINESS } from '../config/business'
 
 const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Holiday Minis', path: '/holiday-minis' }]
 const TIME_PREFS = ['Morning', 'Midday', 'Afternoon', 'Any time']
@@ -68,7 +69,7 @@ function RequestForm({ dates }) {
       }).catch(() => {})
       setSubmitted(true)
     } catch {
-      setError('Something went wrong. Email shotbyseven777@gmail.com or DM @shotbyseven777.')
+      setError(`Something went wrong. Email ${BUSINESS.email} or DM @${BUSINESS.instagramHandle}.`)
     } finally {
       setSending(false)
     }

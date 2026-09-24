@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi'
 import { sendContractEmail, logContractToCRM } from '../utils/emailService'
+import { BUSINESS } from '../config/business'
 
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
@@ -45,7 +46,7 @@ const CONTRACT_SECTIONS = [
   },
   {
     title: 'Model & Portfolio Release',
-    body: `By executing this Agreement, Client grants Photographer permission to display, publish, and distribute session photographs for professional portfolio and promotional purposes, including but not limited to: the Photographer's website, social media accounts, print marketing materials, and third-party photography publications. Client may opt out of this release in full or in part by providing written notice to the Photographer at shotbyseven777@gmail.com no later than 24 hours before the scheduled session.`,
+    body: `By executing this Agreement, Client grants Photographer permission to display, publish, and distribute session photographs for professional portfolio and promotional purposes, including but not limited to: the Photographer's website, social media accounts, print marketing materials, and third-party photography publications. Client may opt out of this release in full or in part by providing written notice to the Photographer at ${BUSINESS.email} no later than 24 hours before the scheduled session.`,
   },
   {
     title: 'Limitation of Liability',
@@ -167,7 +168,7 @@ export default function ContractSign() {
 
       setSubmitted(true)
     } catch {
-      setError('Something went wrong. Please email shotbyseven777@gmail.com directly.')
+      setError(`Something went wrong. Please email ${BUSINESS.email} directly.`)
     } finally {
       setSending(false)
     }

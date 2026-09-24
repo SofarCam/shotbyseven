@@ -7,6 +7,7 @@ import { sendBookingEmail } from '../utils/emailService'
 import { trackEvent, trackBooking } from '../utils/analytics'
 import { getDepositUrl } from '../utils/stripe'
 import BookingCalendar from './BookingCalendar'
+import { BUSINESS } from '../config/business'
 
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET
@@ -107,7 +108,7 @@ export default function SmartBooking() {
     const toUpload = Array.from(files).slice(0, remaining)
 
     if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
-      setUploadError('Upload failed. Describe your vision in text above, or email references to shotbyseven777@gmail.com.')
+      setUploadError(`Upload failed. Describe your vision in text above, or email references to ${BUSINESS.email}.`)
       return
     }
 
@@ -246,7 +247,7 @@ export default function SmartBooking() {
       navigate(`/thank-you?${params.toString()}`)
     } catch (err) {
       console.error('Booking email failed:', err)
-      setSendError('Failed to send. Please email shotbyseven777@gmail.com directly.')
+      setSendError(`Failed to send. Please email ${BUSINESS.email} directly.`)
     } finally {
       setSending(false)
     }
@@ -651,7 +652,7 @@ export default function SmartBooking() {
                   </div>
                 ) : (
                   <div className="border border-cream/10 bg-cream/3 p-4">
-                    <p className="text-cream/40 text-xs font-body">Photo upload coming soon — paste inspo links in your vision above, or email references to <span className="text-gold">shotbyseven777@gmail.com</span></p>
+                    <p className="text-cream/40 text-xs font-body">Photo upload coming soon — paste inspo links in your vision above, or email references to <span className="text-gold">{BUSINESS.email}</span></p>
                   </div>
                 )}
                 <input type="file" id="photo-upload-input" multiple accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(e) => { handlePhotoUpload(e.target.files); e.target.value = '' }} />

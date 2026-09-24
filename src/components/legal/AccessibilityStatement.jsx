@@ -1,4 +1,5 @@
 import LegalLayout, { LegalSection } from './LegalLayout'
+import { BUSINESS } from '../../config/business'
 
 export default function AccessibilityStatement() {
   return (
@@ -44,7 +45,7 @@ export default function AccessibilityStatement() {
       <LegalSection heading="Feedback &amp; accommodation requests">
         <p>
           If you encounter an accessibility barrier on this site, or need information in an alternative format,
-          please email <a href="mailto:shotbyseven777@gmail.com">shotbyseven777@gmail.com</a>. We'll do our best to
+          please email <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>. We'll do our best to
           respond promptly and address the issue.
         </p>
       </LegalSection>

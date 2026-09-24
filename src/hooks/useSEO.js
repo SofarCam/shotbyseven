@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
+import { BUSINESS } from '../config/business'
 
-const SITE = 'https://shotbyseven.com'
+const SITE = BUSINESS.siteUrl
 const DEFAULT_IMAGE = `${SITE}/photos/webp/DM0A9139_websize.webp`
 const DEFAULT_TITLE = 'Shot by Seven | Charlotte NC Photographer'
 const DEFAULT_DESCRIPTION = 'Shot by Seven — Charlotte, NC photographer specializing in portraits, fashion, studio, outdoor, maternity, graduation, and event photography. Book your session today.'
