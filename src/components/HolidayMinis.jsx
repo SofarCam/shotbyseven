@@ -155,7 +155,7 @@ export default function HolidayMinis() {
 
   useSEO({
     title: 'Holiday Mini Sessions in Charlotte | Shot by Seven',
-    description: `Holiday mini photo sessions at NoDa Art House in Charlotte, NC: ${m.minutes} minutes, ${m.photos} edited photos, $${m.price}. Families, couples, friends, and pets welcome.`,
+    description: `Holiday mini photo sessions at NoDa Art House in Charlotte, NC: ${m.minutes} minutes, unlimited shots, ${m.photos} edited photos, $${m.price}. Families, couples, friends, and pets welcome.`,
     path: '/holiday-minis',
     breadcrumbs: BREADCRUMBS,
   })
@@ -164,7 +164,7 @@ export default function HolidayMinis() {
     { icon: HiCalendar, text: dateLabel },
     { icon: HiClock, text: bookable ? m.timeWindow : `${m.minutes}-minute sessions` },
     { icon: HiLocationMarker, text: m.location },
-    { icon: HiPhotograph, text: `${m.photos} edited photos · gallery in ${m.deliveryDays} days` },
+    { icon: HiPhotograph, text: `Unlimited shots · ${m.photos} edited photos · gallery in ${m.deliveryDays} days` },
   ]
 
   return (
@@ -198,7 +198,7 @@ export default function HolidayMinis() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="text-cream/50 text-lg leading-relaxed max-w-2xl mb-10 font-body"
           >
-            {m.minutes} minutes in a styled holiday set. Walk out with {m.photos} edited photos, ready for cards, gifts, and your feed. Families, couples, friends, and pets welcome.
+            {m.minutes} minutes in a styled holiday set with unlimited shots. Walk out with {m.photos} edited photos, ready for cards, gifts, and your feed. Families, couples, friends, and pets welcome.
           </motion.p>
 
           <div className="grid sm:grid-cols-2 gap-4 max-w-3xl mb-10">

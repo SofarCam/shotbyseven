@@ -10,7 +10,7 @@ export const HOLIDAY_MINIS = {
   location: 'Studio A, NoDa Art House — 3109 Cullman Ave, Charlotte',
   price: 149,
   minutes: 20,
-  photos: 12,
+  photos: 14,
   maxPeople: 5,
   deliveryDays: 7,
   checkoutUrl: import.meta.env.VITE_STRIPE_HOLIDAY_MINI_URL,
