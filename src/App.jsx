@@ -42,6 +42,7 @@ const ThankYou      = lazy(() => import('./components/ThankYou'))
 const ContentEngine = lazy(() => import('./components/ContentEngine'))
 const GiftCard     = lazy(() => import('./components/GiftCard'))
 const Branding     = lazy(() => import('./components/Branding'))
+const Creators     = lazy(() => import('./components/Creators'))
 const PrivacyPolicy = lazy(() => import('./components/legal/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./components/legal/TermsOfService'))
 const AccessibilityStatement = lazy(() => import('./components/legal/AccessibilityStatement'))
@@ -192,6 +193,10 @@ function App() {
       <Route
         path="/branding"
         element={<Suspense fallback={<PageLoader />}><Branding /></Suspense>}
+      />
+      <Route
+        path="/creators"
+        element={<Suspense fallback={<PageLoader />}><Creators /></Suspense>}
       />
       <Route
         path="/privacy"

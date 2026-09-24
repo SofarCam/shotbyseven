@@ -8,6 +8,7 @@ Shot by Seven serves the Charlotte, North Carolina area. Sessions are billed at 
 
 - [Home](https://shotbyseven.com/): booking, pricing calculator, portfolio gallery, services overview, testimonials, FAQ, contact form
 - [Studio Booking](https://shotbyseven.com/studio): rent Studio A at NoDa Art House
+- [Creators](https://shotbyseven.com/creators): photo and short-form video packages for content creators (Creator Mini, The 777, monthly Creator Membership) and collab applications
 - [Personal Branding](https://shotbyseven.com/branding): quarterly branding photography packages for entrepreneurs and creators
 - [Gift Cards](https://shotbyseven.com/gift): purchase a gift card for any session type
 - [Studio Journal](https://shotbyseven.com/blog): location guides, session prep, behind-the-scenes posts
