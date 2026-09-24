@@ -94,6 +94,37 @@ a, button { cursor: none; }
   .film-grain, .light-leak, .light-leak-2 { animation: none; }
 }
 
+/* /links page: glossy sheen across the cover, gold shimmer, drifting background */
+@keyframes coverSheen {
+  0%, 70% { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(220%) skewX(-18deg); }
+}
+.cover-sheen {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: inherit;
+}
+.cover-sheen::after {
+  content: ''; position: absolute; top: 0; bottom: 0; width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.22), transparent);
+  animation: coverSheen 6s ease-in-out 1.6s infinite;
+}
+@keyframes goldShimmer {
+  0% { background-position: -150% 0; }
+  60%, 100% { background-position: 250% 0; }
+}
+.gold-shimmer {
+  background-image: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.35) 50%, transparent 70%);
+  background-size: 200% 100%; background-repeat: no-repeat;
+  animation: goldShimmer 3.5s ease-in-out 2s infinite;
+}
+@keyframes bgDrift {
+  0%, 100% { transform: scale(1.15) translate(0, 0); }
+  50% { transform: scale(1.25) translate(-2%, 2%); }
+}
+.bg-drift { animation: bgDrift 24s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .cover-sheen::after, .gold-shimmer, .bg-drift { animation: none; }
+}
+
 .masonry-grid { column-count: 3; column-gap: 1.25rem; }
 .masonry-grid > * { break-inside: avoid; margin-bottom: 1.25rem; }
 @media (max-width: 1024px) { .masonry-grid { column-count: 2; } }
