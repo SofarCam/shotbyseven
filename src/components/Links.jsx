@@ -46,7 +46,7 @@ export default function Links() {
         <h1 className="sr-only">Shot by Seven</h1>
         <img
           src={COVER}
-          alt="Shot by Seven magazine-style cover: More Than Just Pictures. Portraits, outdoors, studio, lifestyle, events."
+          alt="Shotbyseven777 magazine-style cover: More Than Just Pictures. Portraits, outdoors, studio, lifestyle, events."
           width={1024}
           height={1536}
           className="w-full h-auto rounded-2xl shadow-2xl border border-cream/20 mb-6"
