@@ -1,9 +1,11 @@
 // Holiday Mini Sessions — edit this block to change the event.
-// Leave `date` as null until the date is confirmed; the page then shows
-// "date announced soon" and collects requests instead of bookings.
+// Add a date (YYYY-MM-DD) to `dates` once it's confirmed; the page lists every
+// date and lets people pick one. With no dates, the page collects
+// "notify me" sign-ups instead.
 
 export const HOLIDAY_MINIS = {
-  date: null, // e.g. '2026-11-14' (YYYY-MM-DD)
+  dates: ['2026-10-24'],
+  moreDatesComing: true, // shows "more dates coming" under the list
   timeWindow: '10am – 2pm',
   location: 'Studio A, NoDa Art House — 3109 Cullman Ave, Charlotte',
   price: 149,
@@ -15,11 +17,21 @@ export const HOLIDAY_MINIS = {
 }
 
 export function formatMiniDate(date) {
-  if (!date) return null
   const [y, m, d] = date.split('-').map(Number)
   return new Date(y, m - 1, d).toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
   })
+}
+
+// Only dates that haven't passed yet
+export function upcomingMiniDates(now = new Date()) {
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  return HOLIDAY_MINIS.dates
+    .filter((d) => {
+      const [y, m, day] = d.split('-').map(Number)
+      return new Date(y, m - 1, day) >= today
+    })
+    .sort()
 }

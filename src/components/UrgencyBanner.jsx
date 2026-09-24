@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiX } from 'react-icons/hi'
 import { Link } from 'react-router-dom'
+import { upcomingMiniDates, formatMiniDate } from '../holidayMinis'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
@@ -22,8 +23,9 @@ export default function UrgencyBanner() {
   }
 
   const month = getNextMonth()
-  // October through December, the banner promotes Holiday Minis instead
-  const holidaySeason = new Date().getMonth() >= 9
+  // Promote Holiday Minis whenever a date is on the calendar, and all of Oct–Dec
+  const nextMini = upcomingMiniDates()[0]
+  const holidaySeason = Boolean(nextMini) || new Date().getMonth() >= 9
 
   return (
     <AnimatePresence>
@@ -41,8 +43,8 @@ export default function UrgencyBanner() {
                 to="/holiday-minis"
                 className="font-heading text-[11px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors"
               >
-                Holiday Mini Sessions at NoDa Art House
-                <span className="hidden sm:inline"> &nbsp;·&nbsp; Get on the list</span>
+                Holiday Mini Sessions{nextMini ? ` · ${formatMiniDate(nextMini)}` : ' at NoDa Art House'}
+                <span className="hidden sm:inline"> &nbsp;·&nbsp; {nextMini ? 'Save your spot' : 'Get on the list'}</span>
               </Link>
             ) : (
               <a

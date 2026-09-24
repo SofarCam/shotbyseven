@@ -10,7 +10,7 @@ import FilmGrain from './FilmGrain'
 import Breadcrumbs from './Breadcrumbs'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead } from '../utils/analytics'
-import { HOLIDAY_MINIS, formatMiniDate } from '../holidayMinis'
+import { HOLIDAY_MINIS, formatMiniDate, upcomingMiniDates } from '../holidayMinis'
 
 const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Holiday Minis', path: '/holiday-minis' }]
 const TIME_PREFS = ['Morning', 'Midday', 'Afternoon', 'Any time']
@@ -30,8 +30,9 @@ const faqs = [
   },
 ]
 
-function RequestForm({ bookable }) {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', people: '2', time: TIME_PREFS[3], notes: '' })
+function RequestForm({ dates }) {
+  const bookable = dates.length > 0
+  const [form, setForm] = useState({ name: '', email: '', phone: '', date: dates[0] || '', people: '2', time: TIME_PREFS[3], notes: '' })
   const [sending, setSending] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -42,7 +43,7 @@ function RequestForm({ bookable }) {
     setSending(true)
     setError('')
     const message = [
-      bookable ? 'Holiday Mini request' : 'Holiday Mini — notify me when the date is set',
+      bookable ? `Holiday Mini request — ${formatMiniDate(form.date)}` : 'Holiday Mini — notify me when the date is set',
       `People: ${form.people}`,
       `Preferred time: ${form.time}`,
       '',
@@ -59,6 +60,7 @@ function RequestForm({ bookable }) {
           name: form.name,
           email: form.email,
           phone: form.phone,
+          date: bookable ? form.date : '',
           people: form.people,
           time_preference: form.time,
           message: form.notes,
@@ -108,7 +110,15 @@ function RequestForm({ bookable }) {
             {Array.from({ length: HOLIDAY_MINIS.maxPeople }, (_, i) => String(i + 1)).map((n) => <option key={n}>{n}</option>)}
           </select>
         </div>
-        <div className="sm:col-span-2">
+        {bookable && (
+          <div>
+            <label htmlFor="hm-date" className={label}>Date</label>
+            <select id="hm-date" name="date" value={form.date} onChange={update} className={`${input} bg-ink`}>
+              {dates.map((d) => <option key={d} value={d}>{formatMiniDate(d)}</option>)}
+            </select>
+          </div>
+        )}
+        <div className={bookable ? '' : 'sm:col-span-2'}>
           <label htmlFor="hm-time" className={label}>Preferred time</label>
           <select id="hm-time" name="time" value={form.time} onChange={update} className={`${input} bg-ink`}>
             {TIME_PREFS.map((t) => <option key={t}>{t}</option>)}
@@ -137,8 +147,11 @@ function RequestForm({ bookable }) {
 
 export default function HolidayMinis() {
   const m = HOLIDAY_MINIS
-  const dateLabel = formatMiniDate(m.date)
-  const bookable = Boolean(m.date)
+  const dates = upcomingMiniDates()
+  const bookable = dates.length > 0
+  const dateLabel = bookable
+    ? dates.map(formatMiniDate).join(' · ') + (m.moreDatesComing ? ' · more dates coming' : '')
+    : 'Dates announced soon'
 
   useSEO({
     title: 'Holiday Mini Sessions in Charlotte | Shot by Seven',
@@ -148,7 +161,7 @@ export default function HolidayMinis() {
   })
 
   const details = [
-    { icon: HiCalendar, text: dateLabel || 'Date announced soon' },
+    { icon: HiCalendar, text: dateLabel },
     { icon: HiClock, text: bookable ? m.timeWindow : `${m.minutes}-minute sessions` },
     { icon: HiLocationMarker, text: m.location },
     { icon: HiPhotograph, text: `${m.photos} edited photos · gallery in ${m.deliveryDays} days` },
@@ -169,7 +182,7 @@ export default function HolidayMinis() {
             transition={{ duration: 0.6 }}
             className="font-heading text-[10px] tracking-[0.3em] uppercase text-gold mb-5"
           >
-            One Day Only · NoDa Art House
+            Limited Dates · NoDa Art House
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
@@ -230,9 +243,9 @@ export default function HolidayMinis() {
             <p className="text-cream/40 font-body mb-10">
               {bookable
                 ? 'Slots go in order of requests. You’ll get a text or email to confirm your exact time.'
-                : 'Holiday slots are limited to one day. Join the list and you’ll hear first.'}
+                : 'Holiday dates are limited. Join the list and you’ll hear first.'}
             </p>
-            <RequestForm bookable={bookable} />
+            <RequestForm dates={dates} />
           </div>
         </section>
 
