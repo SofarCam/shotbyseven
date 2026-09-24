@@ -33,6 +33,7 @@ export default function PrivacyPolicy() {
           <li><strong>Creator request / collab form (/creators):</strong> name, email, Instagram handle, audience size, niche, the package or collab you&apos;re interested in, and your message.</li>
           <li><strong>Holiday Mini request form (/holiday-minis):</strong> name, email, phone (optional), preferred date and time, party size, and any notes.</li>
           <li><strong>Model Community sign-up (/community):</strong> name, Instagram handle, email, modeling experience, your interests, and confirmation that you&apos;re 18 or older. Used to add you to the community group chat and share model calls, test shoots, and events.</li>
+          <li><strong>Shop (/shop):</strong> your first name and email when you request the free guide or ask to be notified about a guide. Used to send you the guide and occasional emails about new guides and open shoot dates; you can unsubscribe anytime. Guide purchases are processed by Stripe (see &quot;Who we share information with&quot; below).</li>
           <li><strong>Instagram Direct Messages:</strong> if you message @shotbyseven777 on Instagram, your message is processed to send you an automated, AI-assisted reply and to notify Cam.</li>
         </ul>
         <p><strong>Information collected automatically (only with your consent for analytics/marketing — see "Cookies &amp; Tracking" below):</strong></p>
@@ -42,7 +43,7 @@ export default function PrivacyPolicy() {
           <li>Basic performance metrics (page load speed) via Vercel Speed Insights. This runs regardless of your cookie choice because it does not identify you personally — it does not use cookies or collect IP-linked profiles.</li>
         </ul>
         <p>
-          We do not collect payment card numbers. Deposit payments are processed entirely by Stripe — see "Payments" below.
+          We do not collect payment card numbers. Deposit payments and guide purchases are processed entirely by Stripe — see "Who we share information with" below.
         </p>
       </LegalSection>
 
@@ -65,7 +66,7 @@ export default function PrivacyPolicy() {
         <ul>
           <li><strong>EmailJS</strong> — sends form submissions (name, email, phone, message content) to our business email.</li>
           <li><strong>Cloudinary</strong> — hosts reference photos you upload through the booking form.</li>
-          <li><strong>Stripe</strong> — processes deposit payments. Stripe receives your email and booking reference; we never see or store your card details.</li>
+          <li><strong>Stripe</strong> — processes deposit payments and guide purchases. Stripe receives your email and booking reference or order; we never see or store your card details.</li>
           <li><strong>Google Sheets (via a private webhook)</strong> — our internal booking/lead tracker. Receives the fields from whichever form you submitted.</li>
           <li><strong>Google Calendar</strong> — used server-side only to check availability; does not receive your personal details.</li>
           <li><strong>PicTime</strong> — our third-party gallery delivery platform. Once you're a booked client, your delivered photo gallery lives on PicTime, governed by PicTime's own privacy policy.</li>

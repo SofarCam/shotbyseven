@@ -33,8 +33,21 @@ Add any that aren't already there, then **redeploy** so the build picks them up.
 | `VITE_MANAGE_PASSWORD_HASH` | SHA-256 hash of your `/manage` + `/content` password — **set**. Access fails closed if this is missing | Admin tool access |
 | `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → the `shotbyseven.com/api/stripe-webhook` endpoint → Signing secret — **set** | Deposit confirmations |
 | `VITE_STRIPE_CREATOR_MINI_URL` etc. | Payment Links for the creator offers — see `/creators` section below | `/creators` checkout buttons |
+| `VITE_STRIPE_POSING_GUIDE_URL` | Payment Link URL for The Model Posing Guide ($19) — see "Shop" below | `/shop` buy button (shows "Notify me" until set) |
+| `STRIPE_SECRET_KEY` | **Restricted** key: Stripe → Developers → API keys → Create restricted key → **Checkout Sessions: Read**, everything else None. Server-only | `/api/download` purchase check |
+| `POSING_GUIDE_PAYMENT_LINK_ID` | The guide Payment Link's `plink_…` ID (Claude can look it up) | `/api/download` — which link = which product |
+| `POSING_GUIDE_FILE_URL` | Where the finished PDF is hosted. **Not** in `public/` (the repo is public) | `/api/download` file delivery |
 
 > `VITE_`-prefixed vars are baked in at build time — you MUST redeploy after adding them.
+
+### Shop (`/shop`): turning on a paid guide
+1. Finish the PDF (add the photos), host it outside the repo, and set `POSING_GUIDE_FILE_URL`.
+2. Stripe → Payment Links → New → product "The Model Posing Guide", $19 one-time → **After payment** → *Don't show confirmation page* → redirect to
+   `https://shotbyseven.com/shop/thanks?session_id={CHECKOUT_SESSION_ID}` (type it exactly, including the braces).
+3. Set `VITE_STRIPE_POSING_GUIDE_URL`, `POSING_GUIDE_PAYMENT_LINK_ID`, and `STRIPE_SECRET_KEY`, then redeploy.
+4. Buyers land on `/shop/thanks`, the server confirms the payment with Stripe, and the download button appears.
+
+**Free guide**: drop the finished PDF at `public/downloads/10-poses-that-work-on-everyone.pdf` and set `available: true` in `src/shopConfig.js`. Until then the form collects a waitlist (CRM type `FREE_GUIDE`); email those people when it goes live.
 
 ---
 
