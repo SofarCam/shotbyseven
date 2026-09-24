@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HiX } from 'react-icons/hi'
+import { Link } from 'react-router-dom'
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December']
 
@@ -21,6 +22,8 @@ export default function UrgencyBanner() {
   }
 
   const month = getNextMonth()
+  // October through December, the banner promotes Holiday Minis instead
+  const holidaySeason = new Date().getMonth() >= 9
 
   return (
     <AnimatePresence>
@@ -33,13 +36,23 @@ export default function UrgencyBanner() {
           className="overflow-hidden"
         >
           <div className="relative bg-gold/10 border-y border-gold/20 py-3 px-6 text-center">
-            <a
-              href="#smart-booking"
-              className="font-heading text-[11px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors"
-            >
-              {month} sessions booking now — limited availability
-              <span className="hidden sm:inline"> &nbsp;·&nbsp; Reserve your date</span>
-            </a>
+            {holidaySeason ? (
+              <Link
+                to="/holiday-minis"
+                className="font-heading text-[11px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors"
+              >
+                Holiday Mini Sessions at NoDa Art House
+                <span className="hidden sm:inline"> &nbsp;·&nbsp; Get on the list</span>
+              </Link>
+            ) : (
+              <a
+                href="#smart-booking"
+                className="font-heading text-[11px] tracking-[0.2em] uppercase text-gold hover:text-gold-light transition-colors"
+              >
+                {month} sessions booking now — limited availability
+                <span className="hidden sm:inline"> &nbsp;·&nbsp; Reserve your date</span>
+              </a>
+            )}
             <button
               onClick={dismiss}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gold/40 hover:text-gold transition-colors"
