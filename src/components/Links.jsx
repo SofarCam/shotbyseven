@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FaInstagram } from 'react-icons/fa'
 import useSEO from '../hooks/useSEO'
-import { getAboutImage } from '../imageConfig'
+import { getAboutImage, getHeroImage } from '../imageConfig'
 import { trackEvent } from '../utils/analytics'
 import { upcomingMiniDates, formatMiniDate, HOLIDAY_MINIS } from '../holidayMinis'
 
@@ -30,18 +30,28 @@ export default function Links() {
   ].filter(Boolean)
 
   return (
-    <main className="min-h-screen bg-ink text-cream flex justify-center px-6 py-16">
-      <div className="w-full max-w-md">
+    <main className="relative min-h-screen bg-ink text-cream flex justify-center px-6 py-16 overflow-hidden">
+      {/* Full-bleed photo behind frosted-glass buttons */}
+      <img
+        src={getHeroImage()}
+        alt=""
+        aria-hidden="true"
+        className="fixed inset-0 w-full h-full object-cover object-center scale-105"
+        style={{ filter: 'saturate(0.85) contrast(1.05)' }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-ink/60 via-ink/40 to-ink/95" />
+
+      <div className="relative w-full max-w-md">
         <div className="text-center mb-10">
           <img
             src={getAboutImage()}
             alt="Cameron Currence, Shot by Seven photographer"
-            className="w-24 h-24 rounded-full object-cover object-top mx-auto mb-5 border border-gold/30"
+            className="w-24 h-24 rounded-full object-cover object-top mx-auto mb-5 border-2 border-cream/30 shadow-lg"
           />
           <h1 className="font-display text-3xl font-bold">
             Shot by <span className="italic text-gold">Seven</span>
           </h1>
-          <p className="font-heading text-[10px] tracking-[0.3em] uppercase text-cream/40 mt-2">
+          <p className="font-heading text-[10px] tracking-[0.3em] uppercase text-cream/70 mt-2">
             Charlotte, NC Photographer
           </p>
         </div>
@@ -52,15 +62,15 @@ export default function Links() {
               key={l.label}
               to={l.to}
               onClick={() => trackEvent('link_in_bio_click', { link: l.label })}
-              className={`block text-center px-6 py-4 border transition-colors ${
+              className={`block text-center px-6 py-4 rounded-xl border backdrop-blur-md transition-colors ${
                 l.featured
-                  ? 'bg-gold text-ink border-gold hover:bg-gold/90'
-                  : 'border-cream/15 hover:border-gold/50'
+                  ? 'bg-gold/75 text-ink border-gold/60 hover:bg-gold/90'
+                  : 'bg-cream/10 border-cream/20 hover:bg-cream/15 hover:border-gold/50'
               }`}
             >
               <span className="block font-heading text-xs tracking-[0.2em] uppercase">{l.label}</span>
               {l.sub && (
-                <span className={`block text-xs font-body mt-1 ${l.featured ? 'text-ink/70' : 'text-cream/40'}`}>
+                <span className={`block text-xs font-body mt-1 ${l.featured ? 'text-ink/75' : 'text-cream/60'}`}>
                   {l.sub}
                 </span>
               )}
@@ -74,7 +84,7 @@ export default function Links() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Shot by Seven on Instagram"
-            className="inline-flex items-center gap-2 text-cream/40 hover:text-gold transition-colors text-sm"
+            className="inline-flex items-center gap-2 text-cream/70 hover:text-gold transition-colors text-sm"
           >
             <FaInstagram /> @shotbyseven777
           </a>
