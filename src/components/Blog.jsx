@@ -28,7 +28,7 @@ function BlogEmailCapture() {
     if (!isValid || loading) return
     setLoading(true)
     try {
-      await fetch('/api/subscribe', {
+      await fetch('/api/blog-subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),

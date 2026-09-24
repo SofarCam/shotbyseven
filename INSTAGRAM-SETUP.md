@@ -41,6 +41,7 @@ Add these:
    - **Verify Token**: `shotbyseven_verify_2026`
 4. Click **Verify and Save**
 5. Subscribe to the **`messages`** field
+6. Also subscribe to the **`comments`** field (powers comment-to-DM, below)
 
 ---
 
@@ -55,3 +56,18 @@ Once all 3 steps are done:
 ## Testing
 
 Send a DM to @shotbyseven777 from another account. You should get a Telegram ping within seconds.
+
+---
+
+## Comment-to-DM (optional add-on)
+
+If a comment on a post or reel contains a trigger keyword, Seven sends the
+commenter a private reply automatically — a top-of-funnel feeder into the DM
+qualifier above.
+
+- **Env var** (optional): `INSTAGRAM_DM_TRIGGER_KEYWORDS` — comma-separated
+  keywords, e.g. `PRICE,LINK,BOOK`. Defaults to `PRICE,LINK` if unset.
+- **Requires**: the `comments` field subscription from Step 3 above.
+- **Testing**: comment "PRICE" on a post from another account — you should get
+  a Telegram ping and the commenter should receive a private reply within
+  seconds.
