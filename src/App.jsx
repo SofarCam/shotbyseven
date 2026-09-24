@@ -44,6 +44,7 @@ const GiftCard     = lazy(() => import('./components/GiftCard'))
 const Branding     = lazy(() => import('./components/Branding'))
 const Creators     = lazy(() => import('./components/Creators'))
 const HolidayMinis = lazy(() => import('./components/HolidayMinis'))
+const Links        = lazy(() => import('./components/Links'))
 const PrivacyPolicy = lazy(() => import('./components/legal/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./components/legal/TermsOfService'))
 const AccessibilityStatement = lazy(() => import('./components/legal/AccessibilityStatement'))
@@ -202,6 +203,10 @@ function App() {
       <Route
         path="/holiday-minis"
         element={<Suspense fallback={<PageLoader />}><HolidayMinis /></Suspense>}
+      />
+      <Route
+        path="/links"
+        element={<Suspense fallback={<PageLoader />}><Links /></Suspense>}
       />
       <Route
         path="/privacy"

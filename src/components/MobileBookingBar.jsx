@@ -14,7 +14,7 @@ export default function MobileBookingBar() {
   }, [])
 
   // Never show on the pages this bar would point back to, or on utility/admin routes
-  const hiddenOn = ['/manage', '/content', '/contract', '/portal', '/thank-you']
+  const hiddenOn = ['/manage', '/content', '/contract', '/portal', '/thank-you', '/links']
   if (!cookieBannerClear || hiddenOn.some((p) => pathname.startsWith(p))) return null
 
   const onCreators = pathname === '/creators'
