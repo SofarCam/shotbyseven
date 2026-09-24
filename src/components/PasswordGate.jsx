@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
-const HASH_KEY = import.meta.env.VITE_MANAGE_PASSWORD_HASH || 'e08df7eaaae462dc20f97efe977dc34500129dd6d9b626c9433fdcf1a5292815'
+// No hardcoded fallback: a fallback hash checked into source control is a
+// known, crackable secret the moment the repo is visible to anyone. If the
+// env var isn't set, access fails closed instead.
+const HASH_KEY = import.meta.env.VITE_MANAGE_PASSWORD_HASH || null
 
 async function hashPassword(password) {
   const encoder = new TextEncoder()
@@ -30,6 +33,12 @@ export default function PasswordGate({ children }) {
 
     setLoading(true)
     setError('')
+
+    if (!HASH_KEY) {
+      setError('Access is not configured. Set VITE_MANAGE_PASSWORD_HASH.')
+      setLoading(false)
+      return
+    }
 
     try {
       const hashed = await hashPassword(password.trim())
@@ -89,11 +98,14 @@ export default function PasswordGate({ children }) {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
+            <label htmlFor="manage-password" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">
               Password
             </label>
             <input
+              id="manage-password"
               type="password"
+              name="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"

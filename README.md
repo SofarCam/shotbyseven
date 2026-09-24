@@ -1,16 +1,29 @@
-# React + Vite
+# Shot by Seven
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The website for [Shot by Seven](https://shotbyseven.com), a Charlotte, NC photography studio run by Cameron Currence. React 19 + Vite + Tailwind CSS 4, deployed to Vercel.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: React 19, React Router 7, Framer Motion, Tailwind CSS 4
+- **Serverless functions**: Vercel Functions (`api/`) — booking availability, Instagram DM/publishing, the CRM webhook proxy, blog subscriber email, AI content tools
+- **Third-party integrations**: EmailJS, Stripe (payment links), Cloudinary (reference photo uploads), Google Calendar (availability), Instagram/Meta Graph API, Anthropic Claude API, Google Sheets (lead/booking tracker)
 
-## React Compiler
+See `ANALYTICS-SETUP.md`, `INSTAGRAM-SETUP.md`, `CONTENT-PIPELINE-SETUP.md`, and `ACTIVATION-CHECKLIST.md` for integration setup details.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Development
 
-## Expanding the ESLint configuration
+```bash
+npm install
+npm run dev       # start the dev server
+npm run build     # production build
+npm run lint      # eslint
+npm run preview   # preview the production build locally
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project structure
+
+- `src/components/` — page sections and components; most public pages compose sections directly on `/` (Hero, Gallery, Services, SmartBooking, etc.)
+- `src/components/legal/` — Privacy Policy, Terms of Service, Accessibility Statement
+- `api/` — Vercel serverless functions
+- `public/photos/` — site imagery, optimized via `scripts/optimize-images.mjs`
+- `src/blogConfig.js` — blog post content

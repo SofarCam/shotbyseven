@@ -1,5 +1,13 @@
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
+import { HiLocationMarker } from 'react-icons/hi'
+import useSEO from '../hooks/useSEO'
+import Breadcrumbs from './Breadcrumbs'
+
+const BREADCRUMBS = [{ name: 'Home', path: '/' }, { name: 'Studio', path: '/studio' }]
+const STUDIO_ADDRESS = '3109 Cullman Ave, Charlotte, NC 28206'
+const MAPS_EMBED_URL = `https://www.google.com/maps?q=${encodeURIComponent(STUDIO_ADDRESS)}&output=embed`
+const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(STUDIO_ADDRESS)}`
 import Navbar from './Navbar'
 import Footer from './Footer'
 import CustomCursor from './CustomCursor'
@@ -8,6 +16,13 @@ import ScrollProgress from './ScrollProgress'
 import SmartIntakeForm from './SmartIntakeForm'
 
 export default function StudioPage() {
+  useSEO({
+    title: 'Book Studio A at NoDa Art House | Shot by Seven',
+    description: 'Rent Studio A at NoDa Art House in Charlotte, NC — $60/hr, max 20 people. Check availability and book instantly.',
+    path: '/studio',
+    breadcrumbs: BREADCRUMBS,
+  })
+
   return (
     <>
       <CustomCursor />
@@ -18,6 +33,7 @@ export default function StudioPage() {
       <main className="min-h-screen bg-ink pt-24 pb-32">
         {/* Header */}
         <div className="text-center py-16 px-6 border-b border-cream/5 mb-12">
+          <Breadcrumbs items={BREADCRUMBS} className="justify-center" />
           <p className="font-heading text-[10px] tracking-[0.35em] uppercase text-gold/60 mb-3">
             Studio A — NoDa Art House
           </p>
@@ -26,7 +42,7 @@ export default function StudioPage() {
           </h1>
           <p className="text-cream/30 text-sm max-w-sm mx-auto mb-6">
             $60/hr · Charlotte, NC · Max 20 people<br />
-            Seven checks availability and responds within 5 minutes.
+            Seven checks availability and responds within 24 hours.
           </p>
 
           {/* Quick facts */}
@@ -40,6 +56,33 @@ export default function StudioPage() {
             <span>$60/hr · Billed separately</span>
           </div>
         </div>
+
+        {/* Map + directions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-lg mx-auto px-6 mb-12"
+        >
+          <div className="border border-cream/10 overflow-hidden">
+            <iframe
+              title="NoDa Art House location map"
+              src={MAPS_EMBED_URL}
+              className="w-full h-56 grayscale-[40%] contrast-125"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+          <a
+            href={MAPS_DIRECTIONS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center justify-center gap-2 font-heading text-[10px] tracking-[0.2em] uppercase text-gold/70 hover:text-gold transition-colors"
+          >
+            <HiLocationMarker /> {STUDIO_ADDRESS} · Get Directions
+          </a>
+        </motion.div>
 
         {/* Form */}
         <motion.div

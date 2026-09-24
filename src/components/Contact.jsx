@@ -1,15 +1,14 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { HiMail, HiLocationMarker } from 'react-icons/hi'
 import { FaInstagram } from 'react-icons/fa'
 import { sendContactEmail } from '../utils/emailService'
 import { trackLead } from '../utils/analytics'
 
-const CRM_URL = import.meta.env.VITE_CRM_WEBHOOK_URL
 const logToLeadsCRM = async (data) => {
-  if (!CRM_URL) return
   try {
-    await fetch(CRM_URL, { method: 'POST', body: JSON.stringify(data) })
+    await fetch('/api/crm', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
   } catch (e) {
     console.warn('Lead CRM log failed (non-blocking):', e)
   }
@@ -132,25 +131,28 @@ export default function Contact() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-8">
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Name</label>
+                <label htmlFor="contact-name" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Name</label>
                 <input
-                  type="text" name="name" value={formData.name} onChange={handleChange} required
+                  id="contact-name"
+                  type="text" name="name" autoComplete="name" value={formData.name} onChange={handleChange} required
                   className="w-full bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors duration-300 placeholder-cream/15"
                   placeholder="Your name"
                 />
               </div>
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Email</label>
+                <label htmlFor="contact-email" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Email</label>
                 <input
-                  type="email" name="email" value={formData.email} onChange={handleChange} required
+                  id="contact-email"
+                  type="email" name="email" autoComplete="email" value={formData.email} onChange={handleChange} required
                   className="w-full bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors duration-300 placeholder-cream/15"
                   placeholder="your@email.com"
                 />
               </div>
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Phone Number</label>
+                <label htmlFor="contact-phone" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Phone Number</label>
                 <input
-                  type="tel" name="phone" value={formData.phone} onChange={handleChange}
+                  id="contact-phone"
+                  type="tel" name="phone" autoComplete="tel" value={formData.phone} onChange={handleChange}
                   className="w-full bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors duration-300 placeholder-cream/15"
                   placeholder="(555) 123-4567"
                 />
@@ -183,12 +185,14 @@ export default function Contact() {
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Instagram Handle</label>
+                  <label htmlFor="contact-instagram" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Instagram Handle</label>
                   <div className="flex items-center">
                     <span className="text-cream/30 mr-2">@</span>
                     <input
+                      id="contact-instagram"
                       type="text"
                       name="instagramHandle"
+                      autoComplete="off"
                       value={formData.instagramHandle}
                       onChange={handleChange}
                       required={formData.preferredContact === 'Instagram DM'}
@@ -199,8 +203,9 @@ export default function Contact() {
                 </motion.div>
               )}
               <div>
-                <label className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Message</label>
+                <label htmlFor="contact-message" className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/30 block mb-2">Message</label>
                 <textarea
+                  id="contact-message"
                   name="message" value={formData.message} onChange={handleChange} rows={5} required
                   className="w-full bg-transparent border-b border-cream/10 focus:border-gold py-3 text-cream outline-none transition-colors duration-300 resize-none placeholder-cream/15"
                   placeholder="Tell me about your project..."
@@ -226,6 +231,10 @@ export default function Contact() {
               >
                 {sending ? 'Sending...' : 'Send Message'}
               </motion.button>
+              <p className="text-cream/20 text-xs font-body text-center">
+                By submitting, you agree to our{' '}
+                <Link to="/privacy" className="underline hover:text-gold/60">Privacy Policy</Link>.
+              </p>
             </form>
           )}
         </motion.div>

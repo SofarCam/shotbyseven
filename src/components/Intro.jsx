@@ -22,7 +22,7 @@ export default function Intro({ onComplete }) {
       setTimeout(() => setPhase(2), 1400),
       setTimeout(() => setPhase(3), 2800),
       setTimeout(() => {
-        try { sessionStorage.setItem(INTRO_KEY, '1') } catch {}
+        try { sessionStorage.setItem(INTRO_KEY, '1') } catch { /* storage unavailable */ }
         onComplete()
       }, 3800),
     ]
@@ -31,7 +31,7 @@ export default function Intro({ onComplete }) {
 
   // Click anywhere to skip early
   function handleSkip() {
-    try { sessionStorage.setItem(INTRO_KEY, '1') } catch {}
+    try { sessionStorage.setItem(INTRO_KEY, '1') } catch { /* storage unavailable */ }
     onComplete()
   }
 

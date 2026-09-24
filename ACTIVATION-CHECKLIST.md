@@ -21,14 +21,18 @@ Add any that aren't already there, then **redeploy** so the build picks them up.
 | `VITE_FB_PIXEL_ID` | Pixel ID — business.facebook.com → Events Manager → your Pixel | Retargeting + conversion events |
 | `POSTIZ_API_KEY` | Postiz → Settings → Public API → generate key | Content Engine scheduling |
 | `POSTIZ_API_URL` | *(optional)* only if self-hosting Postiz: `https://<host>/public/v1` | — |
-| `ANTHROPIC_API_KEY` | The `sk-ant-api03…` key (openclaw config). **May already be set** — Content Engine is live | IG DM qualifier + Content Engine |
+| `ANTHROPIC_API_KEY` | console.anthropic.com → API Keys — **set** | IG DM qualifier + Content Engine |
 | `TELEGRAM_BOT_TOKEN` | The `8233…` bot token (openclaw config) | IG DM notifications |
 | `TELEGRAM_CHAT_ID` | `2138115398` | IG DM notifications |
 | `INSTAGRAM_VERIFY_TOKEN` | `shotbyseven_verify_2026` | IG DM webhook handshake |
 | `INSTAGRAM_ACCESS_TOKEN` | Long-lived Page token (from the FB app, step 3) | IG DM send/receive |
 | `INSTAGRAM_PAGE_ID` | Your IG Business Account ID | IG DM send/receive |
 | `INSTAGRAM_DM_TRIGGER_KEYWORDS` | *(optional)* comma-separated, e.g. `PRICE,LINK`. Defaults to `PRICE,LINK` | Comment-to-DM keyword trigger |
-| `VITE_STRIPE_GIFT_CARD_URL` | `https://buy.stripe.com/bJe3cv3JC0Jd9wnfT98og04` — already exists in Stripe, just needs to be pasted in | Gift Cards page (`/gift`) checkout |
+| `VITE_STRIPE_GIFT_CARD_URL` | `https://buy.stripe.com/bJe3cv3JC0Jd9wnfT98og04` — **set** | Gift Cards page (`/gift`) checkout |
+| `RESEND_API_KEY` | resend.com → API Keys. **Not** `VITE_`-prefixed — server-only | Blog newsletter subscriber notification email |
+| `VITE_MANAGE_PASSWORD_HASH` | SHA-256 hash of your `/manage` + `/content` password — **set**. Access fails closed if this is missing | Admin tool access |
+| `STRIPE_WEBHOOK_SECRET` | Stripe → Developers → Webhooks → the `shotbyseven.com/api/stripe-webhook` endpoint → Signing secret — **set** | Deposit confirmations |
+| `VITE_STRIPE_CREATOR_MINI_URL` etc. | Payment Links for the creator offers — see `/creators` section below | `/creators` checkout buttons |
 
 > `VITE_`-prefixed vars are baked in at build time — you MUST redeploy after adding them.
 

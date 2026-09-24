@@ -52,6 +52,7 @@ const services = [
     title: 'Graduation',
     description: 'Celebrate your milestone with stunning cap & gown portraits and creative graduation shoots around Charlotte.',
     price: 'Starting at $250',
+    caseStudySlug: 'walk-the-stage-graduation-portraits',
   },
   {
     id: 'studio',
@@ -59,6 +60,7 @@ const services = [
     title: 'Studio Concepts',
     description: 'Creative studio sessions at NoDa Art House in Charlotte — editorial, fashion, maternity, and artistic concepts brought to life.',
     price: 'From $100 + $60/hr studio',
+    caseStudySlug: 'petal-and-shadow-rose-studio-shoot',
   },
   {
     id: 'events',
@@ -129,6 +131,15 @@ export default function Services({ onServiceSelect }) {
                 <Icon className="text-gold text-2xl mb-6 group-hover:scale-110 transition-transform duration-300" />
                 <h3 className="font-display text-lg font-bold text-cream mb-3">{service.title}</h3>
                 <p className="text-cream/30 text-sm leading-relaxed mb-6">{service.description}</p>
+                {service.caseStudySlug && (
+                  <Link
+                    to={`/blog/${service.caseStudySlug}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="inline-block font-heading text-[9px] tracking-[0.15em] uppercase text-cream/30 hover:text-gold underline underline-offset-2 mb-4"
+                  >
+                    See a Case Study →
+                  </Link>
+                )}
                 <div className="flex items-center justify-between">
                   <span className="font-heading text-[10px] tracking-[0.2em] uppercase text-gold">
                     {service.price}

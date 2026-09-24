@@ -18,14 +18,14 @@ try {
     keys.forEach(k => localStorage.removeItem(k))
     localStorage.setItem('shotbyseven_version', CONFIG_VERSION)
   }
-} catch (e) { /* ignore */ }
+} catch { /* ignore */ }
 
 // Try to load saved images from localStorage, fall back to defaults
 function loadImages(key, defaults) {
   try {
     const saved = localStorage.getItem(`shotbyseven_${key}`)
     if (saved) return JSON.parse(saved)
-  } catch (e) { /* ignore */ }
+  } catch { /* ignore */ }
   return defaults
 }
 

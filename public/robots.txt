@@ -5,5 +5,7 @@ Allow: /
 Disallow: /manage
 Disallow: /contract
 Disallow: /thank-you
+Disallow: /portal
+Disallow: /content
 
 Sitemap: https://shotbyseven.com/sitemap.xml
