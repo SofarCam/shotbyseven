@@ -6,7 +6,7 @@ export default function PrivacyPolicy() {
     <LegalLayout
       eyebrow="Shot by Seven"
       title="Privacy Policy"
-      lastUpdated="September 8, 2026"
+      lastUpdated="September 24, 2026"
       path="/privacy"
       description="How Shot by Seven collects, uses, and protects your information — booking forms, cookies, third-party services, and your privacy rights."
     >
@@ -30,6 +30,9 @@ export default function PrivacyPolicy() {
           <li><strong>Contract signing:</strong> your name, email, and a hand-drawn signature image, used to execute the photography services agreement for a booked session.</li>
           <li><strong>Client portal:</strong> the email and booking ID you enter, used only to look up your booking status.</li>
           <li><strong>Blog newsletter:</strong> your email address, if you subscribe.</li>
+          <li><strong>Creator request / collab form (/creators):</strong> name, email, Instagram handle, audience size, niche, the package or collab you&apos;re interested in, and your message.</li>
+          <li><strong>Holiday Mini request form (/holiday-minis):</strong> name, email, phone (optional), preferred date and time, party size, and any notes.</li>
+          <li><strong>Model Community sign-up (/community):</strong> name, Instagram handle, email, modeling experience, your interests, and confirmation that you&apos;re 18 or older. Used to add you to the community group chat and share model calls, test shoots, and events.</li>
           <li><strong>Instagram Direct Messages:</strong> if you message @shotbyseven777 on Instagram, your message is processed to send you an automated, AI-assisted reply and to notify Cam.</li>
         </ul>
         <p><strong>Information collected automatically (only with your consent for analytics/marketing — see "Cookies &amp; Tracking" below):</strong></p>

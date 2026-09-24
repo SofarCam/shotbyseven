@@ -45,6 +45,7 @@ const Branding     = lazy(() => import('./components/Branding'))
 const Creators     = lazy(() => import('./components/Creators'))
 const HolidayMinis = lazy(() => import('./components/HolidayMinis'))
 const Links        = lazy(() => import('./components/Links'))
+const Community    = lazy(() => import('./components/Community'))
 const PrivacyPolicy = lazy(() => import('./components/legal/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./components/legal/TermsOfService'))
 const AccessibilityStatement = lazy(() => import('./components/legal/AccessibilityStatement'))
@@ -207,6 +208,10 @@ function App() {
       <Route
         path="/links"
         element={<Suspense fallback={<PageLoader />}><Links /></Suspense>}
+      />
+      <Route
+        path="/community"
+        element={<Suspense fallback={<PageLoader />}><Community /></Suspense>}
       />
       <Route
         path="/privacy"

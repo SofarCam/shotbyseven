@@ -18,13 +18,14 @@ export default function MobileBookingBar() {
   if (!cookieBannerClear || hiddenOn.some((p) => pathname.startsWith(p))) return null
 
   const onCreators = pathname === '/creators'
-  const label = onCreators ? 'Request Your Spot' : 'Book a Session'
+  const onCommunity = pathname === '/community'
+  const label = onCreators ? 'Request Your Spot' : onCommunity ? 'Join the Community' : 'Book a Session'
   const className = 'flex-1 text-center font-heading text-xs tracking-[0.2em] uppercase px-4 py-4 bg-gold text-ink'
 
   return (
     <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-warm-black/95 backdrop-blur border-t border-gold/20">
-      {onCreators ? (
-        <a href="#request" className={className}>{label}</a>
+      {onCreators || onCommunity ? (
+        <a href={onCommunity ? '#join' : '#request'} className={className}>{label}</a>
       ) : onHome ? (
         <a href="#smart-booking" className={className}>{label}</a>
       ) : (

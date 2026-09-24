@@ -79,6 +79,7 @@ export default function Links() {
       sub: `${formatMiniDate(nextMini)} · $${HOLIDAY_MINIS.price}`,
       featured: true,
     },
+    { to: '/community', label: 'Join the Model Community', sub: 'Model calls, free test shoots & events', community: true },
     { to: '/creators', label: 'Creator Packages', sub: 'Photos, reels & captions for creators' },
     { to: '/#smart-booking', label: 'Book a Session', sub: 'Portraits, grads, maternity & more' },
     { to: '/#gallery', label: 'See the Portfolio' },
@@ -117,7 +118,9 @@ export default function Links() {
                 className={`group relative block overflow-hidden text-center px-6 py-4 rounded-xl border backdrop-blur-md transition-all duration-300 ${
                   l.featured
                     ? 'bg-gold/80 text-ink border-gold/60 hover:bg-gold/90 shadow-lg shadow-gold/20'
-                    : 'bg-cream/10 border-cream/25 hover:bg-cream/20 hover:border-gold/50 hover:-translate-y-0.5'
+                    : l.community
+                      ? 'bg-cream/15 border-gold/50 hover:bg-cream/20 hover:-translate-y-0.5'
+                      : 'bg-cream/10 border-cream/25 hover:bg-cream/20 hover:border-gold/50 hover:-translate-y-0.5'
                 }`}
               >
                 {l.featured && <span className="gold-shimmer absolute inset-0" aria-hidden="true" />}
