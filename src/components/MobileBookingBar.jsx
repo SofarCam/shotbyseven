@@ -20,13 +20,14 @@ export default function MobileBookingBar() {
   const onCreators = pathname === '/creators'
   const onCommunity = pathname === '/community'
   const onShop = pathname === '/shop'
-  const label = onCreators ? 'Request Your Spot' : onCommunity ? 'Join the Community' : onShop ? 'Get the Free Guide' : 'Book a Session'
+  const onSystem = pathname === '/system'
+  const label = onCreators ? 'Request Your Spot' : onCommunity ? 'Join the Community' : onShop ? 'Get the Free Guide' : onSystem ? 'Apply' : 'Book a Session'
   const className = 'flex-1 text-center font-heading text-xs tracking-[0.2em] uppercase px-4 py-4 bg-gold text-ink'
 
   return (
     <div className="md:hidden fixed bottom-0 inset-x-0 z-40 flex bg-warm-black/95 backdrop-blur border-t border-gold/20">
-      {onCreators || onCommunity || onShop ? (
-        <a href={onCommunity ? '#join' : onShop ? '#free-guide' : '#request'} className={className}>{label}</a>
+      {onCreators || onCommunity || onShop || onSystem ? (
+        <a href={onCommunity ? '#join' : onShop ? '#free-guide' : onSystem ? '#apply' : '#request'} className={className}>{label}</a>
       ) : onHome ? (
         <a href="#smart-booking" className={className}>{label}</a>
       ) : (

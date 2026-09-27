@@ -66,6 +66,12 @@ export default function Footer() {
               Shop
             </Link>
             <Link
+              to="/system"
+              className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
+            >
+              Websites for Creatives
+            </Link>
+            <Link
               to="/branding"
               className="font-heading text-[10px] tracking-[0.2em] uppercase text-cream/20 hover:text-gold transition-colors duration-300"
             >

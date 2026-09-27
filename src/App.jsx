@@ -48,6 +48,7 @@ const Links        = lazy(() => import('./components/Links'))
 const Community    = lazy(() => import('./components/Community'))
 const Shop         = lazy(() => import('./components/Shop'))
 const ShopThanks   = lazy(() => import('./components/ShopThanks'))
+const SevenSystem  = lazy(() => import('./components/SevenSystem'))
 const PrivacyPolicy = lazy(() => import('./components/legal/PrivacyPolicy'))
 const TermsOfService = lazy(() => import('./components/legal/TermsOfService'))
 const AccessibilityStatement = lazy(() => import('./components/legal/AccessibilityStatement'))
@@ -222,6 +223,10 @@ function App() {
       <Route
         path="/shop/thanks"
         element={<Suspense fallback={<PageLoader />}><ShopThanks /></Suspense>}
+      />
+      <Route
+        path="/system"
+        element={<Suspense fallback={<PageLoader />}><SevenSystem /></Suspense>}
       />
       <Route
         path="/privacy"
