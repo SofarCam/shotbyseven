@@ -15,6 +15,10 @@ dist-ssr
 .env.*
 !.env.example
 
+# Claude Code hook log (.claude/hooks/log_tool_call.py), incl. rotated copies
+.claude/session.log*
+__pycache__/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
